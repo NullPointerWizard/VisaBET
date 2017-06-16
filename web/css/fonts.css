@@ -1,0 +1,8 @@
+@font-face{
+	font-family: 'titre';
+	src : url(/fonts/airstrike/airstrikebullet.ttf) format("truetype");
+}
+
+header{
+	font-family: 'titre', Arial, Sans-Serif;
+}
