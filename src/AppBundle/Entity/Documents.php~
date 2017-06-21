@@ -1,0 +1,78 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Documents
+ *
+ * @ORM\Table(name="documents", indexes={@ORM\Index(name="documents_affaires_fk", columns={"id_affaire"})})
+ * @ORM\Entity
+ */
+class Documents
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id_document", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idDocument;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=10, nullable=false)
+     */
+    private $type = 'Autre';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="filename", type="string", length=150, nullable=false)
+     */
+    private $filename;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_reception", type="date", nullable=false)
+     */
+    private $dateReception;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_limite_visa", type="date", nullable=false)
+     */
+    private $dateLimiteVisa;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="etat", type="boolean", nullable=false)
+     */
+    private $etat = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="path", type="string", length=2083, nullable=false)
+     */
+    private $path;
+
+    /**
+     * @var \AppBundle\Entity\Affaires
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Affaires")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_affaire", referencedColumnName="id_affaire")
+     * })
+     */
+    private $idAffaire;
+
+
+}
+

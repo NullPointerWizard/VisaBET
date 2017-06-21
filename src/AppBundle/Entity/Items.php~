@@ -1,0 +1,50 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Items
+ *
+ * @ORM\Table(name="items", indexes={@ORM\Index(name="lots_item_fk", columns={"id_lot"})})
+ * @ORM\Entity
+ */
+class Items
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id_item", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idItem;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=10, nullable=false)
+     */
+    private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom_item", type="string", length=50, nullable=false)
+     */
+    private $nomItem;
+
+    /**
+     * @var \AppBundle\Entity\Lots
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Lots")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_lot", referencedColumnName="id_lot")
+     * })
+     */
+    private $idLot;
+
+
+}
+

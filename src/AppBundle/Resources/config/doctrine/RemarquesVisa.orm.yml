@@ -1,0 +1,65 @@
+AppBundle\Entity\RemarquesVisa:
+    type: entity
+    table: remarques_visa
+    indexes:
+        types_remarque_remarques_visa_fk:
+            columns:
+                - id_type_remarque
+        index_visa:
+            columns:
+                - id_item
+                - version
+        index_version:
+            columns:
+                - version
+        IDX_C69B6E98943B391C:
+            columns:
+                - id_item
+    id:
+        noRemarque:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: no_remarque
+    fields:
+        remarque:
+            type: string
+            nullable: false
+            length: 300
+            options:
+                fixed: false
+    oneToOne:
+        idItem:
+            targetEntity: Visas
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_item:
+                    referencedColumnName: id_item
+            orphanRemoval: false
+        version:
+            targetEntity: Visas
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                version:
+                    referencedColumnName: version
+            orphanRemoval: false
+    manyToOne:
+        idTypeRemarque:
+            targetEntity: TypesRemarque
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_type_remarque:
+                    referencedColumnName: id_type_remarque
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

@@ -1,0 +1,62 @@
+AppBundle\Entity\Documents:
+    type: entity
+    table: documents
+    indexes:
+        documents_affaires_fk:
+            columns:
+                - id_affaire
+    id:
+        idDocument:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: id_document
+            generator:
+                strategy: IDENTITY
+    fields:
+        type:
+            type: string
+            nullable: false
+            length: 10
+            options:
+                fixed: false
+                default: Autre
+        filename:
+            type: string
+            nullable: false
+            length: 150
+            options:
+                fixed: false
+        dateReception:
+            type: date
+            nullable: false
+            column: date_reception
+        dateLimiteVisa:
+            type: date
+            nullable: false
+            column: date_limite_visa
+        etat:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        path:
+            type: string
+            nullable: false
+            length: 2083
+            options:
+                fixed: false
+    manyToOne:
+        idAffaire:
+            targetEntity: Affaires
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_affaire:
+                    referencedColumnName: id_affaire
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

@@ -1,0 +1,78 @@
+AppBundle\Entity\Utilisateur:
+    type: entity
+    table: utilisateur
+    indexes:
+        id_organisme_fk_utilisateur:
+            columns:
+                - id_organisme
+    id:
+        idUtilisateur:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: id_utilisateur
+            generator:
+                strategy: IDENTITY
+    fields:
+        statut:
+            type: string
+            nullable: false
+            length: 10
+            options:
+                fixed: false
+        nom:
+            type: string
+            nullable: false
+            length: 30
+            options:
+                fixed: false
+        prenom:
+            type: string
+            nullable: false
+            length: 30
+            options:
+                fixed: false
+        mail:
+            type: string
+            nullable: true
+            length: 100
+            options:
+                fixed: false
+        tel:
+            type: string
+            nullable: true
+            length: 20
+            options:
+                fixed: false
+    manyToOne:
+        idOrganisme:
+            targetEntity: Organismes
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_organisme:
+                    referencedColumnName: id_organisme
+            orphanRemoval: false
+    manyToMany:
+        idAffaire:
+            targetEntity: Affaires
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: idUtilisateur
+            joinTable:
+                name: work_on
+                joinColumns:
+                    -
+                        name: id_utilisateur
+                        referencedColumnName: id_utilisateur
+                inverseJoinColumns:
+                    -
+                        name: id_affaire
+                        referencedColumnName: id_affaire
+            orderBy: null
+    lifecycleCallbacks: {  }

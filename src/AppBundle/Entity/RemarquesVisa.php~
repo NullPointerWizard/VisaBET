@@ -1,0 +1,63 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * RemarquesVisa
+ *
+ * @ORM\Table(name="remarques_visa", indexes={@ORM\Index(name="types_remarque_remarques_visa_fk", columns={"id_type_remarque"}), @ORM\Index(name="index_visa", columns={"id_item", "version"}), @ORM\Index(name="index_version", columns={"version"}), @ORM\Index(name="IDX_C69B6E98943B391C", columns={"id_item"})})
+ * @ORM\Entity
+ */
+class RemarquesVisa
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="no_remarque", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $noRemarque;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarque", type="string", length=300, nullable=false)
+     */
+    private $remarque;
+
+    /**
+     * @var \AppBundle\Entity\Visas
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Visas")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_item", referencedColumnName="id_item", unique=true)
+     * })
+     */
+    private $idItem;
+
+    /**
+     * @var \AppBundle\Entity\Visas
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Visas")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="version", referencedColumnName="version", unique=true)
+     * })
+     */
+    private $version;
+
+    /**
+     * @var \AppBundle\Entity\TypesRemarque
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TypesRemarque")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_type_remarque", referencedColumnName="id_type_remarque")
+     * })
+     */
+    private $idTypeRemarque;
+
+
+}
+

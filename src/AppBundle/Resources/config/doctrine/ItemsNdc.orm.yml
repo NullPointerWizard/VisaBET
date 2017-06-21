@@ -1,0 +1,16 @@
+AppBundle\Entity\ItemsNdc:
+    type: entity
+    table: items_ndc
+    id: {  }
+    oneToOne:
+        idItem:
+            targetEntity: Items
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_item:
+                    referencedColumnName: id_item
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

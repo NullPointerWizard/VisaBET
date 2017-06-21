@@ -1,0 +1,85 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Affaires
+ *
+ * @ORM\Table(name="affaires", indexes={@ORM\Index(name="id_organisme_fk_affaires", columns={"id_organisme"})})
+ * @ORM\Entity
+ */
+class Affaires
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id_affaire", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idAffaire;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="year", type="smallint", nullable=false)
+     */
+    private $year = '2017';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero_affaire", type="integer", nullable=false)
+     */
+    private $numeroAffaire;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom_affaire", type="string", length=100, nullable=false)
+     */
+    private $nomAffaire;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_butoir", type="date", nullable=true)
+     */
+    private $dateButoir;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="travail_a_effectuer", type="string", length=300, nullable=false)
+     */
+    private $travailAEffectuer;
+
+    /**
+     * @var \AppBundle\Entity\Organismes
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Organismes")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_organisme", referencedColumnName="id_organisme")
+     * })
+     */
+    private $idOrganisme;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Utilisateur", mappedBy="idAffaire")
+     */
+    private $idUtilisateur;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->idUtilisateur = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+}
+

@@ -1,0 +1,22 @@
+AppBundle\Entity\NomsLots:
+    type: entity
+    table: noms_lots
+    id:
+        idNomLot:
+            type: smallint
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: id_nom_lot
+            generator:
+                strategy: IDENTITY
+    fields:
+        nomLot:
+            type: string
+            nullable: false
+            length: 40
+            options:
+                fixed: false
+            column: nom_lot
+    lifecycleCallbacks: {  }

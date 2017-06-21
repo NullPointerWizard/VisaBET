@@ -1,0 +1,71 @@
+AppBundle\Entity\Affaires:
+    type: entity
+    table: affaires
+    indexes:
+        id_organisme_fk_affaires:
+            columns:
+                - id_organisme
+    id:
+        idAffaire:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: id_affaire
+            generator:
+                strategy: IDENTITY
+    fields:
+        year:
+            type: smallint
+            nullable: false
+            options:
+                unsigned: false
+                default: '2017'
+        numeroAffaire:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: numero_affaire
+        nomAffaire:
+            type: string
+            nullable: false
+            length: 100
+            options:
+                fixed: false
+            column: nom_affaire
+        dateButoir:
+            type: date
+            nullable: true
+            options:
+                comment: remarque
+            column: date_butoir
+        travailAEffectuer:
+            type: string
+            nullable: false
+            length: 300
+            options:
+                fixed: false
+            column: travail_a_effectuer
+    manyToOne:
+        idOrganisme:
+            targetEntity: Organismes
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_organisme:
+                    referencedColumnName: id_organisme
+            orphanRemoval: false
+    manyToMany:
+        idUtilisateur:
+            targetEntity: Utilisateur
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: idAffaire
+            inversedBy: null
+            joinTable: null
+            orderBy: null
+    lifecycleCallbacks: {  }

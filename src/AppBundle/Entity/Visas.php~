@@ -1,0 +1,67 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Visas
+ *
+ * @ORM\Table(name="visas", indexes={@ORM\Index(name="documents_visas_fk", columns={"id_document"}), @ORM\Index(name="index_version", columns={"version"}), @ORM\Index(name="index_id", columns={"id_item"})})
+ * @ORM\Entity
+ */
+class Visas
+{
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="version", type="boolean")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $version;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_emission", type="date", nullable=false)
+     */
+    private $dateEmission;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="etat_visa", type="string", length=9, nullable=false)
+     */
+    private $etatVisa;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="indice_plan", type="string", length=4, nullable=false)
+     */
+    private $indicePlan;
+
+    /**
+     * @var \AppBundle\Entity\Items
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Items")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_item", referencedColumnName="id_item", unique=true)
+     * })
+     */
+    private $idItem;
+
+    /**
+     * @var \AppBundle\Entity\Documents
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Documents")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_document", referencedColumnName="id_document")
+     * })
+     */
+    private $idDocument;
+
+
+}
+

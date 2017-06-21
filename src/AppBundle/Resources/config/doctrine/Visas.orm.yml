@@ -1,0 +1,62 @@
+AppBundle\Entity\Visas:
+    type: entity
+    table: visas
+    indexes:
+        documents_visas_fk:
+            columns:
+                - id_document
+        index_version:
+            columns:
+                - version
+        index_id:
+            columns:
+                - id_item
+    id:
+        version:
+            type: boolean
+            nullable: false
+            options:
+                comment: 'Version du visa'
+            id: true
+    fields:
+        dateEmission:
+            type: date
+            nullable: false
+            column: date_emission
+        etatVisa:
+            type: string
+            nullable: false
+            length: 9
+            options:
+                fixed: false
+            column: etat_visa
+        indicePlan:
+            type: string
+            nullable: false
+            length: 4
+            options:
+                fixed: false
+            column: indice_plan
+    manyToOne:
+        idDocument:
+            targetEntity: Documents
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_document:
+                    referencedColumnName: id_document
+            orphanRemoval: false
+    oneToOne:
+        idItem:
+            targetEntity: Items
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_item:
+                    referencedColumnName: id_item
+            orphanRemoval: false
+    lifecycleCallbacks: {  }
