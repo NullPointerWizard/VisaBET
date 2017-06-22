@@ -44,7 +44,8 @@ class Visas
 
     /**
      * @var \AppBundle\Entity\Items
-     *
+     * 
+     * @ORM\Id
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Items")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_item", referencedColumnName="id_item", unique=true)
@@ -61,6 +62,17 @@ class Visas
      * })
      */
     private $idDocument;
+    
+    /**
+     * 
+     * @var \AppBundle\Entity\Utilisateur
+     * 
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Utilisateur")
+     * @ORM\JoinColumns({
+     * 	@ORM\JoinColumn(name="vise_par", referencedColumnName="id_utilisateur")
+     * })
+     */
+    private $visePar;
 
 
 

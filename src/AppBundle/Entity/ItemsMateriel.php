@@ -22,6 +22,7 @@ class ItemsMateriel
     /**
      * @var \AppBundle\Entity\Items
      *
+     * @ORM\Id
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Items")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_item", referencedColumnName="id_item", unique=true)

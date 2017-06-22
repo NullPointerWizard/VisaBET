@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{%  block metacharset %}
+    <meta charset="UTF-8" />
+{% endblock %}
+
+{% block username %}{{ nomUtilisateur }}{% endblock %}
+
+{% block body %}
+    <h1 class="page-header text-center">
+        Bienvenue dans l'espace de gestion de {{ nomOrganisme }}</br>
+    </h1>
+    <h2>Vos Affaires</h2>
+    
+    <table class="table table-striped">
+    	<thead>
+    		<tr>
+    			<th>ID Affaire</th>
+    			<th>N°</th>
+    			<th>Année</th>
+    			<th>Nom</th>
+    			<th>Date Butoir</th>
+    			<th>A faire</th>    			
+    		</tr>
+        </thead>
+    	<tbody>
+    		{% for affaire in listeAffairesUtilisateur %}
+    		<tr>
+    			<td>{{ affaire.idAffaire }}</td>  			
+                <td>{{ affaire.numeroAffaire}}</td>
+                <td>{{ affaire.year}}</td>
+                <td>{{ affaire.nomAffaire }}</td>
+                <td>{{ affaire.dateButoir|date('d/m/Y') }}</td>
+                <td>{{ affaire.travailAEffectuer }}</td>
+    		</tr>
+    		{% endfor %}
+    	</tbody>
+</table>
+    
+    
+{%  endblock %}
