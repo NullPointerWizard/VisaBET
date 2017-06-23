@@ -9,4 +9,16 @@
         Créer une affaire
     </h1>
     
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>Nouvelle affaire</h2>
+        		{{ form_start(affaireForm) }}
+        		{{ form_widget(affaireForm) }}
+        		  <button type="submit" class="btn btn-primary">Créer</button>
+        		{{ form_end(affaireForm) }}
+	       </div>
+	   </div>
+        
+    </div>
 {%  endblock %}

@@ -63,4 +63,9 @@ class Organismes
     {
         return $this->nomOrganisme;
     }
+    
+    public function __toString()
+    {
+    	return $this->getNomOrganisme();
+    }
 }

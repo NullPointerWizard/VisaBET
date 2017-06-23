@@ -4,13 +4,15 @@
     <meta charset="UTF-8" />
 {% endblock %}
 
-{% block username %}{{ nomUtilisateur }}{% endblock %}
-
 {% block body %}
     <h1 class="page-header text-center">
         Bienvenue dans l'espace de gestion de {{ nomOrganisme }}</br>
     </h1>
     <h2>Vos Affaires</h2>
+    
+    <div class="">
+        <a href = "{{ path('creer_affaire', {'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur}) }}"><button type="button" class="btn btn-primary"><i class="fa fa-plus-square" aria-hidden="true"></i> Créer une affaire</button></a>
+    </div>
     
     <table class="table table-striped">
     	<thead>
@@ -29,13 +31,17 @@
     			<td>{{ affaire.idAffaire }}</td>  			
                 <td>{{ affaire.numeroAffaire}}</td>
                 <td>{{ affaire.year}}</td>
-                <td>{{ affaire.nomAffaire }}</td>
+                <td>
+                    <a href = "{{ path('affaire_details',{'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur, 'numeroAffaire':affaire.numeroAffaire}) }}">
+                        {{ affaire.nomAffaire }}
+                    </a>
+                </td>
                 <td>{{ affaire.dateButoir|date('d/m/Y') }}</td>
                 <td>{{ affaire.travailAEffectuer }}</td>
     		</tr>
     		{% endfor %}
     	</tbody>
-</table>
-    
+    </table>
+        
     
 {%  endblock %}

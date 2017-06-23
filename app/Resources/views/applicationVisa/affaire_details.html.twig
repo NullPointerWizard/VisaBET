@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{%  block metacharset %}
+    <meta charset="UTF-8" />
+{% endblock %}
+
+{% block body %}
+    <h1 class="page-header text-center">
+        Bienvenue dans l'espace de gestion de {{ nomOrganisme }}</br>
+    </h1>
+    <h2>Affaire {{ numeroAffaire }}</h2>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID Affaire</th>
+                <th>N°</th>
+                <th>Année</th>
+                <th>Nom</th>
+                <th>Date Butoir</th>
+                <th>A faire</th>                
+            </tr>
+        </thead>
+        
+</table>
+    
+    
+{%  endblock %}

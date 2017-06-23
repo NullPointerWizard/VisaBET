@@ -15,7 +15,7 @@
             <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/font-awesome.min.css') }}">
         {% endblock %}
         
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('check.ico') }}" />
     </head>
     <body>
         <div class="search-bar">
@@ -25,17 +25,28 @@
         </div>
         
         <header class="header">
-            <img class="logo-icon" src="{{ asset('images/LOGO-BET.jpg') }}">
+            <a href="{{ path('affaires',{'nomOrganisme':'Louvet','nomUtilisateur':'Theo'}) }}"><img class="logo-icon" src="{{ asset('images/LOGO-BET.jpg') }}"></a>
             <h1 class="logo" >Visa 3000</h1>
             <ul class="navi">
-                {% block username %}{% endblock %}
                 <li class="search"><a href="#" class="js-header-search-toggle"><i class="fa fa-search"></i></a></li>
                 <li><a href="#">Login</a></li>
             </ul>	
         </header>
         
         <div class="main-content">
-        {% block body %}{% endblock %}
+    		{% for msg in app.session.flashBag.get('success') %}
+        		<div class="alert alert-success">
+        			{{ msg| raw | convert_encoding('UTF-8', 'ISO-8859-1')}}
+        		</div>
+    		{% endfor %}
+    		{% for msg in app.session.flashBag.get('error') %}
+        		<div class="alert alert-error">
+        			{{ msg }}
+        		</div>
+    		{% endfor %}
+    		
+            {% block body %}{% endblock %}
+            
         </div>
         
         <div class="footer">
