@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Documents
  *
  * @ORM\Table(name="documents", indexes={@ORM\Index(name="documents_affaires_fk", columns={"id_affaire"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\DocumentsRepository")
  */
 class Documents
 {
@@ -24,7 +24,7 @@ class Documents
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", length=10, nullable=false)
+     * @ORM\Column(name="type", type="string", length=10, nullable=true)
      */
     private $type = 'Autre';
 
@@ -136,13 +136,13 @@ class Documents
     /**
      * Set dateReception
      *
-     * @param \DateTime $dateReception
+     * @param string $dateReception
      *
      * @return Documents
      */
     public function setDateReception($dateReception)
     {
-        $this->dateReception = $dateReception;
+        $this->dateReception = new \DateTime( $dateReception);
 
         return $this;
     }
@@ -160,13 +160,13 @@ class Documents
     /**
      * Set dateLimiteVisa
      *
-     * @param \DateTime $dateLimiteVisa
+     * @param string $dateLimiteVisa
      *
      * @return Documents
      */
     public function setDateLimiteVisa($dateLimiteVisa)
     {
-        $this->dateLimiteVisa = $dateLimiteVisa;
+        $this->dateLimiteVisa = new \DateTime( $dateLimiteVisa) ;
 
         return $this;
     }

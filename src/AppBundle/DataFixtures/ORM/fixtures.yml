@@ -1,0 +1,19 @@
+AppBundle\Entity\Affaires:
+  affaire_{1..100}:
+    year: <year()>
+    numeroAffaire: <numberBetween($min = 10000, $max = 99999)>
+    nomAffaire: Affaire_<current()>
+    dateButoir: <date($format = 'Y-m-d', $max = 'now')>
+    travailAEffectuer: <formatterTravailAEffectuer()>
+    
+AppBundle\Entity\Documents:
+  affaire.documents{1..7}:
+    type: <formatterTypeDocument()>
+    filename: <formatterTypeDocument()>_Affaire_<numberBetween($min = 10000, $max = 99999)>
+    dateReception: <date($format = 'Y-m-d', $max = 'now')>
+    dateLimiteVisa: <date($format = 'Y-m-d', $max = 'now')>
+    etat:  <boolean(20)>
+    path: <file($sourceDir = 'C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\Documents', $targetDir = 'C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\Documents\Louvet\AffairesDocs')>
+    idAffaire: '@affaire_*'
+
+

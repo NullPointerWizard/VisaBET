@@ -10,19 +10,40 @@
     </h1>
     <h2>Affaire {{ numeroAffaire }}</h2>
     
+    <h3>Allotissement</h3>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>ID Affaire</th>
                 <th>N°</th>
-                <th>Année</th>
-                <th>Nom</th>
-                <th>Date Butoir</th>
-                <th>A faire</th>                
+                <th>Intitulé du lot</th>        
             </tr>
         </thead>
         
-</table>
+    </table>
     
+    <h3>Documents</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom du fichier</th>
+                <th>Date réception</th>
+                <th>Date limite de visa</th>
+                <th>Etat</th>
+                <th>Emplacement</th>         
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in listeDocumentsAffaire %}
+            <tr>
+                <td>{{ document.filename }}</td>            
+                <td>{{ document.dateReception|date('d/m/Y') }}</td>
+                <td>{{ document.dateLimiteVisa|date('d/m/Y') }}</td>
+                <td>{{ document.etat }}</td>
+                <td>{{ document.path }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
     
 {%  endblock %}

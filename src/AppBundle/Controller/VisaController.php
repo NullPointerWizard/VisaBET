@@ -5,7 +5,6 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Entity\Affaires;
-use Symfony\Component\BrowserKit\Response;
 use AppBundle\Form\AffaireFormType;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -88,22 +87,31 @@ class VisaController extends Controller {
 	/**
 	 * Page de visualisation d'une affaire en détails
 	 * 
-	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Affaire{numeroAffaire}", name="affaire_details")
+	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Affaire{numeroAffaire}/ID{idAffaire}", name="affaire_details")
 	 */
-	public function showAffaire($nomOrganisme, $nomUtilisateur, $numeroAffaire)
+	public function showAffaire($nomOrganisme, $nomUtilisateur, $numeroAffaire, $idAffaire)
 	{
 		$entityManager = $this->getDoctrine()->getManager();
 		$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
 			->findOneBy(['numeroAffaire'=>$numeroAffaire])
 		;
-		if(!$affaire){
+		
+		if(!$affaire)
+		{
 			throw $this->createNotFoundException('Erreur 404 not found: L\'affaire demandee est introuvable');
 		}
-		dump($affaire);die;
-		return $this->render('applicationVisa/affaire_details.html.twig',[
+		
+		$listeDocumentsAffaire = $entityManager->getRepository('AppBundle\Entity\Documents')
+			->findAllDocuments($affaire)
+		;
+		
+		return $this->render('applicationVisa/affaire_details.html.twig',
+		[
 				'nomOrganisme' 				=> $nomOrganisme,
 				'nomUtilisateur'			=> $nomUtilisateur,
-				'numeroAffaire'				=> $numeroAffaire
+				'numeroAffaire'				=> $numeroAffaire,
+				'idAffaire'					=> $idAffaire,
+				'listeDocumentsAffaire'		=> $listeDocumentsAffaire
 		]);
 	}
 	

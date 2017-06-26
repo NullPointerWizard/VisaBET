@@ -167,13 +167,14 @@ class Affaires
     /**
      * Set dateButoir
      *
-     * @param \DateTime $dateButoir
+     * @param string $dateButoir
      *
      * @return Affaires
      */
     public function setDateButoir($dateButoir)
     {
-        $this->dateButoir = $dateButoir;
+    	//Fonction modifiée, ajout de la création de l'objet DateTime à partir d'un string
+        $this->dateButoir = new \DateTime($dateButoir);
 
         return $this;
     }
