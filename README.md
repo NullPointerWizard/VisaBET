@@ -16,3 +16,5 @@ Etat du projet : en cours de développement
 
 ## :pushpin: Fonctionnalités prévues
 * Création d'un allotissement pour une affaire 
+
+:copyright: BET LOUVET 2017

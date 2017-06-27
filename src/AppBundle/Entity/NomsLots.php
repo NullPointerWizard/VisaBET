@@ -63,4 +63,9 @@ class NomsLots
     {
         return $this->nomLot;
     }
+    
+    public function __toString()
+    {
+    	return $this->getNomLot();
+    }
 }

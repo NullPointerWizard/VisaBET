@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Entity\Affaires;
 use AppBundle\Form\AffaireFormType;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Form\LotFormType;
 
 /**
  *
@@ -89,7 +90,7 @@ class VisaController extends Controller {
 	 * 
 	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Affaire{numeroAffaire}/ID{idAffaire}", name="affaire_details")
 	 */
-	public function showAffaire($nomOrganisme, $nomUtilisateur, $numeroAffaire, $idAffaire)
+	public function showAffaire($nomOrganisme, $nomUtilisateur, $numeroAffaire, $idAffaire, Request $request)
 	{
 		$entityManager = $this->getDoctrine()->getManager();
 		$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
@@ -101,9 +102,30 @@ class VisaController extends Controller {
 			throw $this->createNotFoundException('Erreur 404 not found: L\'affaire demandee est introuvable');
 		}
 		
+		//Creation du formulaire pour un nouveau lot
+		$form = $this->createForm(LotFormType::class);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()){
+			$nouveauLot = $form->getData();
+			$nouveauLot->setIdAffaire($affaire) ;
+			$entityManager = $this->getDoctrine()->getManager();
+			$entityManager->persist($nouveauLot);
+			$entityManager->flush();
+			
+			$this->addFlash('success', 'Lot créé !');
+			
+			return $this->redirectToRoute('connexion');
+		}
+		
+		//On récupère dans la BDD les lots rattachés à l'affaire (l'allotissement)
+		$allotissement = $entityManager->getRepository('AppBundle\Entity\Lots')
+			->findAllLots($affaire)
+		;
+		//On récupère dans la BDD les documents rattachés à l'affaire
 		$listeDocumentsAffaire = $entityManager->getRepository('AppBundle\Entity\Documents')
 			->findAllDocuments($affaire)
 		;
+		
 		
 		return $this->render('applicationVisa/affaire_details.html.twig',
 		[
@@ -111,7 +133,11 @@ class VisaController extends Controller {
 				'nomUtilisateur'			=> $nomUtilisateur,
 				'numeroAffaire'				=> $numeroAffaire,
 				'idAffaire'					=> $idAffaire,
-				'listeDocumentsAffaire'		=> $listeDocumentsAffaire
+				
+				'listeDocumentsAffaire'		=> $listeDocumentsAffaire,
+				'allotissement'				=> $allotissement,
+				
+				'lotForm'					=> $form->createView()
 		]);
 	}
 	

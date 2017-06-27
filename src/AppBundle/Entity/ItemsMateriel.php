@@ -79,4 +79,9 @@ class ItemsMateriel
     {
         return $this->idItem;
     }
+    
+    
+    function __construct(\AppBundle\Entity\Items $idItemArg = null){
+    	$this->setIdItem($idItemArg);
+    }
 }

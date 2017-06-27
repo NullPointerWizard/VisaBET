@@ -7,7 +7,7 @@ AppBundle\Entity\Affaires:
     travailAEffectuer: <formatterTravailAEffectuer()>
     
 AppBundle\Entity\Documents:
-  affaire.documents{1..7}:
+  document_{1..7}:
     type: <formatterTypeDocument()>
     filename: <formatterTypeDocument()>_Affaire_<numberBetween($min = 10000, $max = 99999)>
     dateReception: <date($format = 'Y-m-d', $max = 'now')>
@@ -16,4 +16,45 @@ AppBundle\Entity\Documents:
     path: <file($sourceDir = 'C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\Documents', $targetDir = 'C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\Documents\Louvet\AffairesDocs')>
     idAffaire: '@affaire_*'
 
+AppBundle\Entity\NomsLots:
+  nomLot_1:
+    nomLot: Chauffage
+  nomLot_2:
+    nomLot: Ventilation
+  nomLot_3:
+    nomLot: Plomberie
+  nomLot_4:
+    nomLot: Eclairage
+  nomLot_5:
+    nomLot: Terrassement
+  nomLot_6:
+    nomLot: Maconnerie
+  nomLot_7:
+    nomLot: Chauffage Ventilation Plomberie
+  nomLot_8:
+    nomLot: Le fameux Lot Mystere
 
+AppBundle\Entity\Lots:
+  lot_{1..30}:
+    numeroLot: <numberBetween($min = 1, $max = 40)>
+    idAffaire: '@affaire_*'
+    idNomLot: '@nomLot_*'
+
+AppBundle\Entity\Items:
+  item_mat_{1..40}:
+    type: Materiel
+    nomItem: <formatterNomItem('Materiel')>
+    idLot: '@lot_*'
+  item_NDC_{1..20}:
+    type: NDC
+    nomItem: <formatterNomItem('NDC')>
+    idLot: '@lot_*'
+  item_Plan_{1..20}:
+    type: Plan
+    nomItem: <formatterNomItem('Plan')>
+    idLot: '@lot_*'
+  item_Autre_{1..5}:
+    type: Autre
+    nomItem: <formatterNomItem('Autre')>
+    idLot: '@lot_*'
+   

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Lots
  *
  * @ORM\Table(name="lots", indexes={@ORM\Index(name="noms_lots_lots_fk", columns={"id_nom_lot"}), @ORM\Index(name="affaires_lots_fk", columns={"id_affaire"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\LotsRepository")
  */
 class Lots
 {
@@ -130,5 +130,13 @@ class Lots
     public function getIdNomLot()
     {
         return $this->idNomLot;
+    }
+    
+    /*
+     * Permet d'obtenir directment le nom de lot en se servant de l'id de celui-ci
+     */
+    public  function getNomLot()
+    {
+    	return $this->getIdNomLot()->getNomLot();
     }
 }
