@@ -5,36 +5,34 @@ namespace AppBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Nelmio\Alice\Fixtures;
-use AppBundle\Entity\Organismes;
-
 class LoadFixtures implements FixtureInterface 
 {
 	
 	public function load(ObjectManager $manager) 
 	{
-		//Table Organismes
-		$organismes =
-		[
-				'Louvet',
-				'Adam',
-				'AUA',
-				'Les architectes associes',
-				'Boucherez',
-				'Architecte Graille',
-				'Synergiebatiment',
-				'Beton Dusolide',
-				'Chaudieres Lasuie',
-				'Les freres Lumieres',
-				'Plomberie Mario',
-				'L\'architecte Dutalent'
-		];
-		foreach ($organismes as $nomOrganisme){
-			$organisme = new Organismes();
-			$organisme->setNomOrganisme($nomOrganisme);
+
+// 		$organismes =
+// 		[
+// 				'Louvet',
+// 				'Adam',
+// 				'AUA',
+// 				'Les architectes associes',
+// 				'Boucherez',
+// 				'Architecte Graille',
+// 				'Synergiebatiment',
+// 				'Beton Dusolide',
+// 				'Chaudieres Lasuie',
+// 				'Les freres Lumieres',
+// 				'Plomberie Mario',
+// 				'L\'architecte Dutalent'
+// 		];
+// 		foreach ($organismes as $nomOrganisme){
+// 			$organisme = new Organismes();
+// 			$organisme->setNomOrganisme($nomOrganisme);
 			
-			$manager->persist($organisme);
-		}
-		$manager->flush();		
+// 			$manager->persist($organisme);
+// 		}
+// 		$manager->flush();		
 		
 		$objects = Fixtures::load(
 			__DIR__.'/fixtures.yml',
@@ -149,6 +147,7 @@ class LoadFixtures implements FixtureInterface
 				]
 				;
 				break;
+				
 			case 'NDC':
 				$genera =
 				[
@@ -157,6 +156,7 @@ class LoadFixtures implements FixtureInterface
 				]
 				;
 				break;
+				
 			case 'Plan':
 				$genera = 
 				[
@@ -166,6 +166,7 @@ class LoadFixtures implements FixtureInterface
 				]
 				;
 				break;
+				
 			case 'Autre':
 				$genera = 
 				[
@@ -180,19 +181,66 @@ class LoadFixtures implements FixtureInterface
 		return $genera[$key];
 	}
 	
-	public function formatterEnsemble()
+	public function formatterTag(String $tagType)
 	{
-		$genera =
-		[
-				'Chaudière',
+		
+		$genera = ['NOTAG'];
+		switch($tagType)
+		{
+			case 'Materiel':
+				$genera =
+				$genera =
+				[
+				'Chaudiere',
 				'Ventilation',
 				'Sanitaires',
 				'Tubes'
+				]
+				;
+				break;
+				
+			case 'NDC':
+				
+				break;
+				
+			case 'Plan':
+				$genera =
+				[
+				'RDC',
+				'R+1',
+				'R+2',
+				'R+3'
+				]
+				;
+				break;
+				
+			case 'Autre':
+				
+				break;
+				
+		}
+		
+		
+		$key = array_rand($genera);
+		return $genera[$key];
+	}
+	
+	//---------------------- TABLE Visas ----------------------------------
+	public function formatterEtatVisa(){
+		$genera =
+		[
+				'OK',
+				'OK COND',
+				'OK TEC',
+				'REM',
+				'NC'
+				
 		];
 		
 		$key = array_rand($genera);
 		return $genera[$key];
 	}
 	
+	//---------------------- TABLE Utilisateurs ----------------------------------
 	
 }

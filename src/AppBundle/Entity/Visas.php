@@ -3,21 +3,40 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\DBAL\Types\SmallIntType;
 
 /**
  * Visas
  *
- * @ORM\Table(name="visas", indexes={@ORM\Index(name="documents_visas_fk", columns={"id_document"}), @ORM\Index(name="index_version", columns={"version"}), @ORM\Index(name="index_id", columns={"id_item"})})
+ * @ORM\Table(name="visas")
  * @ORM\Entity
  */
 class Visas
 {
+	
+	/**
+	 * @var integer
+	 *
+	 * @ORM\Column(name="id_visa", type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="IDENTITY")
+	 */
+	private $idVisa;
+	
+	/**
+	 * @var \AppBundle\Entity\Items
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Items")
+	 * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_item", referencedColumnName="id_item")
+     * })
+	 */
+	private $idItem;
+	
     /**
-     * @var boolean
+     * @var SmallIntType
      *
-     * @ORM\Column(name="version", type="boolean")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(name="version", type="smallint")
      */
     private $version;
 
@@ -42,16 +61,7 @@ class Visas
      */
     private $indicePlan;
 
-    /**
-     * @var \AppBundle\Entity\Items
-     * 
-     * @ORM\Id
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Items")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_item", referencedColumnName="id_item", unique=true)
-     * })
-     */
-    private $idItem;
+    
 
     /**
      * @var \AppBundle\Entity\Documents
@@ -79,7 +89,7 @@ class Visas
     /**
      * Set version
      *
-     * @param boolean $version
+     * @param SmallIntType $version
      *
      * @return Visas
      */
@@ -93,7 +103,7 @@ class Visas
     /**
      * Get version
      *
-     * @return boolean
+     * @return SmallIntType
      */
     public function getVersion()
     {
@@ -103,13 +113,13 @@ class Visas
     /**
      * Set dateEmission
      *
-     * @param \DateTime $dateEmission
+     * @param string $dateEmission
      *
      * @return Visas
      */
     public function setDateEmission($dateEmission)
     {
-        $this->dateEmission = $dateEmission;
+    	$this->dateEmission = new \DateTime($dateEmission) ;
 
         return $this;
     }

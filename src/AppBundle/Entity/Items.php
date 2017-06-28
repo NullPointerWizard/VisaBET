@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Items
  *
  * @ORM\Table(name="items", indexes={@ORM\Index(name="lots_item_fk", columns={"id_lot"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ItemsRepository")
  */
 class Items
 {
@@ -34,6 +34,14 @@ class Items
      * @ORM\Column(name="nom_item", type="string", length=50, nullable=false)
      */
     private $nomItem;
+    
+    /**
+     * @var string
+     * 
+     * @ORM\Column(name="tag", type="string", length=25, nullable=false)
+     */
+    private $tag;
+    
 
     /**
      * @var \AppBundle\Entity\Lots

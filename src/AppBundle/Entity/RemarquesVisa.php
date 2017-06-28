@@ -7,17 +7,25 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * RemarquesVisa
  *
- * @ORM\Table(name="remarques_visa", indexes={@ORM\Index(name="types_remarque_remarques_visa_fk", columns={"id_type_remarque"}), @ORM\Index(name="index_visa", columns={"id_item", "version"}), @ORM\Index(name="index_version", columns={"version"}), @ORM\Index(name="IDX_C69B6E98943B391C", columns={"id_item"})})
+ * @ORM\Table(name="remarques_visa")
  * @ORM\Entity
  */
 class RemarquesVisa
 {
+	
+	/**
+	 * @var integer
+	 *
+	 * @ORM\Column(name="id_remarque_visa", type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="IDENTITY")
+	 */
+	private $idRemarqueVisa;
+	
     /**
      * @var integer
      *
-     * @ORM\Column(name="no_remarque", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(name="no_remarque", type="smallint")
      */
     private $noRemarque;
 
@@ -31,22 +39,12 @@ class RemarquesVisa
     /**
      * @var \AppBundle\Entity\Visas
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Visas")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Visas")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_item", referencedColumnName="id_item", unique=true)
+     *   @ORM\JoinColumn(name="id_visa", referencedColumnName="id_visa")
      * })
      */
-    private $idItem;
-
-    /**
-     * @var \AppBundle\Entity\Visas
-     *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Visas")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="version", referencedColumnName="version", unique=true)
-     * })
-     */
-    private $version;
+    private $idVisa;
 
     /**
      * @var \AppBundle\Entity\TypesRemarque
@@ -111,16 +109,17 @@ class RemarquesVisa
     /**
      * Set idItem
      *
-     * @param \AppBundle\Entity\Visas $idItem
      *
      * @return RemarquesVisa
      */
-    public function setIdItem(\AppBundle\Entity\Visas $idItem = null)
+    // @param \AppBundle\Entity\Visas $idItem (a rajouter si besoin)
+    public function setIdItem($idItem = null)
     {
         $this->idItem = $idItem;
 
         return $this;
     }
+    
 
     /**
      * Get idItem

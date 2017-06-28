@@ -1,3 +1,27 @@
+AppBundle\Entity\Organismes:
+  louvet:
+    nomOrganisme: 'Louvet'
+  adam:
+    nomOrganisme: 'Adam'
+  aua:
+    nomOrganisme: 'AUA'
+  archis:
+    nomOrganisme: 'Les architectes associes'
+  boucherez: 
+    nomOrganisme: 'Boucherez'
+  graille:
+    nomOrganisme: 'Architecte Graille'
+  synergie:
+    nomOrganisme: 'Synergiebatiment'
+  dusolide:
+    nomOrganisme: 'Beton Dusolide'
+  lasuie:
+    nomOrganisme: 'Chaudieres Lasuie'
+  lumieres:
+    nomOrganisme: 'Les freres Lumieres'
+  oneUp:
+    nomOrganisme: 'Plomberie Mario'
+
 AppBundle\Entity\Affaires:
   affaire_{1..100}:
     year: <year()>
@@ -5,6 +29,15 @@ AppBundle\Entity\Affaires:
     nomAffaire: Affaire_<current()>
     dateButoir: <date($format = 'Y-m-d', $max = 'now')>
     travailAEffectuer: <formatterTravailAEffectuer()>
+    idOrganisme: '@louvet'
+
+AppBundle\Entity\Utilisateur:
+  utilisateur_Louvet_{1..6}:
+    statut: 'Visa'
+    nom: <lastName()>
+    prenom: 'Pascal'
+    mail: <companyEmail()>
+    idOrganisme: '@louvet'
     
 AppBundle\Entity\Documents:
   document_{1..7}:
@@ -44,17 +77,52 @@ AppBundle\Entity\Items:
   item_mat_{1..40}:
     type: Materiel
     nomItem: <formatterNomItem('Materiel')>
+    tag: <formatterTag('Materiel')>
     idLot: '@lot_*'
   item_NDC_{1..20}:
     type: NDC
     nomItem: <formatterNomItem('NDC')>
+    tag: <formatterTag('NDC')>
     idLot: '@lot_*'
   item_Plan_{1..20}:
     type: Plan
     nomItem: <formatterNomItem('Plan')>
+    tag: <formatterTag('Plan')>
     idLot: '@lot_*'
   item_Autre_{1..5}:
     type: Autre
     nomItem: <formatterNomItem('Autre')>
+    tag: <formatterTag('Autre')>
     idLot: '@lot_*'
-   
+    
+AppBundle\Entity\Visas:
+  visas_{1..30}:
+    idItem: '@item_mat_<current()>'
+    version: <numberBetween($min = 1, $max = 2)>
+    dateEmission: <date($format = 'Y-m-d', $max = 'now')>
+    etatVisa: <formatterEtatVisa()>
+    indicePlan: '0'
+    idDocument: '@document_*'
+    visePar: '@utilisateur_Louvet_*'
+
+AppBundle\Entity\TypesRemarque:
+  type_rem_1:
+    typeRemarque: 'Manque details techniques'
+  type_rem_2:
+    typeRemarque: 'Esthetique'
+  type_rem_3:
+    typeRemarque: 'A deplacer'
+  type_rem_4:
+    typeRemarque: 'Autre'
+  type_rem_5:
+    typeRemarque: 'Indiquer emplacement'
+  type_rem_6:
+    typeRemarque: 'Conformite reglementation'
+
+AppBundle\Entity\RemarquesVisa:
+  remarque_{1..20}:
+    noRemarque: <numberBetween($min = 1, $max = 5)>
+    remarque:  <text(300)>
+    idVisa: '@visas_*'
+    idTypeRemarque: '@type_rem_*'
+
