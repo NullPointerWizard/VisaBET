@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{%  block metacharset %}
+    <meta charset="UTF-8" />
+{% endblock %}
+
+{% block body %}
+    <h1 class="page-header text-center">
+        Affaire {{ affaire.numeroAffaire }} : {{ affaire.nomAffaire }} 
+        <a href = "{{ path('affaire_details',{'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur, 'numeroAffaire':affaire.numeroAffaire, 'idAffaire':affaire.idAffaire}) }}">
+            <i class="fa fa-reply" aria-hidden="true"></i>
+        </a>
+    </h1>
+    <h2 class="page-header text-center">
+        Lot N°{{ lot.numeroLot  }}  {{ lot.nomLot }}</br>
+   </h2>
+   
+   <h3>Items</h3>
+   <div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Tag</th>
+                <th>Nom Item</th>
+                <th>Etat Visa</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- PLAN -->
+            <tr>    
+                <td>Plan</td>
+                <td></td><td></td><td></td>
+            </tr>
+            {% for item in listeItemsPlanLot %}
+            <tr>
+                <td></td>
+                <td>{{ item.tag }}</td>
+                <td>{{ item.nomItem }}</td>
+                <td>
+                  
+                </td>
+            </tr>
+            {% endfor %}
+            
+            
+            <!-- NDC -->
+            <tr>    
+                <td>NDC</td>
+                <td></td><td></td><td></td>
+            </tr>
+            {% for item in listeItemsNDCLot %}
+            <tr>
+                <td></td>
+                <td>{{ item.tag }}</td>
+                <td>{{ item.nomItem }}</td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            
+            
+            <!-- MATERIEL -->
+            <tr>    
+                <td>Materiel</td>
+                <td></td><td></td><td></td>
+            </tr>
+            {% for item in listeItemsMaterielLot %}
+            <tr>
+                <td></td>
+                <td>{{ item.tag }}</td>
+                <td>{{ item.nomItem }}</td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            
+            
+            <!-- AUTRE -->
+            <tr>    
+                <td>Autre</td>
+                <td></td><td></td><td></td>
+            </tr>
+            {% for item in listeItemsAutreLot %}
+            <tr>
+                <td></td>
+                <td>{{ item.tag }}</td>
+                <td>{{ item.nomItem }}</td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+   </div>
+   
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h3>Nouvel Item</h3>
+                <button type="submit" class="btn btn-primary">
+                     <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Créer item
+                </button>
+            </div>
+        </div>      
+    </div>
+
+{% endblock %}

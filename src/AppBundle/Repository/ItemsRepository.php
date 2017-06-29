@@ -13,10 +13,21 @@ class ItemsRepository extends EntityRepository
 	
 	function findAllItems($lotDemande)
 	{
-		// l'alias 'documents fait référence à la table dans la BD
 		return $this->createQueryBuilder('items')
 		->andWhere('items.idLot = :idLotDemande')
 		->setParameter('idLotDemande', $lotDemande->getIdLot() )
+		->getQuery()
+		->execute()
+		;
+	}
+	
+	function findAllItemsWhereType($lotDemande, $type)
+	{
+		return $this->createQueryBuilder('items')
+		->andWhere('items.idLot = :idLotDemande')
+		->andWhere('items.type = :typeDemande')
+		->setParameter('idLotDemande', $lotDemande->getIdLot() )
+		->setParameter('typeDemande', $type)
 		->getQuery()
 		->execute()
 		;

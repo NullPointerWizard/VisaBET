@@ -3,11 +3,16 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Items
  *
- * @ORM\Table(name="items", indexes={@ORM\Index(name="lots_item_fk", columns={"id_lot"})})
+ * @ORM\Table(
+ * 	name="items",
+ *  indexes={@ORM\Index(name="lots_item_fk", columns={"id_lot"})}
+ *  )
+ *  
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ItemsRepository")
  */
 class Items
@@ -46,15 +51,33 @@ class Items
     /**
      * @var \AppBundle\Entity\Lots
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Lots")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_lot", referencedColumnName="id_lot")
-     * })
+     * @ORM\ManyToOne(
+     * 	targetEntity="AppBundle\Entity\Lots",
+     * 	inversedBy="items"
+     * )
+     * 
+     * @ORM\JoinColumn(
+     * 	name="id_lot", 
+     * 	referencedColumnName="id_lot",
+     * 	nullable=false
+     * )
      */
     private $idLot;
+    
+    /**
+     * Listes des visas liés à l'item
+     *
+     * @ORM\OneToMany(
+     * 	targetEntity="Visas",
+     * 	mappedBy="idItem"
+     * )
+     */
+    private $visas;
 
-
-
+	public function __construct(){
+		$this->visas = new ArrayCollection();
+	}
+	
     /**
      * Get idItem
      *
@@ -136,4 +159,34 @@ class Items
     {
         return $this->idLot;
     }
+    /**
+     * 
+     * @param string $tag
+     * 
+     * @return \AppBundle\Entity\Items
+     */
+    public function setTag($tag) 
+    {
+    	$this->tag = $tag;
+    	
+    	return $this;
+    }
+    /**
+     * Get tag
+     * 
+     * @return string
+     */
+	public function getTag()
+	{
+		return $this->tag;
+	}
+	
+	public function getVisas() 
+	{
+		return $this->visas;
+	}
+	
+	
+
+	
 }

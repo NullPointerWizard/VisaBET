@@ -66,10 +66,16 @@ class Documents
     /**
      * @var \AppBundle\Entity\Affaires
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Affaires")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_affaire", referencedColumnName="id_affaire")
-     * })
+     * @ORM\ManyToOne(
+     * 	targetEntity="AppBundle\Entity\Affaires",
+     * 	inversedBy="documents"
+     * )
+     *
+     * @ORM\JoinColumn(
+     * 	name="id_affaire",
+     *  referencedColumnName="id_affaire",
+     *  nullable=false
+     * )
      */
     private $idAffaire;
 

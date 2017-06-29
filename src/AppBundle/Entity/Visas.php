@@ -26,10 +26,16 @@ class Visas
 	/**
 	 * @var \AppBundle\Entity\Items
 	 *
-	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Items")
-	 * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_item", referencedColumnName="id_item")
-     * })
+	 * @ORM\ManyToOne(
+	 * 	targetEntity="AppBundle\Entity\Items",
+	 * 	inversedBy="visas"
+	 * )
+	 * 
+     * @ORM\JoinColumn(
+     * 	name="id_item",
+     *  referencedColumnName="id_item",
+     *  nullable=false
+     * )
 	 */
 	private $idItem;
 	

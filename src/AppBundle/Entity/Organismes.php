@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Organismes
@@ -12,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Organismes
 {
+	
     /**
      * @var integer
      *
@@ -27,8 +29,25 @@ class Organismes
      * @ORM\Column(name="nom_organisme", type="string", length=50, nullable=false)
      */
     private $nomOrganisme;
+    
+    
+    /**
+     * Listes des affaires de l'organisme
+     * 
+     * @ORM\OneToMany(
+     * 	targetEntity="Affaires",
+     * 	mappedBy="idOrganisme"
+     * )
+     */
+    private $affaires;
 
-
+    /*
+     * Initialisation de la propriete(attribut php) affaires
+     */
+	public function __construct()
+	{
+		$this->affaires = new ArrayCollection();
+	}
 
     /**
      * Get idOrganisme
@@ -64,8 +83,15 @@ class Organismes
         return $this->nomOrganisme;
     }
     
+    public function getAffaires() 
+    {
+    	return $this->affaires;
+    }
+    
     public function __toString()
     {
     	return $this->getNomOrganisme();
     }
+	
+	
 }

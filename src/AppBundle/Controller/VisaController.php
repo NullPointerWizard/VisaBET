@@ -8,6 +8,7 @@ use AppBundle\Entity\Affaires;
 use AppBundle\Form\AffaireFormType;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Form\LotFormType;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -41,11 +42,13 @@ class VisaController extends Controller {
 	 */
 	public function showVueAffaires($nomOrganisme, $nomUtilisateur)
 	{
-		//Recuperation et affichage des affaires concernant l'utilisateur
+		
 		$entityManager = $this->getDoctrine()->getManager();
-		$listeAffairesUtilisateur = $entityManager->getRepository('AppBundle\Entity\Affaires')
-			->findAll() ;
-
+		$organisme = $entityManager->getRepository('AppBundle\Entity\Organismes')
+			->findOneBy(['nomOrganisme' => $nomOrganisme]);
+		
+		//Recuperation des affaires (concernant l'utilisateur - A IMPLEMENTER)
+		$listeAffairesUtilisateur =  $organisme->getAffaires();
 		
 		return $this->render('applicationVisa/accueil_utilisateur.html.twig',[
 				'nomOrganisme' 				=> $nomOrganisme,
@@ -121,9 +124,8 @@ class VisaController extends Controller {
 		}
 		
 		//On récupère dans la BDD les lots rattachés à l'affaire (l'allotissement) et on charge les items eventuels
-		$allotissement = $entityManager->getRepository('AppBundle\Entity\Lots')
-			->findAllLots($affaire)
-		;
+		$allotissement = $affaire->getLots();
+		
 		if ($allotissement)
 		{
 			foreach ($allotissement as $lot)
@@ -143,9 +145,7 @@ class VisaController extends Controller {
 		}
 		
 		//On récupère dans la BDD les documents rattachés à l'affaire
-		$listeDocumentsAffaire = $entityManager->getRepository('AppBundle\Entity\Documents')
-			->findAllDocuments($affaire)
-		;
+		$listeDocumentsAffaire = $affaire->getDocuments();
 		
 		$data = 
 		[ 
@@ -157,23 +157,76 @@ class VisaController extends Controller {
 				'listeDocumentsAffaire' 	=> $listeDocumentsAffaire,
 				'allotissement' 			=> $allotissement,
 				'listeItems'				=> $listeItems,
-				'listeVisas'				=> $listeVisas, 
+				'listeVisas'				=> $listeVisas,
+				'affaire'					=> $affaire,
 				
 				'lotForm' 					=> $form->createView() 
 		];
 		return $this->render('applicationVisa/affaire_details.html.twig', $data);
 		
 	}
+	
+	/**
+	 * Page de  gestion des items pour un lot (modification et création d'items)
+	 * 
+	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Affaire{numeroAffaire}/ID{idAffaire}/Lot{idLot}", name="gestion_items")
+	 */
+	public function showGestionItems($nomOrganisme, $nomUtilisateur, $numeroAffaire, $idAffaire, $idLot,Request $request){
 		
-		/**
-		 * Page en construction
-		 *
-		 * @Route("/Travaux", name="travaux")
-		 */
-		public function showTravaux()
-		{
-			return $this->render('applicationVisa/travaux.html.twig');
+		$entityManager = $this->getDoctrine()->getManager();
+		$listeVisas = new ArrayCollection();
+		$affaire = $entityManager->getRepository ( 'AppBundle\Entity\Affaires' )
+			->findOneBy ([ 'idAffaire' => $idAffaire ])
+		;
+		$lot = $entityManager->getRepository('AppBundle\Entity\Lots')
+			->findOneBy(['idLot'=>$idLot])
+		;
+		$listeItemsPlanLot = $entityManager->getRepository('AppBundle\Entity\Items')
+			->findAllItemsWhereType($lot,'Plan');	
+		$listeItemsNDCLot = $entityManager->getRepository('AppBundle\Entity\Items')
+			->findAllItemsWhereType($lot,'NDC');
+		$listeItemsMaterielLot = $entityManager->getRepository('AppBundle\Entity\Items')
+			->findAllItemsWhereType($lot,'Materiel');
+		$listeItemsAutreLot = $entityManager->getRepository('AppBundle\Entity\Items')
+			->findAllItemsWhereType($lot,'Autre');
+		
+		foreach($listeItemsPlanLot as $item){
+			$listeVisas[$item->getIdItem()] = $item->getVisas() ;
 		}
+		
+		
+			
+		$data =
+		[
+				'nomOrganisme'				=> $nomOrganisme,
+				'nomUtilisateur'			=> $nomUtilisateur,
+				'numeroAffaire'				=> $numeroAffaire,
+				'idAffaire' 				=> $idAffaire,
+				
+				'lot' 						=> $lot,
+				'affaire'					=> $affaire,
+				
+				'listeItemsPlanLot'			=> $listeItemsPlanLot,
+				'listeItemsNDCLot'			=> $listeItemsNDCLot,				
+				'listeItemsMaterielLot'		=> $listeItemsMaterielLot,
+				'listeItemsAutreLot'		=> $listeItemsAutreLot,
+				'listeVisas'				=> $listeVisas
+				
+		];
+		return $this->render('applicationVisa/gestion_items.html.twig', $data);
+	}
+	
+	
+	
+	
+	/**
+	 * Page en construction
+	 *
+	 * @Route("/Travaux", name="travaux")
+	 */
+	public function showTravaux() {
+		return $this->render ( 'applicationVisa/travaux.html.twig' );
+	}
 	
 	
 	

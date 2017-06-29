@@ -189,7 +189,6 @@ class LoadFixtures implements FixtureInterface
 		{
 			case 'Materiel':
 				$genera =
-				$genera =
 				[
 				'Chaudiere',
 				'Ventilation',

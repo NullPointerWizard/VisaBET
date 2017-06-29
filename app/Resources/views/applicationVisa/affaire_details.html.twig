@@ -5,9 +5,6 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="page-header text-center">
-        Bienvenue dans l'espace de gestion de {{ nomOrganisme }}</br>
-    </h1>
     <h2>Affaire {{ numeroAffaire }}</h2>
     
     <h3>Allotissement</h3>
@@ -35,7 +32,9 @@
             {% for lot in allotissement %}
             <tr>
                 <td>{{ lot.numeroLot }}</td>
-                <td>{{ lot.NomLot }}</td>
+                <td><a href="{{ path('gestion_items',{'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur, 'numeroAffaire':affaire.numeroAffaire, 'idAffaire':affaire.idAffaire, 'idLot':lot.idLot}) }}">
+                    {{ lot.NomLot }}
+                </a></td>
             </tr>
                 {% for item in listeItems[lot.idLot] %}
                     <tr>
@@ -68,6 +67,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>Type</th>
                 <th>Nom du fichier</th>
                 <th>Date réception</th>
                 <th>Date limite de visa</th>
@@ -78,6 +78,7 @@
         <tbody>
             {% for document in listeDocumentsAffaire %}
             <tr>
+                <td>{{ document.type }} </td>
                 <td>{{ document.filename }}</td>            
                 <td>{{ document.dateReception|date('d/m/Y') }}</td>
                 <td>{{ document.dateLimiteVisa|date('d/m/Y') }}</td>

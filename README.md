@@ -12,9 +12,13 @@ Etat du projet : en cours de développement
 ## :house: Instructions
 
 ##  :white_check_mark: Fonctionnalités implémentées
-* Visalisation et création d'affaires
+- [x]  Visalisation et création d'affaires
 
-## :pushpin: Fonctionnalités prévues
-* Création d'un allotissement pour une affaire 
+## :pushpin: TODO
+- [ ] Création des items
+- [ ] Création des visas
+- [ ] Visualisation tableau Javascript des visas pour un item
+- [ ] Gestion des droits utilisateur
+- [ ] Modification/suppression données existantes
 
 :copyright: BET LOUVET 2017

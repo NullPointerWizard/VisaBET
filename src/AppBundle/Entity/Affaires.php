@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Affaires
@@ -59,10 +60,16 @@ class Affaires
     /**
      * @var \AppBundle\Entity\Organismes
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Organismes")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_organisme", referencedColumnName="id_organisme")
-     * })
+     * @ORM\ManyToOne(
+     * 	targetEntity="AppBundle\Entity\Organismes",
+     * 	inversedBy="affaires"
+     * )
+     * 
+     * @ORM\JoinColumn(
+     * 	name="id_organisme",
+     * 	referencedColumnName="id_organisme",
+     * 	nullable=false
+     * )
      */
     private $idOrganisme;
 
@@ -72,13 +79,35 @@ class Affaires
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Utilisateur", mappedBy="idAffaire")
      */
     private $idUtilisateur;
-
+    
+    /**
+     * Listes des documents liés à l'affaire
+     *
+     * @ORM\OneToMany(
+     * 	targetEntity="Documents",
+     * 	mappedBy="idAffaire"
+     * )
+     */
+    private $documents;
+    
+    /**
+     * Listes des lots liés à l'affaire
+     *
+     * @ORM\OneToMany(
+     * 	targetEntity="Lots",
+     * 	mappedBy="idAffaire"
+     * )
+     */
+	private $lots;
+    
     /**
      * Constructor
      */
     public function __construct()
     {
         $this->idUtilisateur = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->documents = new ArrayCollection();
+        $this->lots = new ArrayCollection();
     }
 
 
@@ -270,4 +299,16 @@ class Affaires
     {
         return $this->idUtilisateur;
     }
+    
+	public function getDocuments() 
+	{
+		return $this->documents;
+	}
+	
+	public function getLots() 
+	{
+		return $this->lots;
+	}
+	
+	
 }
