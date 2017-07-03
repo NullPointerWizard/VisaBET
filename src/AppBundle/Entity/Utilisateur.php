@@ -277,4 +277,12 @@ class Utilisateur
     {
         return $this->idAffaire;
     }
+
+    /*
+    * Renvoie nom et prenom de l'utilisateur
+    */
+    public function __toString()
+    {
+        return strtoupper($this->getNom()).' '.$this->getPrenom();
+    }
 }

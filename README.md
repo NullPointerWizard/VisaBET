@@ -20,5 +20,6 @@ Etat du projet : en cours de développement
 - [ ] Visualisation tableau Javascript des visas pour un item
 - [ ] Gestion des droits utilisateur
 - [ ] Modification/suppression données existantes
+- [ ] Création d'une doc/wiki sur GitHub wiki
 
 :copyright: BET LOUVET 2017

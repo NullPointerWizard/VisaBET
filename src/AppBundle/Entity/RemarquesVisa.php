@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class RemarquesVisa
 {
-	
+
 	/**
 	 * @var integer
 	 *
@@ -21,7 +21,7 @@ class RemarquesVisa
 	 * @ORM\GeneratedValue(strategy="IDENTITY")
 	 */
 	private $idRemarqueVisa;
-	
+
     /**
      * @var integer
      *
@@ -32,17 +32,27 @@ class RemarquesVisa
     /**
      * @var string
      *
-     * @ORM\Column(name="remarque", type="string", length=300, nullable=false)
+     * @ORM\Column(
+	 *  name="remarque",
+	 *  type="string",
+	 *  length=300,
+	 *  nullable=false
+	 * )
      */
     private $remarque;
 
     /**
      * @var \AppBundle\Entity\Visas
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Visas")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_visa", referencedColumnName="id_visa")
-     * })
+     * @ORM\ManyToOne(
+	 *  targetEntity="AppBundle\Entity\Visas",
+	 *  inversedBy="remarques"
+	 * )
+     * @ORM\JoinColumn(
+	 *  name="id_visa",
+	 *  referencedColumnName="id_visa",
+	 *  nullable=false
+	 * )
      */
     private $idVisa;
 
@@ -119,7 +129,7 @@ class RemarquesVisa
 
         return $this;
     }
-    
+
 
     /**
      * Get idItem
@@ -178,4 +188,29 @@ class RemarquesVisa
     {
         return $this->idTypeRemarque;
     }
+
+    /**
+     * Get the value of Id Visa
+     *
+     * @return \AppBundle\Entity\Visas
+     */
+    public function getIdVisa()
+    {
+        return $this->idVisa;
+    }
+
+    /**
+     * Set the value of Id Visa
+     *
+     * @param \AppBundle\Entity\Visas idVisa
+     *
+     * @return self
+     */
+    public function setIdVisa(\AppBundle\Entity\Visas $idVisa)
+    {
+        $this->idVisa = $idVisa;
+
+        return $this;
+    }
+
 }

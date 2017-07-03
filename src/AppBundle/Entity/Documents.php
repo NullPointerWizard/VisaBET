@@ -258,4 +258,8 @@ class Documents
     {
         return $this->idAffaire;
     }
+
+    public function __toString(){
+        return $this->getFilename();
+    }
 }

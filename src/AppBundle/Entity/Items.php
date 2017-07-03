@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * 	name="items",
  *  indexes={@ORM\Index(name="lots_item_fk", columns={"id_lot"})}
  *  )
- *  
+ *
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ItemsRepository")
  */
 class Items
@@ -39,14 +39,14 @@ class Items
      * @ORM\Column(name="nom_item", type="string", length=50, nullable=false)
      */
     private $nomItem;
-    
+
     /**
      * @var string
-     * 
+     *
      * @ORM\Column(name="tag", type="string", length=25, nullable=false)
      */
     private $tag;
-    
+
 
     /**
      * @var \AppBundle\Entity\Lots
@@ -55,17 +55,17 @@ class Items
      * 	targetEntity="AppBundle\Entity\Lots",
      * 	inversedBy="items"
      * )
-     * 
+     *
      * @ORM\JoinColumn(
-     * 	name="id_lot", 
+     * 	name="id_lot",
      * 	referencedColumnName="id_lot",
      * 	nullable=false
      * )
      */
     private $idLot;
-    
+
     /**
-     * Listes des visas liés à l'item
+     * Listes des visas liï¿½s ï¿½ l'item
      *
      * @ORM\OneToMany(
      * 	targetEntity="Visas",
@@ -77,7 +77,7 @@ class Items
 	public function __construct(){
 		$this->visas = new ArrayCollection();
 	}
-	
+
     /**
      * Get idItem
      *
@@ -160,33 +160,41 @@ class Items
         return $this->idLot;
     }
     /**
-     * 
+     *
      * @param string $tag
-     * 
+     *
      * @return \AppBundle\Entity\Items
      */
-    public function setTag($tag) 
+    public function setTag($tag)
     {
     	$this->tag = $tag;
-    	
+
     	return $this;
     }
     /**
      * Get tag
-     * 
+     *
      * @return string
      */
 	public function getTag()
 	{
 		return $this->tag;
 	}
-	
-	public function getVisas() 
+
+	public function getVisas()
 	{
 		return $this->visas;
 	}
-	
-	
 
-	
+    public function getVisasLastVersion()
+    {
+        return count($this->getVisas());
+    }
+
+	public function __toString()
+    {
+        return $this->getNomItem();
+    }
+
+
 }

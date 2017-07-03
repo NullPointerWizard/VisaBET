@@ -63,4 +63,9 @@ class TypesRemarque
     {
         return $this->typeRemarque;
     }
+
+    public function __toString()
+    {
+        return $this->getTypeRemarque();
+    }
 }

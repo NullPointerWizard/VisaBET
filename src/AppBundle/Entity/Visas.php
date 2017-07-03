@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\SmallIntType;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Visas
@@ -13,7 +14,7 @@ use Doctrine\DBAL\Types\SmallIntType;
  */
 class Visas
 {
-	
+
 	/**
 	 * @var integer
 	 *
@@ -22,7 +23,7 @@ class Visas
 	 * @ORM\GeneratedValue(strategy="IDENTITY")
 	 */
 	private $idVisa;
-	
+
 	/**
 	 * @var \AppBundle\Entity\Items
 	 *
@@ -30,7 +31,7 @@ class Visas
 	 * 	targetEntity="AppBundle\Entity\Items",
 	 * 	inversedBy="visas"
 	 * )
-	 * 
+	 *
      * @ORM\JoinColumn(
      * 	name="id_item",
      *  referencedColumnName="id_item",
@@ -38,7 +39,7 @@ class Visas
      * )
 	 */
 	private $idItem;
-	
+
     /**
      * @var SmallIntType
      *
@@ -67,22 +68,26 @@ class Visas
      */
     private $indicePlan;
 
-    
+
 
     /**
      * @var \AppBundle\Entity\Documents
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Documents")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_document", referencedColumnName="id_document")
-     * })
+     * @ORM\ManyToOne(
+	 *  targetEntity="AppBundle\Entity\Documents",
+	 * )
+     * @ORM\JoinColumn(
+	 *	name="id_document",
+	 *  referencedColumnName="id_document",
+	 *  nullable=true
+	 * )
      */
     private $idDocument;
-    
+
     /**
-     * 
+     *
      * @var \AppBundle\Entity\Utilisateur
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Utilisateur")
      * @ORM\JoinColumns({
      * 	@ORM\JoinColumn(name="vise_par", referencedColumnName="id_utilisateur")
@@ -90,18 +95,33 @@ class Visas
      */
     private $visePar;
 
+	/**
+	 * Listes des remarques du visa
+	 *
+	 * @var \AppBundle\Entity\RemarquesVisa
+	 *
+	 * @ORM\OneToMany(
+	 * 	targetEntity="RemarquesVisa",
+	 * 	mappedBy="idVisa"
+	 * )
+	 */
+	private $remarques;
 
+
+	public function __construct(){
+		$this->remarques = new ArrayCollection();
+	}
 
     /**
-     * Set version
+     * Set version, on utilisera toujours la derniere version pour un nouveau visa
      *
-     * @param SmallIntType $version
+     * param SmallIntType $version
      *
      * @return Visas
      */
-    public function setVersion($version)
+    public function setVersion()
     {
-        $this->version = $version;
+        $this->version = $this->getIdItem()->getVisasLastVersion()+1;
 
         return $this;
     }
@@ -235,4 +255,64 @@ class Visas
     {
         return $this->idDocument;
     }
+
+	/**
+	* Renvoie le nom du visa sous la forme "Vx: nomItem" avec x le numero de la version
+	*/
+	public function __toString()
+	{
+		return 'V'.$this->getVersion().': '.$this->getIdItem();
+	}
+
+    /**
+     * Get the value of Vise Par
+     *
+     * @return \AppBundle\Entity\Utilisateur
+     */
+    public function getVisePar()
+    {
+        return $this->visePar;
+    }
+
+    /**
+     * Set the value of Vise Par
+     *
+     * @param \AppBundle\Entity\Utilisateur $visePar
+     *
+     * @return self
+     */
+    public function setVisePar(\AppBundle\Entity\Utilisateur $visePar)
+    {
+        $this->visePar = $visePar;
+
+        return $this;
+    }
+
+
+    /**
+     * Get the value of Listes des remarques du visa
+     *
+     * @return \AppBundle\Entity\RemarquesVisa
+     */
+    public function getRemarques()
+    {
+        return $this->remarques;
+    }
+
+	/**
+	*	Adder pour le code js permettant d'ajouter des remarques
+	*/
+	public function addRemarque(RemarquesVisa $rem)
+	{
+		$this->remarques->add($rem);
+	}
+
+	/**
+	* Remover, a completer si besoin
+	*/
+	public function removeRemarque(RemarquesVisa $rem)
+	{
+		$this->remarques->removeElement($rem);
+	}
+
 }

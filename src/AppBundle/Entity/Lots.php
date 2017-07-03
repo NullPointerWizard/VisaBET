@@ -35,13 +35,13 @@ class Lots
      * 	targetEntity="AppBundle\Entity\Affaires",
      * 	inversedBy="lots"
      * )
-     * 
+     *
      * @ORM\JoinColumn(
      * 	name="id_affaire",
      *  referencedColumnName="id_affaire",
      *  nullable=false
      *  )
-     * 
+     *
      */
     private $idAffaire;
 
@@ -54,9 +54,9 @@ class Lots
      * })
      */
     private $idNomLot;
-	
+
     /**
-     * Listes des items liés au lot
+     * Listes des items liï¿½s au lot
      *
      * @ORM\OneToMany(
      * 	targetEntity="Items",
@@ -146,12 +146,12 @@ class Lots
     {
         return $this->idNomLot;
     }
-    
+
     public function getItems()
     {
     	return $this->items;
     }
-    
+
     /*
      * Permet d'obtenir directment le nom de lot en se servant de l'id de celui-ci
      */
@@ -159,5 +159,5 @@ class Lots
     {
     	return $this->getIdNomLot()->getNomLot();
     }
-	
+
 }
