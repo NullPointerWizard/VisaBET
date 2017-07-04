@@ -11,25 +11,25 @@
     <div class="container">
          <div class="row">
              <div class="col-xs-12">
-                <h3>Nouveau Visa</h3>
+                <h2>Nouveau Visa</h2>
 
                 {{ form_start(form) }}
 
+                {{ form_row(form.idDocument) }}
+                {{ form_row(form.etatVisa) }}
+                {{ form_row(form.indicePlan) }}
+                {{ form_row(form.visePar) }}
 
                 <h3>Remarques</h3>
-                    <ul class="remarques" data-prototype="{{ form_widget(form.remarques.vars.prototype)|e('html_attr') }}">
+                    <ul class="remarques list-group" data-prototype="{{ form_widget(form.remarques.vars.prototype)|e('html_attr') }}">
                         {# iterate over each existing tag and render its only field: name #}
                         {% for remarque in form.remarques %}
-                            <li>
+                            <li class="list-group-item">
                                 {{ form_row(remarque.idTypeRemarque) }}
                                 {{ form_row(remarque.remarque)}}
                             </li>
                         {% endfor %}
                     </ul>
-
-
-
-                {{ form_widget(form) }}
 
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Créer Visa

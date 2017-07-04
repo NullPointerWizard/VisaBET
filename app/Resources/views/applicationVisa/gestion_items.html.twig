@@ -6,7 +6,7 @@
 
 {% block body %}
     <h1 class="page-header text-center">
-        Affaire {{ affaire.numeroAffaire }} : {{ affaire.nomAffaire }} 
+        Affaire {{ affaire.numeroAffaire }} : {{ affaire.nomAffaire }}
         <a href = "{{ path('affaire_details',{'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur, 'numeroAffaire':affaire.numeroAffaire, 'idAffaire':affaire.idAffaire}) }}">
             <i class="fa fa-reply" aria-hidden="true"></i>
         </a>
@@ -14,12 +14,12 @@
     <h2 class="page-header text-center">
         Lot N°{{ lot.numeroLot  }}  {{ lot.nomLot }}</br>
    </h2>
-   
+
    <div class="container">
         <div class="row">
             <div class="col-xs-12">
                 <h3>Nouvel Item</h3>
-				
+
         		{{ form_start(itemForm) }}
         		{{ form_widget(itemForm) }}
                 <button type="submit" class="btn btn-primary">
@@ -27,9 +27,9 @@
                 </button>
 				{{ form_end(itemForm) }}
             </div>
-        </div>      
+        </div>
     </div>
-   
+
    <h3>Items</h3>
    <div>
     <table class="table table-striped">
@@ -42,87 +42,59 @@
             </tr>
         </thead>
         <tbody>
-            <!-- PLAN -->
-            <tr>    
-                <td>Plan</td>
+
+            {% for type in types %}
+
+            <tr>
+                <td>{{ type }}</td>
                 <td></td><td></td><td></td>
             </tr>
-            {% for item in listeItemsPlanLot %}
+            {% for item in listeItems[type] %}
             <tr>
                 <td></td>
                 <td>{{ item.tag }}</td>
-                <td>{{ item.nomItem }}
-					<a href = "{{path('connexion')}}">
+                <td>
+                    <a href = "{{path('visa_remarques', {'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur, 'numeroAffaire':affaire.numeroAffaire, 'idAffaire':affaire.idAffaire, 'idLot':lot.idLot, 'idItem':item.idItem } )}}">
 						<i class="fa fa-check-circle-o fa-lg" aria-hidden="true"></i>
 					</a>
-					<a href = "{{path('visa_remarques', {'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur, 'numeroAffaire':affaire.numeroAffaire, 'idAffaire':affaire.idAffaire, 'idLot':lot.idLot, 'idItem':item.idItem } )}}">
-						<i class="fa fa-flag fa-1x"></i>
-					</a>
+                    {{ item.nomItem }}
 				</td>
                 <td>
+                    <ul class="list-group">
 					{% if listeVisas[item.idItem] is not null %}
 						{% if listeVisas[item.idItem] is empty %}
-							NT
+							<li class="list-group-item non-traite">NT</li>
+                        {% else %}
+
+                            {% for visa in listeVisas[item.idItem] %}
+                                <li class="list-group-item {{visa.cssClass}}">
+                                    <b>VISA {{visa.version}} ({{visa.dateEmission|date('d/m/Y')}}) {{ visa.etatVisa }} </b>
+                                    <ul class="list-group">
+                                    {% for remarque in listeRemarques[visa.idVisa] %}
+                                        <li class="list-group-item">
+                                            <b>{{ remarque.idTypeRemarque}}</b> {{ remarque.remarque}}
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+                                </li>
+    						{% endfor %}
+
 						{% endif %}
-						{% for visa in listeVisas[item.idItem] %}
-                                {{visa.dateEmission|date('d/m/Y')}} VERSION:{{visa.version}}  ETAT:{{ visa.etatVisa }} </br>
-						{% endfor %} 
-                    {% else %} 
-                                NT
-					{% endif %}				                 
+
+                    {% else %}
+                            <li class="list-group-item non-traite">NT</li>
+					{% endif %}
+                    </ul>
                 </td>
             </tr>
             {% endfor %}
-            
-            
-            <!-- NDC -->
-            <tr>    
-                <td>NDC</td>
-                <td></td><td></td><td></td>
-            </tr>
-            {% for item in listeItemsNDCLot %}
-            <tr>
-                <td></td>
-                <td>{{ item.tag }}</td>
-                <td>{{ item.nomItem }}</td>
-                <td></td>
-            </tr>
+
             {% endfor %}
-            
-            
-            <!-- MATERIEL -->
-            <tr>    
-                <td>Materiel</td>
-                <td></td><td></td><td></td>
-            </tr>
-            {% for item in listeItemsMaterielLot %}
-            <tr>
-                <td></td>
-                <td>{{ item.tag }}</td>
-                <td>{{ item.nomItem }}</td>
-                <td></td>
-            </tr>
-            {% endfor %}
-            
-            
-            <!-- AUTRE -->
-            <tr>    
-                <td>Autre</td>
-                <td></td><td></td><td></td>
-            </tr>
-            {% for item in listeItemsAutreLot %}
-            <tr>
-                <td></td>
-                <td>{{ item.tag }}</td>
-                <td>{{ item.nomItem }}</td>
-                <td></td>
-            </tr>
-            {% endfor %}
-            
+
         </tbody>
     </table>
    </div>
-   
-    
+
+
 
 {% endblock %}

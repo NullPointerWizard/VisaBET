@@ -14,7 +14,7 @@ class VisaFormType extends AbstractType{
 
 	public function buildForm(FormBuilderInterface $builder, array $options){
 		$builder
-		->add('idDocument')
+		->add('idDocument',null,array('label'=>'Document'))
 		->add('etatVisa')
         ->add('indicePlan')
         ->add('visePar',null,array('label'=>'Examiné par'))

@@ -7,3 +7,27 @@ td.red{
 	color:black;
 	background-color: red;
 }
+
+li.ok{
+	background-color: #08e00c;
+}
+
+li.ok-rem{
+	background-color: #1df9a5;
+}
+
+li.ok-tec{
+	background-color: #aef916;
+}
+
+li.rem{
+	background-color: #5990ff;
+}
+
+li.non-conforme{
+	background-color: #b7012f;
+}
+
+li.non-traite{
+	background-color: #b777a2;
+}

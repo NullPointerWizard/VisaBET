@@ -121,6 +121,11 @@
 			<attribute name="composer" value="vendor"/>
 		</attributes>
 	</buildpathentry>
+	<buildpathentry kind="src" path="vendor/kriswallsmith/assetic/src">
+		<attributes>
+			<attribute name="composer" value="vendor"/>
+		</attributes>
+	</buildpathentry>
 	<buildpathentry kind="src" path="vendor/michelf/php-markdown">
 		<attributes>
 			<attribute name="composer" value="vendor"/>
@@ -172,6 +177,11 @@
 		</attributes>
 	</buildpathentry>
 	<buildpathentry kind="src" path="vendor/psr/simple-cache/src">
+		<attributes>
+			<attribute name="composer" value="vendor"/>
+		</attributes>
+	</buildpathentry>
+	<buildpathentry kind="src" path="vendor/robloach/component-installer/src">
 		<attributes>
 			<attribute name="composer" value="vendor"/>
 		</attributes>

@@ -178,25 +178,32 @@ class VisaController extends Controller {
 	 */
 	public function showGestionItems($nomOrganisme, $nomUtilisateur, $numeroAffaire, $idAffaire, $idLot, Request $request){
 
+		$types = ['Plan','NDC','Materiel','Autre'];
+
 		$entityManager = $this->getDoctrine()->getManager();
+		$listeItems = new ArrayCollection();
 		$listeVisas = new ArrayCollection();
+		$listeRemarques =  new ArrayCollection();
 		$affaire = $entityManager->getRepository ( 'AppBundle\Entity\Affaires' )
 			->findOneBy ([ 'idAffaire' => $idAffaire ])
 		;
 		$lot = $entityManager->getRepository('AppBundle\Entity\Lots')
 			->findOneBy(['idLot'=>$idLot])
 		;
-		$listeItemsPlanLot = $entityManager->getRepository('AppBundle\Entity\Items')
-			->findAllItemsWhereType($lot,'Plan');
-		$listeItemsNDCLot = $entityManager->getRepository('AppBundle\Entity\Items')
-			->findAllItemsWhereType($lot,'NDC');
-		$listeItemsMaterielLot = $entityManager->getRepository('AppBundle\Entity\Items')
-			->findAllItemsWhereType($lot,'Materiel');
-		$listeItemsAutreLot = $entityManager->getRepository('AppBundle\Entity\Items')
-			->findAllItemsWhereType($lot,'Autre');
 
-		foreach($listeItemsPlanLot as $item){
-			$listeVisas[$item->getIdItem()] = $item->getVisas() ;
+		//On recupere pour chaque type les items du lot et les visas correspondants
+		foreach($types as $type){
+			$listeItems[$type] = $entityManager->getRepository('AppBundle\Entity\Items')
+				->findAllItemsWhereType($lot,$type);
+
+			foreach($listeItems[$type] as $item)
+			{
+				$listeVisas[$item->getIdItem()] = $item->getVisas();
+				foreach ($listeVisas[$item->getIdItem()] as $visa)
+				{
+					$listeRemarques[$visa->getIdVisa()] = $visa->getRemarques();
+				}
+			}
 		}
 
 		//Creation du formulaire pour un nouvel item
@@ -225,11 +232,11 @@ class VisaController extends Controller {
 				'lot' 						=> $lot,
 				'affaire'					=> $affaire,
 
-				'listeItemsPlanLot'			=> $listeItemsPlanLot,
-				'listeItemsNDCLot'			=> $listeItemsNDCLot,
-				'listeItemsMaterielLot'		=> $listeItemsMaterielLot,
-				'listeItemsAutreLot'		=> $listeItemsAutreLot,
+				'types'						=> $types,
+
+				'listeItems'				=> $listeItems,
 				'listeVisas'				=> $listeVisas,
+				'listeRemarques'			=> $listeRemarques,
 
 				'itemForm'					=> $form->createView()
 
@@ -250,17 +257,6 @@ class VisaController extends Controller {
 			->findOneBy(['idItem'=>$idItem]);
 		$nouveauVisa = new Visas;
 
-
-		//dummy code
-		$rem1 = new RemarquesVisa;
-		$rem2 = new RemarquesVisa;
-		$rem1->setNoRemarque(1);
-		$rem1->setIdVisa($nouveauVisa);
-		$rem2->setNoRemarque(2);
-		$rem2->setIdVisa($nouveauVisa);
-		$nouveauVisa->getRemarques()->add($rem1);
-		$nouveauVisa->getRemarques()->add($rem2);
-
 		//Definition des formulaires
 		$form = $this->createForm(VisaFormType::class, $nouveauVisa);
 		$form->handleRequest($request);
@@ -273,8 +269,14 @@ class VisaController extends Controller {
 			$entityManager = $this->getDoctrine()->getManager();
 
 			$entityManager->persist($nouveauVisa);
-			$entityManager->persist($rem1);
-			$entityManager->persist($rem2);
+			$noRemarque = 1;
+			foreach($nouveauVisa->getRemarques() as $remarque)
+			{
+				$remarque->setIdVisa($nouveauVisa);
+				$remarque->setNoRemarque($noRemarque);
+				$entityManager->persist($remarque);
+				$noRemarque++;
+			}
 			$entityManager->flush();
 
 			$this->addFlash('success', 'Visa créé !');

@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\SmallIntType;
 use Doctrine\Common\Collections\ArrayCollection;
+use DoctrineTest\InstantiatorTestAsset\FinalExceptionAsset;
 
 /**
  * Visas
@@ -89,9 +90,12 @@ class Visas
      * @var \AppBundle\Entity\Utilisateur
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Utilisateur")
-     * @ORM\JoinColumns({
-     * 	@ORM\JoinColumn(name="vise_par", referencedColumnName="id_utilisateur")
-     * })
+	 *
+     * @ORM\JoinColumn(
+	 *  name="vise_par",
+	 *  referencedColumnName="id_utilisateur",
+	 *  nullable=false
+	 * )
      */
     private $visePar;
 
@@ -301,6 +305,8 @@ class Visas
 
 	/**
 	*	Adder pour le code js permettant d'ajouter des remarques
+	*
+	* @param \AppBundle\Entity\RemarquesVisa $rem
 	*/
 	public function addRemarque(RemarquesVisa $rem)
 	{
@@ -308,11 +314,51 @@ class Visas
 	}
 
 	/**
-	* Remover, a completer si besoin
+	* Remover
+	*
+	* @param \AppBundle\Entity\RemarquesVisa $rem
 	*/
 	public function removeRemarque(RemarquesVisa $rem)
 	{
 		$this->remarques->removeElement($rem);
 	}
+
+	/**
+	* Permet d'obtenir la classe css associée au visa
+	*/
+	public function getCssClass(){
+		switch($this->getEtatVisa()){
+			case "OK":
+				return "ok";
+				break;
+			case "OK REM":
+				return "ok-rem";
+				break;
+			case "OK COND":
+				return "ok-rem";
+				break;
+			case "OK TEC":
+				return "ok-tec";
+				break;
+			case "NC":
+				return "non-conforme";
+				break;
+			case "REM":
+				return "rem";
+				break;
+		}
+		return "";
+	}
+
+
+    /**
+     * Get the value of Id Visa
+     *
+     * @return integer
+     */
+    public function getIdVisa()
+    {
+        return $this->idVisa;
+    }
 
 }

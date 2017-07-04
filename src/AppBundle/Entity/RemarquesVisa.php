@@ -25,7 +25,10 @@ class RemarquesVisa
     /**
      * @var integer
      *
-     * @ORM\Column(name="no_remarque", type="smallint")
+     * @ORM\Column(
+	 *  name="no_remarque",
+	 *  type="smallint"
+	 * )
      */
     private $noRemarque;
 

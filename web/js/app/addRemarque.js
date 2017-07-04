@@ -2,7 +2,7 @@ var $collectionHolder;
 
 // setup an "add a tag" link
 var $addRemLink = $('<a href="#" class="add_tag_link"><i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Remarque </a>');
-var $newLinkLi = $('<li></li>').append($addRemLink);
+var $newLinkLi = $('<li class="list-group-item"></li>').append($addRemLink);
 
 jQuery(document).ready(function() {
     // Get the ul that holds the collection of tags
@@ -46,7 +46,7 @@ function addRemForm($collectionHolder, $newLinkLi) {
     $collectionHolder.data('index', index + 1);
 
     // Display the form in the page in an li, before the "Add a tag" link li
-    var $newFormLi = $('<li></li>').append(newForm);
+    var $newFormLi = $('<li class="list-group-item"></li>').append(newForm);
     $newLinkLi.before($newFormLi);
 
     addRemFormDeleteLink($newFormLi);

@@ -3,14 +3,18 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Utilisateur
  *
- * @ORM\Table(name="utilisateur", indexes={@ORM\Index(name="id_organisme_fk_utilisateur", columns={"id_organisme"})})
+ * @ORM\Table(
+ *  name="utilisateur",
+ *  indexes={@ORM\Index(name="id_organisme_fk_utilisateur", columns={"id_organisme"})}
+ * )
  * @ORM\Entity
  */
-class Utilisateur
+class Utilisateur implements UserInterface
 {
     /**
      * @var integer
@@ -45,7 +49,13 @@ class Utilisateur
     /**
      * @var string
      *
-     * @ORM\Column(name="mail", type="string", length=100, nullable=true)
+     * @ORM\Column(
+     *  name="mail",
+     *  type="string",
+     *  unique=true,
+     *  length=100,
+     *  nullable=false
+     * )
      */
     private $mail;
 
@@ -284,5 +294,39 @@ class Utilisateur
     public function __toString()
     {
         return strtoupper($this->getNom()).' '.$this->getPrenom();
+    }
+
+
+    //---------------- IDENTIFICATION ----------------
+    // Utilise UserInterface
+
+    /**
+    * Le mail sert d'identifiant unique
+    */
+    public function getUsername()
+    {
+        //return $this->getPrenom().$this->getNom().$this->getIdUtilisateur();
+        return $this->getMail();
+    }
+
+    /**
+    * Les droits associes a la personne
+    */
+    public function getRoles()
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function getPassword()
+    {
+        // leaving blank - I don't need/have a password!
+    }
+    public function getSalt()
+    {
+        // leaving blank - I don't need/have a password!
+    }
+    public function eraseCredentials()
+    {
+        // leaving blank - I don't need/have a password!
     }
 }
