@@ -29,7 +29,11 @@
             <h1 class="logo" >Visa 3000</h1>
             <ul class="navi">
                 <li class="search"><a href="#" class="js-header-search-toggle"><i class="fa fa-search"></i></a></li>
-                <li><a href="{{ path('visa_login')}}">Login</a></li>
+                {% if is_granted('ROLE_USER') %}
+                    <li><a href="{{ path('visa_logout') }}">Déconnexion</a></li>
+                {% else %}
+                    <li><a href="{{ path('visa_login') }}">Connexion</a></li>
+                {% endif %}
             </ul>
         </header>
 

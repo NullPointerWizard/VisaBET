@@ -33,3 +33,13 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+
+    AppBundle\Security\LoginFormAuthenticator:
+        #autowire possible car les types des objets sont precises dans le constructeur
+        autowire: true
+
+    AppBundle\Doctrine\HashPasswordListener:
+        autowire: true
+        #Les tags indiquent que le service ne doit etre utiliser que pour certains cas
+        tags:
+            - { name: doctrine.event_subscriber }

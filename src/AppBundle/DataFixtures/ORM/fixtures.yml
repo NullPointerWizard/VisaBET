@@ -7,7 +7,7 @@ AppBundle\Entity\Organismes:
     nomOrganisme: 'AUA'
   archis:
     nomOrganisme: 'Les architectes associes'
-  boucherez: 
+  boucherez:
     nomOrganisme: 'Boucherez'
   graille:
     nomOrganisme: 'Architecte Graille'
@@ -35,10 +35,11 @@ AppBundle\Entity\Utilisateur:
   utilisateur_Louvet_{1..6}:
     statut: 'Visa'
     nom: <lastName()>
-    prenom: 'Pascal'
+    prenom: <firstName()>
     mail: <companyEmail()>
     idOrganisme: '@louvet'
-    
+    plainPassword: 'coin'
+
 AppBundle\Entity\Documents:
   document_{1..7}:
     type: <formatterTypeDocument()>
@@ -94,7 +95,7 @@ AppBundle\Entity\Items:
     nomItem: <formatterNomItem('Autre')>
     tag: <formatterTag('Autre')>
     idLot: '@lot_*'
-    
+
 AppBundle\Entity\Visas:
   visas_{1..30}:
     idItem: '@item_mat_<current()>'
@@ -125,4 +126,3 @@ AppBundle\Entity\RemarquesVisa:
     remarque:  <text(300)>
     idVisa: '@visas_*'
     idTypeRemarque: '@type_rem_*'
-

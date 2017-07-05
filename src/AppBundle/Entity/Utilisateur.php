@@ -26,6 +26,37 @@ class Utilisateur implements UserInterface
     private $idUtilisateur;
 
     /**
+     * Sert d'identifiant
+     *
+     * @var string
+     *
+     * @ORM\Column(
+     *  name="mail",
+     *  type="string",
+     *  unique=true,
+     *  length=100,
+     *  nullable=false
+     * )
+     */
+    private $mail;
+
+    /**
+     * The encoded password
+     *
+     * @ORM\Column(
+     *  type="string"
+     * )
+     */
+    private $password;
+
+    /**
+    * A non-persisted field that's used to create the encoded password.
+    *
+    * @var string
+    */
+    private $plainPassword;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="statut", type="string", length=10, nullable=false)
@@ -45,19 +76,6 @@ class Utilisateur implements UserInterface
      * @ORM\Column(name="prenom", type="string", length=30, nullable=false)
      */
     private $prenom;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(
-     *  name="mail",
-     *  type="string",
-     *  unique=true,
-     *  length=100,
-     *  nullable=false
-     * )
-     */
-    private $mail;
 
     /**
      * @var string
@@ -319,14 +337,47 @@ class Utilisateur implements UserInterface
 
     public function getPassword()
     {
-        // leaving blank - I don't need/have a password!
+        return $this->password;
     }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
     public function getSalt()
     {
         // leaving blank - I don't need/have a password!
     }
     public function eraseCredentials()
     {
-        // leaving blank - I don't need/have a password!
+        $this->plainPassword = null;
     }
+
+    /**
+     * Get the value of A non-persisted field that's used to create the encoded password.
+     *
+     * @return string
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * Set the value of A non-persisted field that's used to create the encoded password.
+     *
+     * @param string plainPassword
+     *
+     * @return self
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+
+        //Cette ligne permet de faire savoir a Doctrine qu'il y a eu un changement de mdp
+        //Les Doctrine listeners ne sont pas appeles si doctrine pense qu'un objet n'a pas change
+        $this->password = null;
+    }
+
 }

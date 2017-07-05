@@ -3,12 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Visas;
-use AppBundle\Entity\RemarquesVisa;
 use AppBundle\Form\VisaFormType;
-use AppBundle\Form\RemarqueFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use AppBundle\Entity\Affaires;
 use AppBundle\Form\AffaireFormType;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Form\LotFormType;
@@ -30,14 +27,6 @@ class VisaController extends Controller {
 	public function showConnexion()
 	{
 		return $this->render('applicationVisa/connexion.html.twig');
-	}
-
-	/**
-	 * @Route("/{nomOrganisme}/{nomUtilisateur}")
-	 */
-	public function showDefaultVueAffaires($nomOrganisme, $nomUtilisateur)
-	{
-		return $this->showVueAffaires($nomOrganisme, $nomUtilisateur);
 	}
 
 	/**
@@ -85,7 +74,7 @@ class VisaController extends Controller {
 
 			$this->addFlash('success', 'Affaire cr��e !');
 
-			return $this->redirectToRoute('connexion');
+			return $this->redirectToRoute('login');
 		}
 
 		return $this->render('applicationVisa/nouvelle_affaire.html.twig', [
@@ -125,7 +114,7 @@ class VisaController extends Controller {
 
 			$this->addFlash('success', 'Lot cr�� ! (LOT N�'.$nouveauLot->getNumeroLot().' '.$nouveauLot->getNomLot().')' );
 
-			return $this->redirectToRoute('connexion');
+			return $this->redirectToRoute('visa_login');
 		}
 
 		//On r�cup�re dans la BDD les lots rattach�s � l'affaire (l'allotissement) et on charge les items eventuels
@@ -218,7 +207,7 @@ class VisaController extends Controller {
 
 			$this->addFlash('success', 'Item créé !');
 
-			return $this->redirectToRoute('connexion');
+			return $this->redirectToRoute('visa_login');
 
 		}
 
@@ -251,6 +240,15 @@ class VisaController extends Controller {
 	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Affaire{numeroAffaire}/ID{idAffaire}/Lot{idLot}/Item{idItem}", name="visa_remarques")
 	 */
 	public function showVisaRemarques($nomOrganisme, $nomUtilisateur, $numeroAffaire, $idAffaire, $idLot, $idItem, Request $request) {
+
+		//On verifie que l'Utilisateur est autorise
+		//1
+			// if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+	        //     throw $this->createAccessDeniedException('GET OUT!');
+	        // }
+		//2
+		$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
 
 		$entityManager = $this->getDoctrine()->getManager();
 		$item = $entityManager->getRepository('AppBundle\Entity\Items')

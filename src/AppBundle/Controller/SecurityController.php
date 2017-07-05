@@ -14,22 +14,30 @@ class SecurityController extends Controller
     public function loginAction()
     {
         $authenticationUtils = $this->get('security.authentication_utils');
-       // get the login error if there is one
-       $error = $authenticationUtils->getLastAuthenticationError();
-       // last username entered by the user
-       $lastUsername = $authenticationUtils->getLastUsername();
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
 
-       $form = $this->createForm(LoginFormType::class, [
+        $form = $this->createForm(LoginFormType::class, [
                    '_username' => $lastUsername,
                ]);
 
-       return $this->render(
+        return $this->render(
            'security/login.html.twig',
-           array(
+            array(
                // last username entered by the user
                'form'           => $form->createView(),
                'error'          => $error,
-           )
-       );
+            )
+        );
+    }
+
+    /**
+    * @Route("/logout", name="visa_logout")
+    */
+    public function logoutAction()
+    {
+        throw new \Exception('Vous ne devriez pas etre ici !');
     }
 }
