@@ -9,7 +9,10 @@ use AppBundle\Form\LoginFormType;
 class SecurityController extends Controller
 {
     /**
-    * @Route("/login", name="visa_login")
+    * @Route(
+    *  "/",
+    *  name="visa_login"
+    * )
     */
     public function loginAction()
     {

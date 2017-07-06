@@ -1,8 +1,18 @@
 # To get started with security, check out the documentation:
 # https://symfony.com/doc/current/security.html
 security:
-
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+
+    role_hierarchy:
+        #add ?_switch_user= and then the username of whoever you want to log in as.
+        # permet de se connecter avec un autre type de compte pour voir ce qu'il voit
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ADMIN: [ROLE_GESTION_VISAS]
+        ROLE_GESTION_VISAS: [ROLE_GESTION_DOCUMENTS]
+        ROLE_GESTION_DOCUMENTS: [ROLE_USER]
+
+        ROLE_EXTE: [ROLE_USER]
+
     providers:
         #Commente pour l'instant ?
         #in_memory:
@@ -24,6 +34,7 @@ security:
                     - AppBundle\Security\LoginFormAuthenticator
             logout:
                 path: /logout
+            switch_user: ~
             # activate different ways to authenticate
 
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

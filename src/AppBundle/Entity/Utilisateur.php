@@ -4,6 +4,8 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Utilisateur
@@ -13,6 +15,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *  indexes={@ORM\Index(name="id_organisme_fk_utilisateur", columns={"id_organisme"})}
  * )
  * @ORM\Entity
+ *
+ * @UniqueEntity(fields={"mail"}, message="Cette adresse est déjà utilisée")
  */
 class Utilisateur implements UserInterface
 {
@@ -37,6 +41,9 @@ class Utilisateur implements UserInterface
      *  length=100,
      *  nullable=false
      * )
+     * @Assert\NotBlank()
+     * @Assert\Email(message="Vérifiez le format de l'adresse")
+     *
      */
     private $mail;
 
@@ -53,6 +60,7 @@ class Utilisateur implements UserInterface
     * A non-persisted field that's used to create the encoded password.
     *
     * @var string
+    * @Assert\NotBlank()
     */
     private $plainPassword;
 

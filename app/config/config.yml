@@ -7,7 +7,7 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
-    
+
     #Parametres perso
     cache_type: file_system
 
@@ -40,7 +40,7 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
-    number_format: 
+    number_format:
       thousands_separator: ' '
     form_themes:
       - bootstrap_3_horizontal_layout.html.twig
@@ -67,7 +67,7 @@ doctrine:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
-        
+
 #Doctrine-cache Configuration
 doctrine_cache:
     providers:
@@ -83,3 +83,14 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+# Configuration du generateur de pdf Knp Snappy
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     "\"C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe\""
+        options:    []
+    image:
+        enabled:    true
+        binary:     "\"C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe\""
+        options:    []

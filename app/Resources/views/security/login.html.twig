@@ -17,7 +17,8 @@
             {{ form_start(form) }}
                 {{ form_row(form._username) }}
                 {{ form_row(form._password) }}
-                <button type="submit" class="btn btn-success">Login <span class="fa fa-lock"></span></button>
+                <button type="submit" class="btn btn-success">Connexion <span class="fa fa-lock"></span></button>
+                <a href="{{ path('creer_compte') }}">Creer un compte <i class="fa fa-user-plus"></i></a>
             {{ form_end(form) }}
         </div>
     </div>

@@ -52,7 +52,7 @@ class VisaController extends Controller {
 	}
 
 	/**
-	 * Page de cr�ation d'une nouvelle affaire
+	 * Page de création d'une nouvelle affaire
 	 *
 	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Nouvelle", name="creer_affaire")
 	 */
@@ -72,7 +72,7 @@ class VisaController extends Controller {
 			$entityManager->persist($nouvelleAffaire);
 			$entityManager->flush();
 
-			$this->addFlash('success', 'Affaire cr��e !');
+			$this->addFlash('success', 'Affaire créée !');
 
 			return $this->redirectToRoute('login');
 		}
@@ -112,9 +112,9 @@ class VisaController extends Controller {
 			$entityManager->persist($nouveauLot);
 			$entityManager->flush();
 
-			$this->addFlash('success', 'Lot cr�� ! (LOT N�'.$nouveauLot->getNumeroLot().' '.$nouveauLot->getNomLot().')' );
+			$this->addFlash('success', 'Lot cree ! (LOT N'.$nouveauLot->getNumeroLot().' '.$nouveauLot->getNomLot().')' );
 
-			return $this->redirectToRoute('visa_login');
+			//return $this->redirectToRoute('visa_login');
 		}
 
 		//On r�cup�re dans la BDD les lots rattach�s � l'affaire (l'allotissement) et on charge les items eventuels
@@ -205,11 +205,13 @@ class VisaController extends Controller {
 			$entityManager->persist($nouvelItem);
 			$entityManager->flush();
 
-			$this->addFlash('success', 'Item créé !');
+			$this->addFlash('success', 'Item cree !');
 
-			return $this->redirectToRoute('visa_login');
+			//return $this->redirectToRoute('visa_login');
 
 		}
+
+
 
 		$data =
 		[
@@ -247,7 +249,7 @@ class VisaController extends Controller {
 	        //     throw $this->createAccessDeniedException('GET OUT!');
 	        // }
 		//2
-		$this->denyAccessUnlessGranted('ROLE_ADMIN');
+		$this->denyAccessUnlessGranted('ROLE_USER');
 
 
 		$entityManager = $this->getDoctrine()->getManager();
@@ -277,7 +279,15 @@ class VisaController extends Controller {
 			}
 			$entityManager->flush();
 
-			$this->addFlash('success', 'Visa créé !');
+			$this->addFlash(
+				'success',
+				 sprintf('(%s %s) Vous avez emis le visa %s pour: %s',
+				 	$this->getUser()->getPrenom(),
+					$this->getUser()->getNom(),
+					$nouveauVisa->getVersion(),
+					$item->getNomItem()
+				)
+			);
 		}
 
 
@@ -290,7 +300,6 @@ class VisaController extends Controller {
 
 				'item'						=> $item,
 				'form'						=> $form->createView()
-
 		];
 		return $this->render ( 'applicationVisa/nouveau_visa.html.twig', $data );
 	}

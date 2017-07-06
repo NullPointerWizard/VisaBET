@@ -77,13 +77,14 @@ body {
 .header {
     padding: 10px 0;
     margin: 0 auto;
-    background-color: #81B9BA;
+    background-color: #2c62e0;
 }
 
+
 .logo-icon {
-    height: 50px;
+    height: 80px;
     width: auto;
-    margin-top: 12px;
+    margin-top: 2px;
 }
 
 .navi {
@@ -97,7 +98,7 @@ body {
 .navi li a {
     text-decoration: none;
     color: #3a3a3a;
-    font-size: 12px;
+    font-size: 18px;
     text-transform: uppercase;
     margin-right: 10px;
 }
@@ -111,7 +112,8 @@ body {
 }
 
 .navi li:last-child a {
-    background: #eee;
+    background: white;
+    color: black;
     border-radius: 2px;
     transition: 200ms ease-in-out;
     padding: 8px 16px 7px;
@@ -652,13 +654,13 @@ FOOTER Styling
 
 .footer {
     padding: 20px;
-    background: #E9D4B7;
+    background: #2c62e0;
     font-size: 1.3em;
     margin-top: 40px;
 }
 
 .footer-text {
-    color: #3a3a3a;
+    color: white;
 }
 
 .footer-text > a {

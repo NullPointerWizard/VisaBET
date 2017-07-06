@@ -36,9 +36,16 @@ AppBundle\Entity\Utilisateur:
     statut: 'Visa'
     nom: <lastName()>
     prenom: <firstName()>
-    mail: <companyEmail()>
+    mail: <firstName>.<lastName()>@visa.fr
     idOrganisme: '@louvet'
     plainPassword: 'coin'
+  admin:
+    statut: 'SAdmin'
+    nom: 'admin'
+    prenom: 'super'
+    mail: 'super@admin'
+    idOrganisme: '@louvet'
+    plainPassword: 'admin'
 
 AppBundle\Entity\Documents:
   document_{1..7}:
