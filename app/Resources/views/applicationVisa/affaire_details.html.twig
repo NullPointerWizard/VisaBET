@@ -5,57 +5,64 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Affaire {{ numeroAffaire }}</h2>
-    
+    <h2 class="text-center">
+        Affaire {{ affaire.numeroAffaire }}</br>
+        {{ affaire.nomAffaire }}
+    </h2>
+
     <h3>Allotissement</h3>
     <div class="container">
     	<div class="row">
     		<div class="col-xs-12">
     			<h2>Nouveau Lot</h2>
     			{{ form_start(lotForm) }}
-    			{{ form_widget(lotForm) }}
+    			{{ form_row(lotForm.numeroLot) }}
+                {{ form_row(lotForm.idNomLot) }}
+                {{ form_row(lotForm.affaire, { 'attr': {'class': 'hidden-row'} }) }}
     			<button type="submit" class="btn btn-primary">
     			     <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Définir un lot
     			</button>
     			{{ form_end(lotForm) }}
     		</div>
-    	</div>		
+    	</div>
 	</div>
 	<table class="table table-striped">
         <thead>
             <tr>
                 <th>N°</th>
-                <th>Intitulé du lot</th>        
+                <th>Intitulé du lot</th>
             </tr>
         </thead>
         <tbody>
             {% for lot in allotissement %}
             <tr>
                 <td>{{ lot.numeroLot }}</td>
-                <td><a href="{{ path('gestion_items',{'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur, 'numeroAffaire':affaire.numeroAffaire, 'idAffaire':affaire.idAffaire, 'idLot':lot.idLot}) }}">
-                    {{ lot.NomLot }}
-                </a></td>
+                <td>
+                    <a href="{{ path('gestion_items',{'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">
+                        {{ lot.NomLot }}
+                    </a>
+                </td>
             </tr>
                 {% for item in listeItems[lot.idLot] %}
                     <tr>
                         <td></td>
                         <td>
-                        {{ item.idItem }} {{ item.NomItem }} 
+                        {{ item.idItem }} {{ item.NomItem }}
                         {% if listeVisas[ item.idItem ] is defined %}
                             {% if listeVisas[ item.idItem ] is not null %}
-                                {{ listeVisas[item.idItem].etatVisa }} 
-                            {% else %} 
-                                NT 
+                                {{ listeVisas[item.idItem].etatVisa }}
+                            {% else %}
+                                NT
                             {% endif %}
                         {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
             {% endfor %}
-        </tbody>        
+        </tbody>
     </table>
-    
-    
+
+
     <h3>Documents</h3>
     <div class="">
         <a href = "{{ path('travaux') }}">
@@ -72,26 +79,26 @@
                 <th>Date réception</th>
                 <th>Date limite de visa</th>
                 <th>Etat</th>
-                <th>Emplacement</th>         
+                <th>Emplacement</th>
             </tr>
         </thead>
         <tbody>
             {% for document in listeDocumentsAffaire %}
             <tr>
                 <td>{{ document.type }} </td>
-                <td>{{ document.filename }}</td>            
+                <td>{{ document.filename }}</td>
                 <td>{{ document.dateReception|date('d/m/Y') }}</td>
                 <td>{{ document.dateLimiteVisa|date('d/m/Y') }}</td>
     			{% if document.etat == 0 %}
     			 <td class="red">NT</td>
     			{% else %}
     			 <td class="green">OK</td>
-    			{% endif %}    
+    			{% endif %}
     			<td>{{ document.path }}</td>
             </tr>
             {% endfor %}
         </tbody>
-        
+
     </table>
-    
+
 {%  endblock %}

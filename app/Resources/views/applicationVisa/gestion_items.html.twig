@@ -7,7 +7,7 @@
 {% block body %}
     <h1 class="page-header text-center">
         Affaire {{ affaire.numeroAffaire }} : {{ affaire.nomAffaire }}
-        <a href = "{{ path('affaire_details',{'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur, 'numeroAffaire':affaire.numeroAffaire, 'idAffaire':affaire.idAffaire}) }}">
+        <a href = "{{ path('affaire_details',{'numeroAffaire':affaire.numeroAffaire}) }}">
             <i class="fa fa-reply" aria-hidden="true"></i>
         </a>
     </h1>
@@ -54,7 +54,7 @@
                 <td></td>
                 <td>{{ item.tag }}</td>
                 <td>
-                    <a href = "{{path('visa_remarques', {'nomOrganisme':nomOrganisme, 'nomUtilisateur':nomUtilisateur, 'numeroAffaire':affaire.numeroAffaire, 'idAffaire':affaire.idAffaire, 'idLot':lot.idLot, 'idItem':item.idItem } )}}">
+                    <a href = "{{path('visa_remarques', { 'numeroAffaire':affaire.numeroAffaire,  'numeroLot':lot.numeroLot, 'idItem':item.idItem } )}}">
 						<i class="fa fa-check-circle-o fa-lg" aria-hidden="true"></i>
 					</a>
                     {{ item.nomItem }}

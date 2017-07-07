@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Lots;
 use AppBundle\Entity\Visas;
 use AppBundle\Form\VisaFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -30,23 +31,67 @@ class VisaController extends Controller {
 	}
 
 	/**
+	 * Page permettant la visualisation de l'accueil, equivalent a la route affaires pour l'instant
+	 *
+	 * @Route("/Accueil", name="accueil")
+	 */
+	public function showAccueil(){
+		return $this->redirectToRoute('affaires');
+	}
+	/**
 	 * Page permettant la visualisation des affaires de l'utilisateur
 	 *
 	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires", name="affaires")
 	 */
-	public function showVueAffaires($nomOrganisme, $nomUtilisateur)
+	// public function showVueAffaires($nomOrganisme, $nomUtilisateur)
+	// {
+	//
+	// 	$entityManager = $this->getDoctrine()->getManager();
+	// 	$organisme = $entityManager->getRepository('AppBundle\Entity\Organismes')
+	// 		->findOneBy(['nomOrganisme' => $nomOrganisme]);
+	//
+	// 	//Recuperation des affaires (concernant l'utilisateur - A IMPLEMENTER)
+	// 	$listeAffairesUtilisateur =  $organisme->getAffaires();
+	//
+	// 	return $this->render('applicationVisa/accueil_utilisateur.html.twig',[
+	// 			'nomOrganisme' 				=> $nomOrganisme,
+	// 			'nomUtilisateur'			=> $nomUtilisateur,
+	// 			'listeAffairesUtilisateur' 	=> $listeAffairesUtilisateur
+	// 	]);
+	// }
+
+	/**
+	 * Page permettant la visualisation des affaires de l'utilisateur
+	 *
+	 * @Route("/Affaires", name="affaires")
+	 */
+	public function showAffairesUt()
 	{
 
-		$entityManager = $this->getDoctrine()->getManager();
-		$organisme = $entityManager->getRepository('AppBundle\Entity\Organismes')
-			->findOneBy(['nomOrganisme' => $nomOrganisme]);
+		if (!$this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
+			$this->addFlash('error','ACCES INTERDIT : Vous devez etre connecte ou n\'avez pas les droits.');
+		    throw $this->createAccessDeniedException('GET OUT!');
+		}
+
+		//$this->denyAccessUnlessGranted('ROLE_USER');
+
+
+
+
+		$utilisateur = $this->getUser();
+		$organisme = $utilisateur->getIdOrganisme();
+
+
+
+		// $entityManager = $this->getDoctrine()->getManager();
+		// $organisme = $entityManager->getRepository('AppBundle\Entity\Organismes')
+		// 	->findOneBy(['nomOrganisme' => $nomOrganisme]);
 
 		//Recuperation des affaires (concernant l'utilisateur - A IMPLEMENTER)
 		$listeAffairesUtilisateur =  $organisme->getAffaires();
 
-		return $this->render('applicationVisa/accueil_utilisateur.html.twig',[
-				'nomOrganisme' 				=> $nomOrganisme,
-				'nomUtilisateur'			=> $nomUtilisateur,
+		return $this->render('applicationVisa/accueil.html.twig',[
+				'organisme' 				=> $organisme,
 				'listeAffairesUtilisateur' 	=> $listeAffairesUtilisateur
 		]);
 	}
@@ -54,15 +99,10 @@ class VisaController extends Controller {
 	/**
 	 * Page de création d'une nouvelle affaire
 	 *
-	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Nouvelle", name="creer_affaire")
+	 * @Route("/Affaires/Nouvelle", name="creer_affaire")
 	 */
-	public function newAffaire($nomOrganisme,$nomUtilisateur, Request $request)
+	public function newAffaire(Request $request)
 	{
-// 		$affaire = new Affaires();
-// 		$affaire->setNomAffaire('L\'affaire du si�cle');
-// 		$entityManager = $this->getDoctrine()->getManager();
-// 		$entityManager->persist($affaire);
-// 		$entityManager->flush();
 
 		$form = $this->createForm(AffaireFormType::class);
 		$form->handleRequest($request);
@@ -72,9 +112,9 @@ class VisaController extends Controller {
 			$entityManager->persist($nouvelleAffaire);
 			$entityManager->flush();
 
-			$this->addFlash('success', 'Affaire créée !');
+			$this->addFlash('success', 'Affaire creee !');
 
-			return $this->redirectToRoute('login');
+			return $this->redirectToRoute('affaires');
 		}
 
 		return $this->render('applicationVisa/nouvelle_affaire.html.twig', [
@@ -83,18 +123,19 @@ class VisaController extends Controller {
 	}
 
 	/**
-	 * Page de visualisation d'une affaire en d�tails
+	 * Page de visualisation d'une affaire en details
 	 *
-	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Affaire{numeroAffaire}/ID{idAffaire}", name="affaire_details")
+	 * @Route("/Affaires/Affaire{numeroAffaire}", name="affaire_details")
 	 */
-	public function showAffaire($nomOrganisme, $nomUtilisateur, $numeroAffaire, $idAffaire, Request $request)
+	public function showAffaire($numeroAffaire, Request $request)
 	{
+		$utilisateur = $this->getUser();
 		$listeItems = [];
 		$listeVisas = [];
 		$entityManager = $this->getDoctrine()->getManager();
 
 		$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
-			->findOneBy(['numeroAffaire'=>$numeroAffaire])
+			->findOneBy(['numeroAffaire'=>$numeroAffaire, 'idOrganisme'=> $utilisateur->getIdOrganisme()])
 		;
 
 		if(!$affaire)
@@ -102,22 +143,27 @@ class VisaController extends Controller {
 			throw $this->createNotFoundException('Erreur 404 not found: L\'affaire demandee est introuvable');
 		}
 
-		//Creation du formulaire pour un nouveau lot
-		$form = $this->createForm(LotFormType::class);
+		//Creation du formulaire pour un nouveau lot, on doit initaliser l'affaire avant afin de pouvoir faire la verification de numero de lot unique
+		$nouveauLot = new Lots;
+		$nouveauLot->setAffaire($affaire);
+		$form = $this->createForm(LotFormType::class, $nouveauLot);
 		$form->handleRequest($request);
+
 		if ($form->isSubmitted() && $form->isValid()){
+
 			$nouveauLot = $form->getData();
-			$nouveauLot->setIdAffaire($affaire) ;
+
 			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($nouveauLot);
 			$entityManager->flush();
 
-			$this->addFlash('success', 'Lot cree ! (LOT N'.$nouveauLot->getNumeroLot().' '.$nouveauLot->getNomLot().')' );
+			$this->addFlash('success', 'Lot cree ! (LOT '.$nouveauLot->getNumeroLot().' : '.$nouveauLot->getNomLot().')' );
 
-			//return $this->redirectToRoute('visa_login');
+			//redirection vers la meme url
+			return $this->redirect($request->getUri());
 		}
 
-		//On r�cup�re dans la BDD les lots rattach�s � l'affaire (l'allotissement) et on charge les items eventuels
+		//On recupere dans la BDD les lots rattaches a l'affaire (l'allotissement) et on charge les items eventuels
 		$allotissement = $affaire->getLots();
 
 		if ($allotissement)
@@ -143,10 +189,7 @@ class VisaController extends Controller {
 
 		$data =
 		[
-				'nomOrganisme'				=> $nomOrganisme,
-				'nomUtilisateur'			=> $nomUtilisateur,
-				'numeroAffaire'				=> $numeroAffaire,
-				'idAffaire' 				=> $idAffaire,
+				'affaire' 					=> $affaire,
 
 				'listeDocumentsAffaire' 	=> $listeDocumentsAffaire,
 				'allotissement' 			=> $allotissement,
@@ -161,23 +204,25 @@ class VisaController extends Controller {
 	}
 
 	/**
-	 * Page de  gestion des items pour un lot (modification et cr�ation d'items)
+	 * Page de  gestion des items pour un lot (modification et creation d'items)
 	 *
-	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Affaire{numeroAffaire}/ID{idAffaire}/Lot{idLot}", name="gestion_items")
+	 * @Route("/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}", name="gestion_items")
 	 */
-	public function showGestionItems($nomOrganisme, $nomUtilisateur, $numeroAffaire, $idAffaire, $idLot, Request $request){
+	public function showGestionItems($numeroAffaire, $numeroLot, Request $request){
 
 		$types = ['Plan','NDC','Materiel','Autre'];
+		$utilisateur = $this->getUser();
 
 		$entityManager = $this->getDoctrine()->getManager();
 		$listeItems = new ArrayCollection();
 		$listeVisas = new ArrayCollection();
 		$listeRemarques =  new ArrayCollection();
-		$affaire = $entityManager->getRepository ( 'AppBundle\Entity\Affaires' )
-			->findOneBy ([ 'idAffaire' => $idAffaire ])
+
+		$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
+			->findOneBy(['numeroAffaire'=>$numeroAffaire, 'idOrganisme'=> $utilisateur->getIdOrganisme()])
 		;
 		$lot = $entityManager->getRepository('AppBundle\Entity\Lots')
-			->findOneBy(['idLot'=>$idLot])
+			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
 		;
 
 		//On recupere pour chaque type les items du lot et les visas correspondants
@@ -207,18 +252,14 @@ class VisaController extends Controller {
 
 			$this->addFlash('success', 'Item cree !');
 
-			//return $this->redirectToRoute('visa_login');
-
+			return $this->redirect($request->getUri());
 		}
 
 
 
 		$data =
 		[
-				'nomOrganisme'				=> $nomOrganisme,
-				'nomUtilisateur'			=> $nomUtilisateur,
 				'numeroAffaire'				=> $numeroAffaire,
-				'idAffaire' 				=> $idAffaire,
 
 				'lot' 						=> $lot,
 				'affaire'					=> $affaire,
@@ -239,9 +280,9 @@ class VisaController extends Controller {
 	/**
 	 * Edition des remarques d'un visa
 	 *
-	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires/Affaire{numeroAffaire}/ID{idAffaire}/Lot{idLot}/Item{idItem}", name="visa_remarques")
+	 * @Route("/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/Item{idItem}", name="visa_remarques")
 	 */
-	public function showVisaRemarques($nomOrganisme, $nomUtilisateur, $numeroAffaire, $idAffaire, $idLot, $idItem, Request $request) {
+	public function showVisaRemarques($numeroAffaire, $numeroLot, $idItem, Request $request) {
 
 		//On verifie que l'Utilisateur est autorise
 		//1
@@ -288,15 +329,14 @@ class VisaController extends Controller {
 					$item->getNomItem()
 				)
 			);
+
+			return $this->redirectToRoute('gestion_items', array('numeroAffaire' => $numeroAffaire, 'numeroLot' => $numeroLot));
 		}
 
 
 		$data =
 		[
-				'nomOrganisme'				=> $nomOrganisme,
-				'nomUtilisateur'			=> $nomUtilisateur,
 				'numeroAffaire'				=> $numeroAffaire,
-				'idAffaire' 				=> $idAffaire,
 
 				'item'						=> $item,
 				'form'						=> $form->createView()

@@ -95,6 +95,10 @@ body {
     padding-top: 25px;
 }
 
+.navi li {
+    margin: 0 5px 0 5px;
+}
+
 .navi li a {
     text-decoration: none;
     color: #3a3a3a;

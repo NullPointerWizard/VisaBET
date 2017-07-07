@@ -3,12 +3,25 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Entity\Affaires;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Lots
  *
- * @ORM\Table(name="lots", indexes={@ORM\Index(name="noms_lots_lots_fk", columns={"id_nom_lot"}), @ORM\Index(name="affaires_lots_fk", columns={"id_affaire"})})
+ * @ORM\Table(
+ *  name="lots",
+ *  indexes={
+ *      @ORM\Index(name="noms_lots_lots_fk", columns={"id_nom_lot"}),
+ *      @ORM\Index(name="affaires_lots_fk", columns={"id_affaire"}),
+ *      @ORM\Index(name="affaires_numero_lot_index", columns={"numero_lot","id_affaire"} )
+ *  },
+ *  uniqueConstraints={@ORM\UniqueConstraint(name="noLotUnique", columns={"numero_lot","id_affaire"}) }
+ * )
  * @ORM\Entity(repositoryClass="AppBundle\Repository\LotsRepository")
+ *
+ * @UniqueEntity( fields={"numeroLot", "affaire"}, message="Ce numero de lot existe deja pour cette affaire" )
+ *
  */
 class Lots
 {
@@ -41,9 +54,8 @@ class Lots
      *  referencedColumnName="id_affaire",
      *  nullable=false
      *  )
-     *
      */
-    private $idAffaire;
+    private $affaire;
 
     /**
      * @var \AppBundle\Entity\NomsLots
@@ -100,27 +112,27 @@ class Lots
     }
 
     /**
-     * Set idAffaire
+     * Set affaire
      *
-     * @param \AppBundle\Entity\Affaires $idAffaire
+     * @param \AppBundle\Entity\Affaires $affaire
      *
      * @return Lots
      */
-    public function setIdAffaire(\AppBundle\Entity\Affaires $idAffaire = null)
+    public function setAffaire(\AppBundle\Entity\Affaires $affaire = null)
     {
-        $this->idAffaire = $idAffaire;
+        $this->affaire = $affaire;
 
         return $this;
     }
 
     /**
-     * Get idAffaire
+     * Get affaire
      *
      * @return \AppBundle\Entity\Affaires
      */
-    public function getIdAffaire()
+    public function getAffaire()
     {
-        return $this->idAffaire;
+        return $this->affaire;
     }
 
     /**
@@ -160,4 +172,8 @@ class Lots
     	return $this->getIdNomLot()->getNomLot();
     }
 
+    public function getIdAffaire()
+    {
+        return $this->affaire->getIdAffaire();
+    }
 }

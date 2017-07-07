@@ -78,7 +78,7 @@ AppBundle\Entity\NomsLots:
 AppBundle\Entity\Lots:
   lot_{1..30}:
     numeroLot: <numberBetween($min = 1, $max = 40)>
-    idAffaire: '@affaire_*'
+    affaire: '@affaire_*'
     idNomLot: '@nomLot_*'
 
 AppBundle\Entity\Items:

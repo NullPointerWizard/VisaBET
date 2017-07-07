@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -64,7 +65,7 @@ class Affaires
      * 	targetEntity="AppBundle\Entity\Organismes",
      * 	inversedBy="affaires"
      * )
-     * 
+     *
      * @ORM\JoinColumn(
      * 	name="id_organisme",
      * 	referencedColumnName="id_organisme",
@@ -79,9 +80,9 @@ class Affaires
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Utilisateur", mappedBy="idAffaire")
      */
     private $idUtilisateur;
-    
+
     /**
-     * Listes des documents liés à l'affaire
+     * Listes des documents liï¿½s ï¿½ l'affaire
      *
      * @ORM\OneToMany(
      * 	targetEntity="Documents",
@@ -89,17 +90,17 @@ class Affaires
      * )
      */
     private $documents;
-    
+
     /**
-     * Listes des lots liés à l'affaire
+     * Listes des lots lies a l'affaire
      *
      * @ORM\OneToMany(
      * 	targetEntity="Lots",
-     * 	mappedBy="idAffaire"
+     * 	mappedBy="affaire"
      * )
      */
 	private $lots;
-    
+
     /**
      * Constructor
      */
@@ -196,14 +197,18 @@ class Affaires
     /**
      * Set dateButoir
      *
-     * @param string $dateButoir
+     * @param \DateTime $dateButoir
      *
      * @return Affaires
      */
     public function setDateButoir($dateButoir)
     {
-    	//Fonction modifiée, ajout de la création de l'objet DateTime à partir d'un string
-        $this->dateButoir = new \DateTime($dateButoir);
+    	//Fonction modifiï¿½e, ajout de la crï¿½ation de l'objet DateTime ï¿½ partir d'un string
+        if ($dateButoir instanceof DateTime){
+            $this->dateButoir = $dateButoir;
+        }else{
+            $this->dateButoir = new \DateTime($dateButoir);
+        }
 
         return $this;
     }
@@ -299,16 +304,21 @@ class Affaires
     {
         return $this->idUtilisateur;
     }
-    
-	public function getDocuments() 
+
+	public function getDocuments()
 	{
 		return $this->documents;
 	}
-	
-	public function getLots() 
+
+	public function getLots()
 	{
 		return $this->lots;
 	}
-	
-	
+
+    public function __toString()
+    {
+        return $this->getNomAffaire();
+    }
+
+
 }

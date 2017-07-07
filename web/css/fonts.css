@@ -3,11 +3,12 @@
 	src : url(/fonts/airstrike/airstrikebullet.ttf) format("truetype");
 }
 
-header{
+.header{
 	font-family: 'titre', Arial, Sans-Serif;
+	color:white;
+	font-size: 20px;
 }
 
 .visa-title{
-    color: white;
 	font-size: 50px;
 }
