@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Lots;
 use AppBundle\Entity\Visas;
 use AppBundle\Form\VisaFormType;
+use AppBundle\Form\AjouterUtilisateurSurAffaireFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Form\AffaireFormType;
@@ -75,20 +76,12 @@ class VisaController extends Controller {
 
 		//$this->denyAccessUnlessGranted('ROLE_USER');
 
-
-
-
 		$utilisateur = $this->getUser();
 		$organisme = $utilisateur->getIdOrganisme();
 
-
-
-		// $entityManager = $this->getDoctrine()->getManager();
-		// $organisme = $entityManager->getRepository('AppBundle\Entity\Organismes')
-		// 	->findOneBy(['nomOrganisme' => $nomOrganisme]);
-
 		//Recuperation des affaires (concernant l'utilisateur - A IMPLEMENTER)
-		$listeAffairesUtilisateur =  $organisme->getAffaires();
+		//$listeAffairesUtilisateur =  $organisme->getAffaires();
+		$listeAffairesUtilisateur = $utilisateur->getListeAffaires();
 
 		return $this->render('applicationVisa/accueil.html.twig',[
 				'organisme' 				=> $organisme,
@@ -147,7 +140,8 @@ class VisaController extends Controller {
 		$nouveauLot = new Lots;
 		$nouveauLot->setAffaire($affaire);
 		$form = $this->createForm(LotFormType::class, $nouveauLot);
-		$form->handleRequest($request);
+		// A DECOMMENTER
+		//$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()){
 
@@ -158,6 +152,30 @@ class VisaController extends Controller {
 			$entityManager->flush();
 
 			$this->addFlash('success', 'Lot cree ! (LOT '.$nouveauLot->getNumeroLot().' : '.$nouveauLot->getNomLot().')' );
+
+			//redirection vers la meme url
+			return $this->redirect($request->getUri());
+		}
+
+
+		//Creation du formulaire pour ajouter un utilisateur a l'affaire
+		$addUtilisateurForm = $this->createForm(AjouterUtilisateurSurAffaireFormType::class);
+		$addUtilisateurForm->handleRequest($request);
+
+		if ($addUtilisateurForm->isSubmitted() && $addUtilisateurForm->isValid()){
+
+			$entityManager = $this->getDoctrine()->getManager();
+
+			foreach( $addUtilisateurForm->getData()->getListeUtilisateur() as $utilisateurSupplementaire)
+			{
+				$affaire->addListeUtilisateur($utilisateurSupplementaire);
+				$utilisateurSupplementaire->addAffaire($affaire);
+				$entityManager->persist($utilisateurSupplementaire);
+			}
+			$entityManager->persist($affaire);
+			$entityManager->flush();
+
+			$this->addFlash('success', 'Utilisateur '.$utilisateurSupplementaire.' ajoute ! ' );
 
 			//redirection vers la meme url
 			return $this->redirect($request->getUri());
@@ -184,20 +202,23 @@ class VisaController extends Controller {
 
 		}
 
-		//On r�cup�re dans la BDD les documents rattach�s � l'affaire
+		//On recupere dans la BDD les documents rattaches a l'affaire
 		$listeDocumentsAffaire = $affaire->getDocuments();
+		$listeUtilisateursAffaire = $affaire->getListeUtilisateur();
 
 		$data =
 		[
 				'affaire' 					=> $affaire,
 
+				'listeUtilisateursAffaire'	=> $listeUtilisateursAffaire,
 				'listeDocumentsAffaire' 	=> $listeDocumentsAffaire,
 				'allotissement' 			=> $allotissement,
 				'listeItems'				=> $listeItems,
 				'listeVisas'				=> $listeVisas,
 				'affaire'					=> $affaire,
 
-				'lotForm' 					=> $form->createView()
+				'lotForm' 					=> $form->createView(),
+				'utilisateurForm'			=> $addUtilisateurForm->createView()
 		];
 		return $this->render('applicationVisa/affaire_details.html.twig', $data);
 

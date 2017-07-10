@@ -36,7 +36,7 @@ AppBundle\Entity\Utilisateur:
     statut: 'Visa'
     nom: <lastName()>
     prenom: <firstName()>
-    mail: <firstName>.<lastName()>@visa.fr
+    mail: <firstName()>.<lastName()>@visa.fr
     idOrganisme: '@louvet'
     plainPassword: 'coin'
   admin:
@@ -133,3 +133,8 @@ AppBundle\Entity\RemarquesVisa:
     remarque:  <text(300)>
     idVisa: '@visas_*'
     idTypeRemarque: '@type_rem_*'
+
+# AppBundle\Entity\TravailleSur:
+#   travail_sur_{1..20}:
+#     idUtilisateur: '@utilisateur_Louvet_*'
+#     idAffaire: '@affaire_*'

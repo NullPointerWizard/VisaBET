@@ -97,9 +97,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
        // the URL they were on, and probably where you want to redirect to
        //$targetPath = $this->getTargetPath($request->getSession(), $providerKey);
 
-       //if (!$targetPath) {
-            $targetPath = $this->router->generate('travaux');
-       //}
+    //    if (!$targetPath) {
+             $targetPath = $this->router->generate('accueil');
+    //    }
 
        return new RedirectResponse($targetPath);
    }

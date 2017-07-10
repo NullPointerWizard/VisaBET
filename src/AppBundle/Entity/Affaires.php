@@ -77,9 +77,9 @@ class Affaires
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Utilisateur", mappedBy="idAffaire")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Utilisateur", mappedBy="listeAffaires")
      */
-    private $idUtilisateur;
+    private $listeUtilisateur;
 
     /**
      * Listes des documents li�s � l'affaire
@@ -106,7 +106,7 @@ class Affaires
      */
     public function __construct()
     {
-        $this->idUtilisateur = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->listeUtilisateur = new \Doctrine\Common\Collections\ArrayCollection();
         $this->documents = new ArrayCollection();
         $this->lots = new ArrayCollection();
     }
@@ -272,37 +272,40 @@ class Affaires
     }
 
     /**
-     * Add idUtilisateur
+     * Add utilisateur
      *
-     * @param \AppBundle\Entity\Utilisateur $idUtilisateur
+     * @param \AppBundle\Entity\Utilisateur $utilisateur
      *
      * @return Affaires
      */
-    public function addIdUtilisateur(\AppBundle\Entity\Utilisateur $idUtilisateur)
+    public function addListeUtilisateur(\AppBundle\Entity\Utilisateur $utilisateur)
     {
-        $this->idUtilisateur[] = $idUtilisateur;
+        if ($this->listeUtilisateur->contains($utilisateur)) {
+           return;
+       }
+        $this->listeUtilisateur->add($utilisateur);
 
         return $this;
     }
 
     /**
-     * Remove idUtilisateur
+     * Remove utilisateur
      *
-     * @param \AppBundle\Entity\Utilisateur $idUtilisateur
+     * @param \AppBundle\Entity\Utilisateur $utilisateur
      */
-    public function removeIdUtilisateur(\AppBundle\Entity\Utilisateur $idUtilisateur)
+    public function removeListeUtilisateur(\AppBundle\Entity\Utilisateur $utilisateur)
     {
-        $this->idUtilisateur->removeElement($idUtilisateur);
+        $this->listeUtilisateur->removeElement($utilisateur);
     }
 
     /**
-     * Get idUtilisateur
+     * Get listeUtilisateur
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getIdUtilisateur()
+    public function getListeUtilisateur()
     {
-        return $this->idUtilisateur;
+        return $this->listeUtilisateur;
     }
 
 	public function getDocuments()

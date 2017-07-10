@@ -105,7 +105,7 @@ class Utilisateur implements UserInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Affaires", inversedBy="idUtilisateur")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Affaires", inversedBy="listeUtilisateur")
      * @ORM\JoinTable(name="work_on",
      *   joinColumns={
      *     @ORM\JoinColumn(name="id_utilisateur", referencedColumnName="id_utilisateur")
@@ -115,14 +115,14 @@ class Utilisateur implements UserInterface
      *   }
      * )
      */
-    private $idAffaire;
+    private $listeAffaires;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idAffaire = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->listeAffaires = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -281,37 +281,41 @@ class Utilisateur implements UserInterface
     }
 
     /**
-     * Add idAffaire
+     * Add affaire
      *
-     * @param \AppBundle\Entity\Affaires $idAffaire
+     * @param \AppBundle\Entity\Affaires $affaire
      *
      * @return Utilisateur
      */
-    public function addIdAffaire(\AppBundle\Entity\Affaires $idAffaire)
+    public function addAffaire(\AppBundle\Entity\Affaires $affaire)
     {
-        $this->idAffaire[] = $idAffaire;
+        // On n'ajoute pas l'affaire si elle y est déjà
+        if ($this->listeAffaires->contains($affaire)) {
+           return;
+        }
+        $this->listeAffaires->add($affaire);
 
         return $this;
     }
 
     /**
-     * Remove idAffaire
+     * Remove affaire
      *
-     * @param \AppBundle\Entity\Affaires $idAffaire
+     * @param \AppBundle\Entity\Affaires $affaire
      */
-    public function removeIdAffaire(\AppBundle\Entity\Affaires $idAffaire)
+    public function removeAffaire(\AppBundle\Entity\Affaires $affaire)
     {
-        $this->idAffaire->removeElement($idAffaire);
+        $this->listeAffaires->removeElement($affaire);
     }
 
     /**
-     * Get idAffaire
+     * Get listeAffaires
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getIdAffaire()
+    public function getListeAffaires()
     {
-        return $this->idAffaire;
+        return $this->listeAffaires;
     }
 
     /*

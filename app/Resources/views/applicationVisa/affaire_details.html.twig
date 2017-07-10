@@ -30,7 +30,7 @@
         <thead>
             <tr>
                 <th>N°</th>
-                <th>Intitulé du lot</th>
+                <th>Nom du lot</th>
             </tr>
         </thead>
         <tbody>
@@ -95,6 +95,43 @@
     			 <td class="green">OK</td>
     			{% endif %}
     			<td>{{ document.path }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+
+    <h3>Personnes</h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                {{ form_start(utilisateurForm) }}
+                {{ form_row(utilisateurForm.listeUtilisateur) }}
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Ajouter une personne
+                </button>
+                {{ form_end(utilisateurForm) }}
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Organisme</th>
+                <th>Nom</th>
+                <th>Mail</th>
+                <th>Tel</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for utilisateur in listeUtilisateursAffaire %}
+            <tr>
+                <td>{{ utilisateur.idOrganisme }}</td>
+                <td>{{ utilisateur.nom|upper }} {{utilisateur.prenom}} </td>
+                <td>{{ utilisateur.mail }}</td>
+                <td>{{ utilisateur.tel }}</td>
             </tr>
             {% endfor %}
         </tbody>
