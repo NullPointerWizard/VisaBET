@@ -31,3 +31,10 @@ li.non-conforme{
 li.non-traite{
 	background-color: #b777a2;
 }
+
+.dropzone-documents {
+	margin-right: 20px;
+	margin-left: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}

@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Entity\Affaires;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Documents
@@ -79,6 +81,10 @@ class Documents
      */
     private $idAffaire;
 
+    /**
+    * Fichier correspondant au document
+    */
+    private $file;
 
 
     /**
@@ -258,6 +264,57 @@ class Documents
     {
         return $this->idAffaire;
     }
+
+
+
+    // ------------- GESTION DES FICHIERS ---------------
+    // sourcce : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2/creer-des-formulaires-avec-symfony2#r-2087628
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+    }
+
+    public function upload(Affaires $affaire)
+    {
+        // Si jamais il n'y a pas de fichier (champ facultatif), on ne fait rien
+        if (null === $this->file) {
+            return;
+        }
+
+        // On récupère le nom original du fichier de l'internaute
+        $filename = $this->file->getClientOriginalName();
+
+        // On déplace le fichier envoyé dans le répertoire de notre choix
+        $this->file->move($this->getUploadRootDir($affaire), $filename);
+
+        // On sauvegarde le nom de fichier dans notre attribut $url
+        $this->filename = $filename;
+
+        $this->etat = '0';
+        $this->path = $this->getUploadDir($affaire).'/'.$filename;
+
+
+    }
+
+    public function getUploadDir(Affaires $affaire)
+    {
+        // On retourne le chemin relatif vers l'image pour un navigateur (relatif au répertoire /web donc)
+        return 'uploads/documents/'.$affaire->getIdOrganisme()->getFolderName().'/'.$affaire->getFolderName();
+    }
+
+    protected function getUploadRootDir(Affaires $affaire)
+    {
+        // On retourne le chemin relatif vers l'image pour notre code PHP
+        return __DIR__.'/../../../web/'.$this->getUploadDir($affaire);
+    }
+
+    // -------------------- AUTRE -----------------------
 
     public function __toString(){
         return $this->getFilename();

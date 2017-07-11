@@ -75,7 +75,7 @@ class Affaires
     private $idOrganisme;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Utilisateur", mappedBy="listeAffaires")
      */
@@ -317,6 +317,11 @@ class Affaires
 	{
 		return $this->lots;
 	}
+
+    public function getFolderName()
+    {
+        return 'Affaire_'.$this->getNumeroAffaire();
+    }
 
     public function __toString()
     {

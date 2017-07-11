@@ -2,7 +2,7 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\Affaires;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,16 +15,23 @@ class AjouterUtilisateurSurAffaireFormType extends AbstractType {
 
 	public function buildForm(FormBuilderInterface $builder, array $options){
 		$builder
-			->add('listeUtilisateur', null , array(
-                'label'     => 'Utilisateur'
-            ))
-        ;
+			->add('utilisateurs', EntityType::class , array(
+				'label'     	=> 'Utilisateur',
+				'class' 		=> 'AppBundle\Entity\Utilisateur',
+				//'choices' =>
+
+				//Permet de gerer la forme d'affichage(checkbox, tag, radio)
+				'multiple' 		=> true, //change la valeur de retour en ArrayCollection
+     			'expanded' 		=> true
+			))
+		;
 	}
 
-    //Cette methode ne fait rien pour ce formulaire
 	public function configureOptions(OptionsResolver $resolver){
 		$resolver->setDefaults([
-				'data_class' => Affaires::class
+				'data_class' => null, //ArrayCollection::class ,
+				'validation_groups' => array('Default')
 		]);
 	}
+
 }

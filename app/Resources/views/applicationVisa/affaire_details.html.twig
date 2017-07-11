@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}" />
+{% endblock %}
+
 {% block body %}
     <h2 class="text-center">
         Affaire {{ affaire.numeroAffaire }}</br>
@@ -14,7 +19,6 @@
     <div class="container">
     	<div class="row">
     		<div class="col-xs-12">
-    			<h2>Nouveau Lot</h2>
     			{{ form_start(lotForm) }}
     			{{ form_row(lotForm.numeroLot) }}
                 {{ form_row(lotForm.idNomLot) }}
@@ -64,12 +68,17 @@
 
 
     <h3>Documents</h3>
-    <div class="">
-        <a href = "{{ path('travaux') }}">
-            <button type="button" class="btn btn-primary">
-                <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Ajouter un document
-            </button>
-        </a>
+    <div class="container">
+        <div class="row">
+    		<div class="col-xs-12">
+                {{ form_start(filesForm)}}
+                {{ form_widget(filesForm) }}
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Ajouter un document
+                </button>
+                {{ form_end(filesForm) }}
+            </div>
+        </div>
     </div>
     <table class="table table-striped">
         <thead>
@@ -107,10 +116,10 @@
         <div class="row">
             <div class="col-xs-12">
                 {{ form_start(utilisateurForm) }}
-                {{ form_row(utilisateurForm.listeUtilisateur) }}
+                {{ form_row(utilisateurForm.utilisateurs) }}
 
                 <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Ajouter une personne
+                    <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Ajouter
                 </button>
                 {{ form_end(utilisateurForm) }}
             </div>
@@ -139,3 +148,8 @@
     </table>
 
 {%  endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/dropzone/dropzone.js') }}" ></script>
+{% endblock %}

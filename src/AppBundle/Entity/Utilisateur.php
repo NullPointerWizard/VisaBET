@@ -41,7 +41,7 @@ class Utilisateur implements UserInterface
      *  length=100,
      *  nullable=false
      * )
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"creer_utilisateur"})
      * @Assert\Email(message="Vérifiez le format de l'adresse")
      *
      */
@@ -60,7 +60,7 @@ class Utilisateur implements UserInterface
     * A non-persisted field that's used to create the encoded password.
     *
     * @var string
-    * @Assert\NotBlank()
+    * @Assert\NotBlank(groups={"creer_utilisateur"})
     */
     private $plainPassword;
 
@@ -103,7 +103,7 @@ class Utilisateur implements UserInterface
     private $idOrganisme;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Affaires", inversedBy="listeUtilisateur")
      * @ORM\JoinTable(name="work_on",

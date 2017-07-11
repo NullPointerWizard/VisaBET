@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Organismes
 {
-	
+
     /**
      * @var integer
      *
@@ -29,11 +29,11 @@ class Organismes
      * @ORM\Column(name="nom_organisme", type="string", length=50, nullable=false)
      */
     private $nomOrganisme;
-    
-    
+
+
     /**
      * Listes des affaires de l'organisme
-     * 
+     *
      * @ORM\OneToMany(
      * 	targetEntity="Affaires",
      * 	mappedBy="idOrganisme"
@@ -82,16 +82,47 @@ class Organismes
     {
         return $this->nomOrganisme;
     }
-    
-    public function getAffaires() 
+
+    public function getAffaires()
     {
     	return $this->affaires;
     }
-    
+
+	public function getFolderName()
+	{
+		$text = $this->getNomOrganisme();
+		//SLUGIFY PART
+		// replace non letter or digits by -
+		$text = preg_replace('~[^\pL\d]+~u', '-', $text);
+
+	    // transliterate
+	    $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+	    // remove unwanted characters
+	    $text = preg_replace('~[^-\w]+~', '', $text);
+
+	    // trim
+	    $text = trim($text, '-');
+
+	    // remove duplicate -
+	    $text = preg_replace('~-+~', '-', $text);
+
+	    // lowercase
+	    $text = strtolower($text);
+
+	    if (empty($text)) {
+	      return 'n-a';
+	    }
+				
+		return $text;
+	}
+
+
+
     public function __toString()
     {
     	return $this->getNomOrganisme();
     }
-	
-	
+
+
 }

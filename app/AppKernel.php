@@ -19,6 +19,8 @@ class AppKernel extends Kernel
         	new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
         	new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
         	new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+
+            // Generation de pdf a partir des donnees
             new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
             
         	new AppBundle\AppBundle(),

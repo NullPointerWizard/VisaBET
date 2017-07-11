@@ -36,7 +36,8 @@ class CreerUtilisateurFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class'    => Utilisateur::class
+            'data_class'    => Utilisateur::class,
+            'validation_groups' => array('creer_utilisateur')
         ]);
     }
 }

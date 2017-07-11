@@ -5,7 +5,9 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Lots;
 use AppBundle\Entity\Visas;
 use AppBundle\Form\VisaFormType;
+use AppBundle\Form\UploadFileFormType;
 use AppBundle\Form\AjouterUtilisateurSurAffaireFormType;
+use AppBundle\Entity\Documents;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Form\AffaireFormType;
@@ -136,12 +138,11 @@ class VisaController extends Controller {
 			throw $this->createNotFoundException('Erreur 404 not found: L\'affaire demandee est introuvable');
 		}
 
-		//Creation du formulaire pour un nouveau lot, on doit initaliser l'affaire avant afin de pouvoir faire la verification de numero de lot unique
+		// Creation du formulaire pour un nouveau lot, on doit initaliser l'affaire avant afin de pouvoir faire la verification de numero de lot unique
 		$nouveauLot = new Lots;
 		$nouveauLot->setAffaire($affaire);
 		$form = $this->createForm(LotFormType::class, $nouveauLot);
-		// A DECOMMENTER
-		//$form->handleRequest($request);
+		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()){
 
@@ -157,31 +158,46 @@ class VisaController extends Controller {
 			return $this->redirect($request->getUri());
 		}
 
+		// Creation du formulaire pour uploader des documents
+		$filesForm = $this->createForm(UploadFileFormType::class, $nouveauDoc = new Documents );
+		$filesForm->handleRequest($request);
+		if ($filesForm->isSubmitted() && $filesForm->isValid()) {
+			$nouveauDoc = $filesForm->getData();
+			$nouveauDoc->upload($affaire);
+			$nouveauDoc->setDateReception('now');
+			$nouveauDoc->setDateLimiteVisa('now');
+			$nouveauDoc->setIdAffaire($affaire);
 
-		//Creation du formulaire pour ajouter un utilisateur a l'affaire
+			$entityManager = $this->getDoctrine()->getManager();
+			$entityManager->persist($nouveauDoc);
+			$entityManager->flush();
+		}
+
+		// Creation du formulaire pour ajouter un utilisateur a l'affaire
 		$addUtilisateurForm = $this->createForm(AjouterUtilisateurSurAffaireFormType::class);
 		$addUtilisateurForm->handleRequest($request);
 
 		if ($addUtilisateurForm->isSubmitted() && $addUtilisateurForm->isValid()){
 
 			$entityManager = $this->getDoctrine()->getManager();
+			$data = $addUtilisateurForm->getData();
 
-			foreach( $addUtilisateurForm->getData()->getListeUtilisateur() as $utilisateurSupplementaire)
+			foreach($data['utilisateurs']  as $utilisateurSupplementaire)
 			{
 				$affaire->addListeUtilisateur($utilisateurSupplementaire);
 				$utilisateurSupplementaire->addAffaire($affaire);
 				$entityManager->persist($utilisateurSupplementaire);
+
+				$this->addFlash('success', 'Utilisateur '.$utilisateurSupplementaire.' ajoute ! ' );
 			}
 			$entityManager->persist($affaire);
 			$entityManager->flush();
-
-			$this->addFlash('success', 'Utilisateur '.$utilisateurSupplementaire.' ajoute ! ' );
 
 			//redirection vers la meme url
 			return $this->redirect($request->getUri());
 		}
 
-		//On recupere dans la BDD les lots rattaches a l'affaire (l'allotissement) et on charge les items eventuels
+		// On recupere dans la BDD les lots rattaches a l'affaire (l'allotissement) et on charge les items eventuels
 		$allotissement = $affaire->getLots();
 
 		if ($allotissement)
@@ -218,7 +234,8 @@ class VisaController extends Controller {
 				'affaire'					=> $affaire,
 
 				'lotForm' 					=> $form->createView(),
-				'utilisateurForm'			=> $addUtilisateurForm->createView()
+				'utilisateurForm'			=> $addUtilisateurForm->createView(),
+				'filesForm'					=> $filesForm->createView()
 		];
 		return $this->render('applicationVisa/affaire_details.html.twig', $data);
 
