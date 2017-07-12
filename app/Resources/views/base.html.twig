@@ -18,6 +18,7 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('check.ico') }}" />
     </head>
     <body>
+    {% block allBody %}
         <div class="search-bar">
             <form method="GET" action="" class="js-sea-search sea-search">
                 <input type="search" name="q" placeholder="Rechercher une affaire" autocomplete="off" class="search-input">
@@ -49,7 +50,8 @@
         		</div>
     		{% endfor %}
 
-            {% block body %}{% endblock %}
+            {% block body %}
+            {% endblock %}
 
         </div>
 
@@ -63,6 +65,6 @@
         {% endblock %}
 
 
-
+    {% endblock %}
     </body>
 </html>

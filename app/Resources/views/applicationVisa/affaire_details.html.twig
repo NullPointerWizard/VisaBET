@@ -7,6 +7,7 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
 {% endblock %}
 
 {% block body %}
@@ -22,7 +23,6 @@
     			{{ form_start(lotForm) }}
     			{{ form_row(lotForm.numeroLot) }}
                 {{ form_row(lotForm.idNomLot) }}
-                {{ form_row(lotForm.affaire, { 'attr': {'class': 'hidden-row'} }) }}
     			<button type="submit" class="btn btn-primary">
     			     <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Définir un lot
     			</button>
@@ -85,10 +85,10 @@
             <tr>
                 <th>Type</th>
                 <th>Nom du fichier</th>
+                <th>Etat</th>
                 <th>Date réception</th>
                 <th>Date limite de visa</th>
-                <th>Etat</th>
-                <th>Emplacement</th>
+                <th>Nom réception</th>
             </tr>
         </thead>
         <tbody>
@@ -96,14 +96,14 @@
             <tr>
                 <td>{{ document.type }} </td>
                 <td>{{ document.filename }}</td>
-                <td>{{ document.dateReception|date('d/m/Y') }}</td>
-                <td>{{ document.dateLimiteVisa|date('d/m/Y') }}</td>
     			{% if document.etat == 0 %}
     			 <td class="red">NT</td>
     			{% else %}
     			 <td class="green">OK</td>
     			{% endif %}
-    			<td>{{ document.path }}</td>
+                <td>{{ document.dateReception|date('d/m/Y') }}</td>
+                <td>{{ document.dateLimiteVisa|date('d/m/Y') }}</td>
+                <td>{{ document.originalFilename }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -152,4 +152,13 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('js/dropzone/dropzone.js') }}" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.fr.min.js" ></script>
+    <script>
+        jQuery(document).ready(function() {
+            $('.js-datepicker').datepicker({
+                language: 'fr'
+            });
+        });
+    </script>
 {% endblock %}

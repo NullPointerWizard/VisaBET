@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Affaires;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -36,6 +37,13 @@ class Documents
      * @ORM\Column(name="filename", type="string", length=150, nullable=false)
      */
     private $filename;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="originalFilename", type="string", length=150, nullable=true)
+     */
+    private $originalFilename;
 
     /**
      * @var \DateTime
@@ -85,7 +93,6 @@ class Documents
     * Fichier correspondant au document
     */
     private $file;
-
 
     /**
      * Get idDocument
@@ -154,8 +161,12 @@ class Documents
      */
     public function setDateReception($dateReception)
     {
-        $this->dateReception = new \DateTime( $dateReception);
-
+        if ($dateReception instanceof DateTime){
+            $this->dateReception = $dateReception;
+        }else{
+            //Cas avec un string en argument
+            $this->dateReception = new \DateTime( $dateReception);
+        }
         return $this;
     }
 
@@ -178,8 +189,12 @@ class Documents
      */
     public function setDateLimiteVisa($dateLimiteVisa)
     {
-        $this->dateLimiteVisa = new \DateTime( $dateLimiteVisa) ;
-
+        if ($dateLimiteVisa instanceof DateTime){
+            $this->dateLimiteVisa = $dateLimiteVisa;
+        }else{
+            //Cas avec un string en argument
+            $this->dateLimiteVisa = new \DateTime( $dateLimiteVisa);
+        }
         return $this;
     }
 
@@ -265,7 +280,29 @@ class Documents
         return $this->idAffaire;
     }
 
+    /**
+     * Get the value of Original Filename
+     *
+     * @return string
+     */
+    public function getOriginalFilename()
+    {
+        return $this->originalFilename;
+    }
 
+    /**
+     * Set the value of Original Filename
+     *
+     * @param string originalFilename
+     *
+     * @return self
+     */
+    public function setOriginalFilename($originalFilename)
+    {
+        $this->originalFilename = $originalFilename;
+
+        return $this;
+    }
 
     // ------------- GESTION DES FICHIERS ---------------
     // sourcce : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2/creer-des-formulaires-avec-symfony2#r-2087628
@@ -280,38 +317,53 @@ class Documents
         $this->file = $file;
     }
 
-    public function upload(Affaires $affaire)
+    public function upload()
     {
         // Si jamais il n'y a pas de fichier (champ facultatif), on ne fait rien
         if (null === $this->file) {
             return;
         }
 
-        // On récupère le nom original du fichier de l'internaute
-        $filename = $this->file->getClientOriginalName();
+        // On récupère le nom original du fichier de l'internaute et l'extension qu'on rajoute au filename
+        $originalFilename = $this->file->getClientOriginalName();
+        $this->originalFilename = $originalFilename;
+        $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
+
+        //Si le filename n'est pas ajoute on choisi l'ancien
+        if(!isset($this->filename)){
+            $this->filename = $this->originalFilename;
+        }else{
+        //S'il est ajoute on doit rajouter l'ancienne extension
+            $this->filename = $this->filename.'.'.$extension;
+        }
+
 
         // On déplace le fichier envoyé dans le répertoire de notre choix
-        $this->file->move($this->getUploadRootDir($affaire), $filename);
+        $this->file->move($this->getUploadRootDir(), $this->filename);
 
-        // On sauvegarde le nom de fichier dans notre attribut $url
-        $this->filename = $filename;
-
-        $this->etat = '0';
-        $this->path = $this->getUploadDir($affaire).'/'.$filename;
+        $this->path = $this->getUploadDir().'/'.$this->filename;
 
 
     }
 
-    public function getUploadDir(Affaires $affaire)
+    /**
+    * On utilise le type  du document comme nom de dossier
+    */
+    public function getFolderName(){
+        return $this->type;
+    }
+
+    public function getUploadDir()
     {
+        $affaire = $this->getIdAffaire();
         // On retourne le chemin relatif vers l'image pour un navigateur (relatif au répertoire /web donc)
-        return 'uploads/documents/'.$affaire->getIdOrganisme()->getFolderName().'/'.$affaire->getFolderName();
+        return 'affaires/'.$affaire->getIdOrganisme()->getFolderName().'/'.$affaire->getFolderName().'/'.'documents/'.$this->getFolderName();
     }
 
-    protected function getUploadRootDir(Affaires $affaire)
+    protected function getUploadRootDir()
     {
         // On retourne le chemin relatif vers l'image pour notre code PHP
-        return __DIR__.'/../../../web/'.$this->getUploadDir($affaire);
+        return __DIR__.'/../../../web/'.$this->getUploadDir();
     }
 
     // -------------------- AUTRE -----------------------
@@ -319,4 +371,7 @@ class Documents
     public function __toString(){
         return $this->getFilename();
     }
+
+
+
 }

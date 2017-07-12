@@ -22,7 +22,6 @@ class LotFormType extends AbstractType {
 		->add('idNomLot', null, array(
 			'label' => 'Nom'
 		))
-		->add('affaire', null , array( 'label'=>'Affaire' ))
 		;
 
 	}

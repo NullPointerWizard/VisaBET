@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{%  block metacharset %}
+    <meta charset="UTF-8" />
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\css\pdf_generator.css">
+{% endblock %}
+
+{% block allBody %}
+<div class="header">
+    <h1 class="text-center">
+            VISAS au {{ dateStamp }}
+    </h1>
+</div>
+<div class="footer">
+    {{ app.user.idOrganisme}}
+    Emis par : {{ app.user }}
+    Timestamp: {{ timestamp }}
+</div>
+{% endblock %}

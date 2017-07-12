@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use DateTime;
+use DateInterval;
 use AppBundle\Entity\Lots;
 use AppBundle\Entity\Visas;
 use AppBundle\Form\VisaFormType;
@@ -98,12 +100,18 @@ class VisaController extends Controller {
 	 */
 	public function newAffaire(Request $request)
 	{
+		$utilisateur = $this->getUser();
 
-		$form = $this->createForm(AffaireFormType::class);
+		$form = $this->createForm(AffaireFormType::class,$nouvelleAffaire);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()){
-			$nouvelleAffaire = $form->getData();
+			//$nouvelleAffaire = $form->getData();
+
+			$nouvelleAffaire->addListeUtilisateur($utilisateur);
+			$utilisateur->addAffaire($nouvelleAffaire);
+
 			$entityManager = $this->getDoctrine()->getManager();
+			$entityManager->persist($utilisateur);
 			$entityManager->persist($nouvelleAffaire);
 			$entityManager->flush();
 
@@ -159,18 +167,25 @@ class VisaController extends Controller {
 		}
 
 		// Creation du formulaire pour uploader des documents
-		$filesForm = $this->createForm(UploadFileFormType::class, $nouveauDoc = new Documents );
+		$nouveauDoc = new Documents;
+		$nouveauDoc->setIdAffaire($affaire);
+		$nouveauDoc->setDateLimiteVisa( (new DateTime('now'))->add(new DateInterval('P7D')) );
+		$nouveauDoc->setDateReception('now');
+		$filesForm = $this->createForm(UploadFileFormType::class, $nouveauDoc);
 		$filesForm->handleRequest($request);
 		if ($filesForm->isSubmitted() && $filesForm->isValid()) {
+
 			$nouveauDoc = $filesForm->getData();
-			$nouveauDoc->upload($affaire);
-			$nouveauDoc->setDateReception('now');
-			$nouveauDoc->setDateLimiteVisa('now');
-			$nouveauDoc->setIdAffaire($affaire);
+			$nouveauDoc->upload();			
 
 			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($nouveauDoc);
 			$entityManager->flush();
+
+			$this->addFlash('success', 'Document '.$nouveauDoc.' ajoute ! ' );
+
+			//redirection vers la meme url
+			return $this->redirect($request->getUri());
 		}
 
 		// Creation du formulaire pour ajouter un utilisateur a l'affaire

@@ -88,6 +88,7 @@ class Affaires
      * 	targetEntity="Documents",
      * 	mappedBy="idAffaire"
      * )
+     * @ORM\OrderBy({"type" = "DESC"})
      */
     private $documents;
 
