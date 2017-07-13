@@ -30,9 +30,13 @@ class UploadFileFormType extends AbstractType {
     			)
 			))
 			->add('filename', null, array(
-                'label'		 => 'Nouveau nom',
+                'label'		 => 'Nom fichier',
 				'required'	 => false
             ))
+			->add('lot', null ,array(
+				'label'		=> 'Lot',
+				'required'	=> false
+			))
 			->add('dateReception', DateType::class, array(
                 'label'		=> 'Date de reception',
 				'required'	=> false,

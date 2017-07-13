@@ -89,6 +89,23 @@ class Documents
      */
     private $idAffaire;
 
+
+    /**
+     * @var \AppBundle\Entity\Lots
+     *
+     * @ORM\ManyToOne(
+     * 	targetEntity="AppBundle\Entity\Lots",
+     * 	inversedBy="documents"
+     * )
+     *
+     * @ORM\JoinColumn(
+     * 	name="id_lot",
+     *  referencedColumnName="id_lot",
+     *  nullable=true
+     * )
+     */
+    private $lot;
+
     /**
     * Fichier correspondant au document
     */
@@ -373,5 +390,30 @@ class Documents
     }
 
 
+
+
+    /**
+     * Get the value of Lot
+     *
+     * @return \AppBundle\Entity\Lots
+     */
+    public function getLot()
+    {
+        return $this->lot;
+    }
+
+    /**
+     * Set the value of Lot
+     *
+     * @param \AppBundle\Entity\Lots lot
+     *
+     * @return self
+     */
+    public function setLot(\AppBundle\Entity\Lots $lot)
+    {
+        $this->lot = $lot;
+
+        return $this;
+    }
 
 }

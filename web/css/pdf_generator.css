@@ -1,9 +1,37 @@
-.header{
-	font-family: 'titre', Arial, Sans-Serif;
-	color:black;
-	font-size: 20px;
+/* Classe generiques */
+.text-center{
+    text-align: center;
+}
+.right{
+	float: right;
 }
 
-.visa-title{
-	font-size: 50px;
+/* Page dans sa structure de haut en bas */
+.header{
+	margin-top: 30px;
+    margin-bottom: 30px;
+	font-family: 'titre', Arial, Sans-Serif;
+	color: black;
+	display: inline;
+}
+
+.header-div {
+	display: inline-block;
+}
+
+.logo-icon {
+	display: inline-block;
+    height: 80px;
+    width: auto;
+    margin-top: 2px;
+}
+
+.header-infos-organisme {
+	display: inline-block;
+	list-style-type: none;
+}
+
+.header-infos-fiche {
+	list-style-type: none;
+	font-size: 20px;
 }

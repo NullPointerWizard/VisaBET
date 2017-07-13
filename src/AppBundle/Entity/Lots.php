@@ -4,6 +4,8 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Affaires;
+use AppBundle\Entity\NomsLots;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -60,7 +62,10 @@ class Lots
     /**
      * @var \AppBundle\Entity\NomsLots
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NomsLots")
+     * @ORM\ManyToOne(
+     *  targetEntity="AppBundle\Entity\NomsLots",
+     *  fetch="EAGER"
+     * )
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_nom_lot", referencedColumnName="id_nom_lot")
      * })
@@ -68,7 +73,7 @@ class Lots
     private $idNomLot;
 
     /**
-     * Listes des items li�s au lot
+     * Listes des items lies au lot
      *
      * @ORM\OneToMany(
      * 	targetEntity="Items",
@@ -76,6 +81,23 @@ class Lots
      * )
      */
     private $items;
+
+
+    /**
+     * Listes des documentslies au lot
+     *
+     * @ORM\OneToMany(
+     * 	targetEntity="Documents",
+     * 	mappedBy="lot"
+     * )
+     */
+    private $documents;
+
+    public function __construct()
+    {
+        $this->items = new ArrayCollection();
+        $this->documents = new ArrayCollection();
+    }
 
     /**
      * Get idLot
@@ -114,11 +136,11 @@ class Lots
     /**
      * Set affaire
      *
-     * @param \AppBundle\Entity\Affaires $affaire
+     * @param Affaires $affaire
      *
      * @return Lots
      */
-    public function setAffaire(\AppBundle\Entity\Affaires $affaire = null)
+    public function setAffaire(Affaires $affaire = null)
     {
         $this->affaire = $affaire;
 
@@ -138,11 +160,11 @@ class Lots
     /**
      * Set idNomLot
      *
-     * @param \AppBundle\Entity\NomsLots $idNomLot
+     * @param NomsLots $idNomLot
      *
      * @return Lots
      */
-    public function setIdNomLot(\AppBundle\Entity\NomsLots $idNomLot = null)
+    public function setIdNomLot(NomsLots $idNomLot = null)
     {
         $this->idNomLot = $idNomLot;
 
@@ -164,6 +186,11 @@ class Lots
     	return $this->items;
     }
 
+    public function getDocuments()
+    {
+        return $this->documents;
+    }
+
     /*
      * Permet d'obtenir directment le nom de lot en se servant de l'id de celui-ci
      */
@@ -175,5 +202,10 @@ class Lots
     public function getIdAffaire()
     {
         return $this->affaire->getIdAffaire();
+    }
+
+    public function __toString()
+    {
+        return 'LOT '.$this->getNumeroLot().': '.$this->getIdNomLot();
     }
 }

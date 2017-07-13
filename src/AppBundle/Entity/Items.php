@@ -43,9 +43,9 @@ class Items
     /**
      * @var string
      *
-     * @ORM\Column(name="tag", type="string", length=25, nullable=false)
+     * @ORM\Column(name="tag", type="string", length=25, nullable=false, options={"default":"SansEtiquette"})
      */
-    private $tag;
+    private $tag = 'SansEtiquette';
 
 
     /**
@@ -76,6 +76,7 @@ class Items
 
 	public function __construct(){
 		$this->visas = new ArrayCollection();
+        $this->tag = 'SansEtiquette';
 	}
 
     /**
@@ -186,9 +187,17 @@ class Items
 		return $this->visas;
 	}
 
+    /*
+    * Renvoie le numero de version du dernier
+    */
     public function getVisasLastVersion()
     {
-        return count($this->getVisas());
+        $versions = array();
+        foreach($this->getVisas()->getValues() as $visa)
+        {
+            $versions[] = $visa->getVersion();
+        }
+        return max($versions);
     }
 
 	public function __toString()

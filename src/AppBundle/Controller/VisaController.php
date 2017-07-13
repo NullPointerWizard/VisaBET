@@ -10,6 +10,8 @@ use AppBundle\Form\VisaFormType;
 use AppBundle\Form\UploadFileFormType;
 use AppBundle\Form\AjouterUtilisateurSurAffaireFormType;
 use AppBundle\Entity\Documents;
+use AppBundle\Entity\Affaires;
+use AppBundle\Entity\Items;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Form\AffaireFormType;
@@ -102,7 +104,8 @@ class VisaController extends Controller {
 	{
 		$utilisateur = $this->getUser();
 
-		$form = $this->createForm(AffaireFormType::class,$nouvelleAffaire);
+		$nouvelleAffaire = new Affaires;
+		$form = $this->createForm(AffaireFormType::class, $nouvelleAffaire);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()){
 			//$nouvelleAffaire = $form->getData();
@@ -176,7 +179,7 @@ class VisaController extends Controller {
 		if ($filesForm->isSubmitted() && $filesForm->isValid()) {
 
 			$nouveauDoc = $filesForm->getData();
-			$nouveauDoc->upload();			
+			$nouveauDoc->upload();
 
 			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($nouveauDoc);
@@ -226,7 +229,10 @@ class VisaController extends Controller {
 				foreach ($listeItems[$idLot] as $item)
 				{
 					$listeVisas[$item->getIdItem()] = $entityManager->getRepository('AppBundle\Entity\Visas')
-						->findOneBy( array('idItem' => $item->getIdItem()) )
+						->findOneBy( array(
+							'idItem' 	=> $item->getIdItem(),
+							'version'	=> $item->getVisasLastVersion()
+						))
 					;
 				}
 			}
@@ -294,11 +300,13 @@ class VisaController extends Controller {
 		}
 
 		//Creation du formulaire pour un nouvel item
-		$form = $this->createForm(ItemFormType::class);
+		$nouvelItem = new Items();
+		$form = $this->createForm(ItemFormType::class, $nouvelItem);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()){
 			$nouvelItem = $form->getData();
 			$nouvelItem ->setIdLot( $lot ) ;
+
 			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($nouvelItem);
 			$entityManager->flush();

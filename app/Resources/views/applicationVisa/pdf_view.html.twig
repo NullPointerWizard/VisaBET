@@ -1,5 +1,7 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html>
 
+<head>
 {%  block metacharset %}
     <meta charset="UTF-8" />
 {% endblock %}
@@ -7,16 +9,68 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\css\pdf_generator.css">
 {% endblock %}
+</head>
 
+<body>
 {% block allBody %}
-<div class="header">
-    <h1 class="text-center">
-            VISAS au {{ dateStamp }}
-    </h1>
-</div>
-<div class="footer">
-    {{ app.user.idOrganisme}}
-    Emis par : {{ app.user }}
-    Timestamp: {{ timestamp }}
-</div>
+    <div class="header">
+        <div class="header-div">
+            <img class="logo-icon" src="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\images\LOGO-BET-3000.jpg">
+            <ul class="header-infos-organisme">
+                    <li >{{ organisme }}</li>
+                    <li>15, AV DE LA GARENNE</li>
+                    <li>BP 694</li>
+                    <li>54063 NANCY CEDEX</li>
+                    <li>Tel: 03 83 28 85 85</li>
+                    <li>Fax: 03 83 27 67 10</li>
+                    <li>betlouvet@louvet.fr</li>
+            </ul>
+        </div>
+        <div class="header-div">
+            <ul class="header-infos-fiche">
+                <li>N° Affaire : {{ affaire.numeroAffaire }}</li>
+                <li>N° Lot : {{ lot.numeroLot }}</li>
+                <li>N° Fiche : 1</li>
+                <li>Emis le : {{ dateStamp|date('d/m/Y')}} </li>
+                <li>Par : {{ app.user }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="top-first_page">
+        <div class = "affaire text-center">
+            <h1> {{ affaire }} </h1>
+        </div>
+        <div class = "lot text-center">
+            <h2> {{ lot }} </h2>
+        </div>
+    </div>
+
+    <div class = "body">
+        <div>
+            {% for document in listeDocuments %}
+                <div class="document-head">
+                    {{ document }} </br>
+                    {{ document.originalFilename }} reçu le : {{ document.dateReception|date('d/m/Y') }}
+                </div>
+                <div class="document-items">
+                </div>
+            {% endfor %}
+        </div>
+
+        <div>
+            {% for type in types %}
+                {% for item in listeItems[type] %}
+                    <b>{{ item.nomItem }}</b></br>
+                    {% for visa in listeVisas[item.idItem] %}
+                        {{ visa }} {{ visa.etatVisa }}</br>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
 {% endblock %}
+</body>
+
+</html>
