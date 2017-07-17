@@ -2,17 +2,35 @@
 .text-center{
     text-align: center;
 }
-.right{
-	float: right;
+.container{
+    margin-top: 10px;
+}
+body{
+    font-size: 15px;
 }
 
+tr {
+    /* Corrige un bug qui supperposait les tr de thead et tbody lors d'un changement de page*/
+    page-break-inside: avoid;
+}
+
+table{
+    padding-top: 30px;
+}
+
+small{
+    padding-left: 20px;
+    font-style: italic;
+}
+
+
 /* Page dans sa structure de haut en bas */
-.header{
-	margin-top: 30px;
-    margin-bottom: 30px;
-	font-family: 'titre', Arial, Sans-Serif;
-	color: black;
-	display: inline;
+.pdf-header{
+    border-bottom-style: solid;
+}
+
+.lot{
+    padding-top: 14px;
 }
 
 .header-div {
@@ -23,15 +41,37 @@
 	display: inline-block;
     height: 80px;
     width: auto;
-    margin-top: 2px;
 }
 
-.header-infos-organisme {
-	display: inline-block;
+.footer-infos-organisme {
 	list-style-type: none;
+    text-align: center;
+}
+
+.header-right{
+	float: right;
 }
 
 .header-infos-fiche {
 	list-style-type: none;
 	font-size: 20px;
+}
+
+.table-infos-fiche{
+    display: inline-block;
+    padding: 15px;
+    width: 30%;
+    padding-left: 30px;
+}
+
+.legende{
+    list-style-type: none;
+}
+
+td.td-visa{
+    width: 60px;
+}
+
+.item{
+    page-break-inside: avoid;
 }

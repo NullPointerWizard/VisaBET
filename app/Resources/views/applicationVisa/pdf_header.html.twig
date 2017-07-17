@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\css\pdf_generator.css">
+    </head>
+
+    <body>
+        <div class="pdf-header">
+            <img class="logo-icon" src="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\images\LOGO-BET-3000.jpg">
+            <table class="table-infos-fiche">
+                <tbody>
+                    <tr>
+                        <td>N° Affaire : </td>
+                        <td>{{ affaire.numeroAffaire }}</td>
+                    </tr>
+                    <tr>
+                        <td>N° Lot :</td>
+                        <td>{{ lot.numeroLot }}</td>
+                    </tr>
+                    <tr>
+                        <td>N° Fiche :</td>
+                        <td>12</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table-infos-fiche">
+                <tbody>
+                    <tr>
+                        <td>Emis le : </td>
+                        <td>{{ dateStamp|date('d/m/Y')}}</td>
+                    </tr>
+                    <tr>
+                        <td>À : </td>
+                        <td>Nancy</td>
+                    </tr>
+                    <tr>
+                        <td>Par : </td>
+                        <td>{{ app.user }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

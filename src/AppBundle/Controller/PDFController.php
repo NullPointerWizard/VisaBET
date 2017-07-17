@@ -79,16 +79,27 @@ class PDFController extends Controller
 
 
         //Generation du pdf
+        $headerHtml = $this->renderView(
+            'applicationVisa/pdf_header.html.twig',
+            [
+                'dateStamp'         => $dateStamp,
+                'timestamp'         => $timestamp,
+                'affaire'           => $affaire,
+                'lot'               => $lot
+            ]
+
+        );
         $footerHtml = $this->renderView(
             'applicationVisa/pdf_footer.html.twig',
             [
                 'dateStamp'      => $dateStamp,
-                'timestamp'      => $timestamp
+                'timestamp'      => $timestamp,
+                'organisme'      => $organisme,
             ]
         );
 
-
         $snappy = $this->get('knp_snappy.pdf');
+        $snappy->setOption('header-html', $headerHtml);
         $snappy->setOption('footer-html', $footerHtml);
         $snappy->generateFromHtml(
             $this->renderView(

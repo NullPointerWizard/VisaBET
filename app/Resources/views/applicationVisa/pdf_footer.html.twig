@@ -2,15 +2,21 @@
 <html>
     <head>
         <meta charset="UTF-8" />
+        <link rel="stylesheet" href="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\vendor\fontawesome\css\font-awesome.css">
         <link rel="stylesheet" href="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\css\pdf_generator.css">
-        <link rel="stylesheet" href="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\css\styles.css">
     </head>
 
     <body>
         <div class="footer">
-            {{ app.user.idOrganisme}}
-            Emis par : {{ app.user }}
-            Timestamp: {{ timestamp }}
+            <ul class="footer-infos-organisme">
+                    <li>{{ organisme }} Bureau d'études fluides</li>
+                    <li>15 Avenue de la Garenne - BP 694 - 54063 NANCY CEDEX</li>
+                    <li>
+                        <i class="fa fa-phone" aria-hidden="true"></i> 03 83 28 85 85
+                        <i class="fa fa-fax" aria-hidden="true"></i> 03 83 27 67 10
+                    </li>
+                    <li>betlouvet@louvet.fr</li>
+            </ul>
         </div>
     </body>
 </html>
