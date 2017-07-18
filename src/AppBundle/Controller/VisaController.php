@@ -72,7 +72,7 @@ class VisaController extends Controller {
 	 *
 	 * @Route("/Affaires", name="affaires")
 	 */
-	public function showAffairesUt()
+	public function showAffairesUtilisateur()
 	{
 
 		if (!$this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
@@ -105,12 +105,13 @@ class VisaController extends Controller {
 		$utilisateur = $this->getUser();
 
 		$nouvelleAffaire = new Affaires;
+		$nouvelleAffaire->addListeUtilisateur($utilisateur);
+		$nouvelleAffaire->setYear( (new DateTime('now'))->format('Y') );
 		$form = $this->createForm(AffaireFormType::class, $nouvelleAffaire);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()){
 			//$nouvelleAffaire = $form->getData();
 
-			$nouvelleAffaire->addListeUtilisateur($utilisateur);
 			$utilisateur->addAffaire($nouvelleAffaire);
 
 			$entityManager = $this->getDoctrine()->getManager();
@@ -172,8 +173,9 @@ class VisaController extends Controller {
 		// Creation du formulaire pour uploader des documents
 		$nouveauDoc = new Documents;
 		$nouveauDoc->setIdAffaire($affaire);
-		$nouveauDoc->setDateLimiteVisa( (new DateTime('now'))->add(new DateInterval('P7D')) );
+		$nouveauDoc->setDateDocument('now');
 		$nouveauDoc->setDateReception('now');
+		$nouveauDoc->setDateLimiteVisa( (new DateTime('now'))->add(new DateInterval('P7D')) );
 		$filesForm = $this->createForm(UploadFileFormType::class, $nouveauDoc);
 		$filesForm->handleRequest($request);
 		if ($filesForm->isSubmitted() && $filesForm->isValid()) {

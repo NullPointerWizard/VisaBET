@@ -3,24 +3,39 @@
     <head>
         <meta charset="UTF-8" />
         <link rel="stylesheet" href="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\css\pdf_generator.css">
+
+        <script>
+            function subst() {
+              var vars={};
+              var x=document.location.search.substring(1).split('&');
+              for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+              var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+              for(var i in x) {
+                var y = document.getElementsByClassName(x[i]);
+                for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+              }
+            }
+        </script>
     </head>
 
-    <body>
+    <body onload="subst()">
         <div class="pdf-header">
             <img class="logo-icon" src="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\images\LOGO-BET-3000.jpg">
             <table class="table-infos-fiche">
                 <tbody>
                     <tr>
                         <td>N° Affaire : </td>
-                        <td>{{ affaire.numeroAffaire }}</td>
+                        <td>{{ affaire.numeroAffaire }}  </td>
+                        <td>N° Lot : </td>
+                        <td>{{ lot.numeroLot }}  </td>
                     </tr>
                     <tr>
-                        <td>N° Lot :</td>
-                        <td>{{ lot.numeroLot }}</td>
-                    </tr>
-                    <tr>
-                        <td>N° Fiche :</td>
+                        <td>N° Fiche : </td>
                         <td>12</td>
+                        <td>N° Page : </td>
+                        <td>
+                            <span class="page"></span>/<span class="topage"></span>
+                        </td>
                     </tr>
                 </tbody>
             </table>

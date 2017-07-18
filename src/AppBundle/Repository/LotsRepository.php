@@ -8,12 +8,12 @@ use AppBundle\Entity\Affaires;
 /**
  *
  * @author NullPointerWizard
- *        
+ *
  */
 class LotsRepository extends EntityRepository {
-	
+
 	/*
-	 * Renvoie les lots correspondants à l'affaire
+	 * Renvoie les lots correspondants a l'affaire
 	 */
 	function findAllLots(Affaires $affaire)
 	{
@@ -24,4 +24,16 @@ class LotsRepository extends EntityRepository {
 			->execute()
 		;
 	}
+
+	/*
+	* La query renverra tous les lots de l'affaire, utilise dans un formulaire
+	*/
+	public function getLotsFromAffaireQueryBuilder($affaire)
+	{
+	  return $this->createQueryBuilder('lot')
+		->where('lot.affaire = :idAffaire')
+		->setParameter('idAffaire', $affaire->getIdAffaire() )
+	  ;
+	}
+
 }

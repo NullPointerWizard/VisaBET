@@ -188,7 +188,7 @@ class Items
 	}
 
     /*
-    * Renvoie le numero de version du dernier
+    * Renvoie le numero de version du dernier visa de l'item
     */
     public function getVisasLastVersion()
     {

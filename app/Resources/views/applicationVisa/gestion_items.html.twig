@@ -12,8 +12,12 @@
         </a>
     </h1>
     <h2 class="page-header text-center">
-        Lot N°{{ lot.numeroLot  }}  {{ lot.nomLot }}</br>
+        Lot N°{{ lot.numeroLot  }}  {{ lot.nomLot }}
+        <a href = "{{ path('pdf_generator', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">
+            <i class="fa fa-file-pdf-o fa-2x text-right" aria-hidden="true"></i>
+        </a>
    </h2>
+
 
    <div class="container">
         <div class="row">

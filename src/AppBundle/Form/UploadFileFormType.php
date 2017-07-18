@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Documents;
+use AppBundle\Repository\LotsRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -16,7 +17,12 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
  */
 class UploadFileFormType extends AbstractType {
 
+	/*
+	* Attention ce formulaire a besoin de l'affaire
+	*/
 	public function buildForm(FormBuilderInterface $builder, array $options){
+		//dump($options);die;
+		$affaire = $options['data']->getIdAffaire() ;
 		$builder
 			->add('file', FileType::class, array(
                 'label' => 'Document'
@@ -35,7 +41,18 @@ class UploadFileFormType extends AbstractType {
             ))
 			->add('lot', null ,array(
 				'label'		=> 'Lot',
-				'required'	=> false
+				'required'	=> false,
+				'query_builder' => function(LotsRepository $repo) use ($affaire){
+    				return $repo->getLotsFromAffaireQueryBuilder($affaire);
+				}
+			))
+			->add('dateDocument', DateType::class, array(
+                'label'		 => 'Date d\'emission',
+				'required'	 => false,
+				'widget'	 => 'single_text',
+				'attr' 		=> ['class' => 'js-datepicker'],
+				'html5' 	=> false,
+				'format' 	=> 'dd/MM/yyyy'
 			))
 			->add('dateReception', DateType::class, array(
                 'label'		=> 'Date de reception',

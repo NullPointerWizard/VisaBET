@@ -16,13 +16,13 @@ class AjouterUtilisateurSurAffaireFormType extends AbstractType {
 	public function buildForm(FormBuilderInterface $builder, array $options){
 		$builder
 			->add('utilisateurs', EntityType::class , array(
-				'label'     	=> 'Utilisateur',
+				'label'     	=> 'Utilisateur(s), sélectionner plusieurs avec Ctrl',
 				'class' 		=> 'AppBundle\Entity\Utilisateur',
 				//'choices' =>
 
 				//Permet de gerer la forme d'affichage(checkbox, tag, radio)
 				'multiple' 		=> true, //change la valeur de retour en ArrayCollection
-     			'expanded' 		=> true
+     			'expanded' 		=> false,
 			))
 		;
 	}

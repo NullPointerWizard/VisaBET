@@ -6,17 +6,57 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Response ;
 
 class PDFController extends Controller
 {
+
+
     /**
+    * Page permettant la creation des fiches Visas
     * @Route(
-    *  "/Affaires/Affaire{numeroAffaire}/pdf",
-    *  name="generate_pdf"
+    *  "/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/FicheVisa",
+    *  name="pdf_generator"
     * )
     */
-    public function generatePdfAction($numeroAffaire)
+    public function showPdfGenerator($numeroAffaire,$numeroLot)
     {
+        $utilisateur = $this->getUser();
+		$entityManager = $this->getDoctrine()->getManager();
+		$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
+			->findOneBy(['numeroAffaire'=>$numeroAffaire, 'idOrganisme'=> $utilisateur->getIdOrganisme()])
+		;
+        $organisme = $utilisateur->getIdOrganisme();
+        $lot = $entityManager->getRepository('AppBundle\Entity\Lots')
+			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
+		;
+
+        $data =[
+            'affaire'       => $affaire,
+            'lot'           => $lot
+        ];
+        return $this->render(
+            'applicationVisa/pdf_generator.html.twig',
+            $data
+         );
+    }
+
+
+
+    /**
+    * @Route(
+    *  "/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/FicheVisa/pdf",
+    *  name="pdf_file"
+    * )
+    */
+    public function generatePdfAction($numeroAffaire,$numeroLot)
+    {
+        $types = ['Plan','NDC','Materiel','Autre'];
+        $listeDocuments = [];
+        $listeItems = [];
+		$listeVisas = [];
+		$listeRemarques =  [];
+
         $utilisateur = $this->getUser();
 		$entityManager = $this->getDoctrine()->getManager();
 		$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
@@ -25,13 +65,6 @@ class PDFController extends Controller
         $organisme = $utilisateur->getIdOrganisme();
 
         // Recuperation des donnees pour generer le pdf
-        $types = ['Plan','NDC','Materiel','Autre'];
-        $listeDocuments = new ArrayCollection();
-        $listeItems = new ArrayCollection();
-		$listeVisas = new ArrayCollection();
-		$listeRemarques =  new ArrayCollection();
-
-        $numeroLot = '1';
         $lot = $entityManager->getRepository('AppBundle\Entity\Lots')
 			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
 		;
@@ -43,18 +76,23 @@ class PDFController extends Controller
 
 			foreach($listeItems[$type] as $item)
 			{
-				$listeVisas[$item->getIdItem()] = $item->getVisas();
-				foreach ($listeVisas[$item->getIdItem()] as $visa)
+				$listeVisas[$item->getIdItem()] = $entityManager->getRepository('AppBundle\Entity\Visas')
+                    ->findOneBy( array(
+                        'idItem' 	=> $item->getIdItem(),
+                        'version'	=> $item->getVisasLastVersion()
+                    ))
+                ;
+				foreach ($listeVisas as $visa)
 				{
 					$listeRemarques[$visa->getIdVisa()] = $visa->getRemarques();
 				}
 			}
 		}
 
-        // dump($listeItems);
-        // dump($listeVisas);
-        // dump($listeRemarques);
-        // die;
+        //  dump($listeItems);
+        //  dump($listeVisas);
+        //  dump($listeRemarques);
+        //  die;
 
         // Jour de generation du pdf
         $now = new DateTime('now');
@@ -97,22 +135,30 @@ class PDFController extends Controller
                 'organisme'      => $organisme,
             ]
         );
-
+        $html = $this->renderView(
+            'applicationVisa/pdf_view.html.twig',
+            $pdfData
+        );
         $snappy = $this->get('knp_snappy.pdf');
         $snappy->setOption('header-html', $headerHtml);
         $snappy->setOption('footer-html', $footerHtml);
         $snappy->generateFromHtml(
-            $this->renderView(
-                'applicationVisa/pdf_view.html.twig',
-                $pdfData
-            ),
+            $html,
             './'.'affaires/'.$affaire->getIdOrganisme()->getFolderName().'/'.$affaire->getFolderName().'/'.'visas/'.$filename
         );
-        $this->addFlash('success', 'PDF '.$filename.' genere ! ' );
+        //$this->addFlash('success', 'PDF '.$filename.' genere ! ' );
 
         $data = [
 
         ];
-        return $this->render('applicationVisa/travaux.html.twig', $data);
+
+        return new Response(
+            $snappy->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'attachment; filename="'.$filename.'"'
+            )
+        );
     }
 }

@@ -46,6 +46,15 @@ class Documents
     private $originalFilename;
 
     /**
+     * Correspond a la date indiquee par l'entreprise qui emet le document (champ emis dans le pdf)
+     *
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_document", type="date", nullable=true)
+     */
+    private $dateDocument;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_reception", type="date", nullable=false)
@@ -167,6 +176,34 @@ class Documents
     public function getFilename()
     {
         return $this->filename;
+    }
+
+    /**
+     * Set dateDocument
+     *
+     * @param string $dateDocument
+     *
+     * @return Documents
+     */
+    public function setDateDocument($dateDocument)
+    {
+        if ($dateDocument instanceof DateTime){
+            $this->dateDocument = $dateDocument;
+        }else{
+            //Cas avec un string en argument
+            $this->dateDocument = new \DateTime( $dateDocument);
+        }
+        return $this;
+    }
+
+    /**
+     * Get dateDocument
+     *
+     * @return \DateTime
+     */
+    public function getDateDocument()
+    {
+        return $this->dateDocument;
     }
 
     /**

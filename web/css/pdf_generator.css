@@ -3,7 +3,8 @@
     text-align: center;
 }
 .container{
-    margin-top: 10px;
+    margin-top: 8px;
+    page-break-inside: avoid;
 }
 body{
     font-size: 15px;
@@ -59,7 +60,6 @@ small{
 
 .table-infos-fiche{
     display: inline-block;
-    padding: 15px;
     width: 30%;
     padding-left: 30px;
 }

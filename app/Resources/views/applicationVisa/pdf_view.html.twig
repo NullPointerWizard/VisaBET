@@ -72,7 +72,7 @@
 
     <div class = "body-fiche">
         <div class="container">
-            <h3>Documents examinés</h3>
+            <h3>Documents examinés au {{ dateStamp|date('d/m/Y')}}</h3>
             <table class="table">
                 <thead>
                     <th>Document</th>
@@ -96,6 +96,21 @@
 
         <div class="container">
             <h3>Légende</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Numéro de visa</th>
+                        <th>Indice du plan</th>
+                        <th>Etat du visa</th>
+                        <th><i>Type de remarque :</i> Remarque</th>
+                    </tr>
+                </thead>
+            </table>
+            <b>Indice du plan</b>
+            <p>
+                Indice du plan auquel fait référence le visa.
+            </p>
+            <b>Etat du visa</b>
                 <ul class="legende">
                     <li>OK : visa accordé</li>
                     <li>OK REM : visa accordé, les travaux peuvent commencer avec la prise en compte des remarques. Renvoi des documents si nécessaire</li>
@@ -110,19 +125,12 @@
                 <div class="item">
                     <b>{{ item.nomItem }}</b>
                     <table class="table">
-                        <!-- <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead> -->
-
                         <tbody>
-                            {% for visa in listeVisas[item.idItem] %}
+                            {% set visa = listeVisas[item.idItem] %}
                             <tr>
 
                                 <td class="td-visa">Visa {{ visa.version }}</td>
+                                <td>{{ visa.indicePlan }}</td>
                                 <td>{{ visa.etatVisa }}</td>
                                 <td>
                                     {% for remarque in listeRemarques[visa.idVisa] %}
@@ -130,7 +138,6 @@
                                     {% endfor %}
                                 </td>
                             </tr>
-                            {% endfor %}
                         <tbody>
                     </table>
                 </div>

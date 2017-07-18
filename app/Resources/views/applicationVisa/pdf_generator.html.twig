@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{%  block metacharset %}
+    <meta charset="UTF-8" />
+{% endblock %}
+
+{% block body %}
+<h1 class="text-center">
+<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
+<a href="{{ path('pdf_file', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">Générer le PDF !</a>
+<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
+</h1>
+{% endblock %}
