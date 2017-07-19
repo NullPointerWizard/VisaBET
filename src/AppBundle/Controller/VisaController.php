@@ -6,7 +6,9 @@ use DateTime;
 use DateInterval;
 use AppBundle\Entity\Lots;
 use AppBundle\Entity\Visas;
+use AppBundle\Entity\Contact;
 use AppBundle\Form\VisaFormType;
+use AppBundle\Form\ContactFormType;
 use AppBundle\Form\UploadFileFormType;
 use AppBundle\Form\AjouterUtilisateurSurAffaireFormType;
 use AppBundle\Entity\Documents;
@@ -103,10 +105,14 @@ class VisaController extends Controller {
 	public function newAffaire(Request $request)
 	{
 		$utilisateur = $this->getUser();
+		$organisme = $utilisateur->getIdOrganisme();
 
 		$nouvelleAffaire = new Affaires;
 		$nouvelleAffaire->addListeUtilisateur($utilisateur);
+		$nouvelleAffaire->setIdOrganisme($organisme);
 		$nouvelleAffaire->setYear( (new DateTime('now'))->format('Y') );
+		$nouvelleAffaire->setDateButoir((new DateTime('now'))->add(new DateInterval('P21D')));
+		$nouvelleAffaire->setTravailAEffectuer('Créer les items importants');
 		$form = $this->createForm(AffaireFormType::class, $nouvelleAffaire);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()){
@@ -405,6 +411,45 @@ class VisaController extends Controller {
 				'form'						=> $form->createView()
 		];
 		return $this->render ( 'applicationVisa/nouveau_visa.html.twig', $data );
+	}
+
+	/**
+	 * Page permettant de voir les contacts disponibles
+	 *
+	 * @Route("/CarnetAdresses", name="carnet_adresses")
+	 */
+	public function showCarnetAdresses(Request $request)
+	{
+		$entityManager = $this->getDoctrine()->getManager();
+		$listeContacts = $entityManager->getRepository('AppBundle\Entity\Contact')
+			->findAll();
+
+		$nouveauContact = new Contact();
+		$form = $this->createForm(ContactFormType::class, $nouveauContact);
+		$form->handleRequest($request);
+
+		if ( $form->isSubmitted() && $form->isValid() ){
+			$entityManager->persist($nouveauContact);
+			$entityManager->flush();
+
+			$this->addFlash(
+				'success',
+				 sprintf(
+					'Nouveau contact : '.$nouveauContact
+				)
+			);
+			
+			return $this->redirect($request->getUri());
+		}
+
+		$data =
+		[
+				'listeContacts'				=> $listeContacts,
+
+				'form'						=> $form->createView()
+
+		];
+		return $this->render('applicationVisa/carnet_adresses.html.twig', $data);
 	}
 
 	/**

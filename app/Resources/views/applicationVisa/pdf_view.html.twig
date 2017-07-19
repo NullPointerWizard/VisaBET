@@ -37,34 +37,14 @@
                     <th>Mail</th>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>BET Fluide</td>
-                    <td>LOUVET</td>
-                    <td>Théo HERMANN</td>
-                    <td>h.theo@mail.fr</td>
-                  </tr>
-                  <tr>
-                    <td>BET Fluide</td>
-                    <td>LOUVET</td>
-                    <td>Théo HERMANN</td>
-                    <td>h.theo@mail.fr</td>
-                  </tr>
-                  <tr>
-                    <td>BET Fluide</td>
-                    <td>LOUVET</td>
-                    <td>Théo HERMANN</td>
-                    <td>h.theo@mail.fr</td>
-                  </tr><tr>
-                    <td>BET Fluide</td>
-                    <td>LOUVET</td>
-                    <td>Théo HERMANN</td>
-                    <td>h.theo@mail.fr</td>
-                  </tr><tr>
-                    <td>BET Fluide</td>
-                    <td>LOUVET</td>
-                    <td>Théo HERMANN</td>
-                    <td>h.theo@mail.fr</td>
-                  </tr>
+                {% for contact in listeDiffusion %}
+                    <tr>
+                        <td>{{ contact.role }}</td>
+                        <td>{{ contact.organisme }}</td>
+                        <td>{{ contact }}</td>
+                        <td>{{ contact.mail}}</td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -128,7 +108,6 @@
                         <tbody>
                             {% set visa = listeVisas[item.idItem] %}
                             <tr>
-
                                 <td class="td-visa">Visa {{ visa.version }}</td>
                                 <td>{{ visa.indicePlan }}</td>
                                 <td>{{ visa.etatVisa }}</td>

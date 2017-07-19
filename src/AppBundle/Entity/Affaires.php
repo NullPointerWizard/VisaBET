@@ -282,7 +282,7 @@ class Affaires
     public function addListeUtilisateur(\AppBundle\Entity\Utilisateur $utilisateur)
     {
         if ($this->listeUtilisateur->contains($utilisateur)) {
-           return;
+           return $this;
        }
         $this->listeUtilisateur->add($utilisateur);
 

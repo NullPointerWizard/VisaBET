@@ -319,11 +319,11 @@ class Utilisateur implements UserInterface
     }
 
     /*
-    * Renvoie nom et prenom de l'utilisateur
+    * Renvoie nom et prenom de l'utilisateur, nom en majuscule
     */
     public function __toString()
     {
-        return strtoupper($this->getNom()).' '.$this->getPrenom();
+        return $this->getPrenom().' '.strtoupper($this->getNom());
     }
 
 

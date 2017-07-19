@@ -28,7 +28,7 @@ class AffaireFormType extends AbstractType {
 				'format' 	=> 'dd/MM/yyyy'
 			))
 			->add('travailAEffectuer')
-			->add('idOrganisme', null, array( 'label'=>'Organisme' ))
+			//->add('idOrganisme', null, array( 'label'=>'Organisme' ))
 		;
 
 	}

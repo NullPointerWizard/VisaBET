@@ -93,10 +93,27 @@ class Lots
      */
     private $documents;
 
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Contact", inversedBy="listeLots")
+     * @ORM\JoinTable(name="sur_liste_diffusion",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_lot", referencedColumnName="id_lot")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_contact", referencedColumnName="id_contact")
+     *   }
+     * )
+     */
+     private $listeDiffusion;
+
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
         $this->documents = new ArrayCollection();
+        $this->listeDiffusion = new ArrayCollection();
     }
 
     /**
@@ -189,6 +206,27 @@ class Lots
     public function getDocuments()
     {
         return $this->documents;
+    }
+
+    public function getListeDiffusion(){
+        return $this->listeDiffusion;
+    }
+
+    /**
+     * Ajoute un contact a la liste de diffusion
+     *
+     * @param Contact $contact
+     *
+     * @return self
+     */
+    public function addListeDiffusion(Contact $contact)
+    {
+        if ($this->listeDiffusion->contains($contact)) {
+           return $this;
+        }
+        $this->listeDiffusion->add($contact);
+
+        return $this;
     }
 
     /*

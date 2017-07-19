@@ -4,10 +4,55 @@
     <meta charset="UTF-8" />
 {% endblock %}
 
+{% block pageTitle %}Créer la fiche Visa{% endblock %}
+
 {% block body %}
-<h1 class="text-center">
-<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
-<a href="{{ path('pdf_file', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">Générer le PDF !</a>
-<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
-</h1>
+
+    <h1 class="text-center">
+        {{ affaire }}</br>
+        <a href="{{ path('pdf_file', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">
+            <i class="fa fa-file-pdf-o fa-2x text-right" aria-hidden="true"></i>
+            Générer le PDF !
+            <i class="fa fa-file-pdf-o fa-2x text-right" aria-hidden="true"></i>
+        </a>
+    </h1>
+    <h2>{{ lot }}</h2>
+    <h3>Liste de diffusion</h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                {{ form_start(addContactsForm) }}
+                {{ form_row(addContactsForm.contacts) }}
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Ajouter
+                </button>
+                {{ form_end(addContactsForm) }}
+            </div>
+        </div>
+        <a class="text-right" href="{{ path('carnet_adresses') }}">
+            <i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i>
+            Ajouter des contacts
+        </a>
+
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <th>Rôle</th>
+            <th>Organisme</th>
+            <th>Intervenant</th>
+            <th>Mail</th>
+        </thead>
+        <tbody>
+        {% for contact in listeDiffusion %}
+            <tr>
+                <td>{{ contact.role }}</td>
+                <td>{{ contact.organisme }}</td>
+                <td>{{ contact }}</td>
+                <td>{{ contact.mail}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
 {% endblock %}

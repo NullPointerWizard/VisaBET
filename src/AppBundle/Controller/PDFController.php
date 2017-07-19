@@ -3,9 +3,11 @@
 namespace AppBundle\Controller;
 
 use DateTime;
+use AppBundle\Form\AjouterContactListeDiffusionFormType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response ;
 
 class PDFController extends Controller
@@ -19,7 +21,7 @@ class PDFController extends Controller
     *  name="pdf_generator"
     * )
     */
-    public function showPdfGenerator($numeroAffaire,$numeroLot)
+    public function showPdfGenerator($numeroAffaire, $numeroLot,Request $request)
     {
         $utilisateur = $this->getUser();
 		$entityManager = $this->getDoctrine()->getManager();
@@ -30,10 +32,38 @@ class PDFController extends Controller
         $lot = $entityManager->getRepository('AppBundle\Entity\Lots')
 			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
 		;
+        $listeDiffusion = $lot->getListeDiffusion();
+
+        // Ajout d'utilisateur dans la liste de diffusion
+        $addContactsForm = $this->createForm(AjouterContactListeDiffusionFormType::class);
+		$addContactsForm->handleRequest($request);
+
+		if ($addContactsForm->isSubmitted() && $addContactsForm->isValid()){
+
+			$entityManager = $this->getDoctrine()->getManager();
+			$data = $addContactsForm->getData();
+
+			foreach($data['contacts']  as $contact)
+			{
+				$lot->addListeDiffusion($contact);
+				$contact->addListeLots($lot);
+				$entityManager->persist($contact);
+
+				$this->addFlash('success', $contact.' ajoute a la liste de diffusion ! ' );
+			}
+			$entityManager->persist($lot);
+			$entityManager->flush();
+
+			//redirection vers la meme url
+			return $this->redirect($request->getUri());
+		}
 
         $data =[
-            'affaire'       => $affaire,
-            'lot'           => $lot
+            'affaire'           => $affaire,
+            'lot'               => $lot,
+            'listeDiffusion'    => $listeDiffusion,
+
+            'addContactsForm'    => $addContactsForm->createView()
         ];
         return $this->render(
             'applicationVisa/pdf_generator.html.twig',
@@ -56,6 +86,7 @@ class PDFController extends Controller
         $listeItems = [];
 		$listeVisas = [];
 		$listeRemarques =  [];
+        $listeDiffusion = [];
 
         $utilisateur = $this->getUser();
 		$entityManager = $this->getDoctrine()->getManager();
@@ -68,6 +99,7 @@ class PDFController extends Controller
         $lot = $entityManager->getRepository('AppBundle\Entity\Lots')
 			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
 		;
+        $listeDiffusion = $lot->getListeDiffusion();
         $listeDocuments = $lot->getDocuments();
 
         foreach($types as $type){
@@ -98,7 +130,7 @@ class PDFController extends Controller
         $now = new DateTime('now');
         $dateStamp = $now->format('d-m-Y');
         $timestamp = $now->getTimestamp();
-        $filename = 'VISAS_'.$dateStamp.'_Affaire'.$affaire->getNumeroAffaire().$timestamp.'.pdf';
+        $filename = 'VISAS_'.$dateStamp.'_Affaire'.$affaire->getNumeroAffaire().'_TS'.$timestamp.'.pdf';
 
         // Donnees pour la generation du pdf
         $pdfData = [
@@ -109,6 +141,7 @@ class PDFController extends Controller
             'lot'               => $lot,
             'types'             => $types,
 
+            'listeDiffusion'    => $listeDiffusion,
             'listeDocuments'    => $listeDocuments,
             'listeItems'        => $listeItems,
             'listeVisas'        => $listeVisas,

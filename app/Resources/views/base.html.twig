@@ -27,7 +27,7 @@
 
         <header class="header">
             <a href="{{ path('affaires') }}"><img class="logo-icon" src="{{ asset('images/LOGO-BET-3000.jpg') }}"></a>
-            <h1 class="visa-title" >Visa 3000</h1>
+            <h1 class="visa-title" >{% block pageTitle %}{% endblock %}</h1>
             <ul class="navi">
                 {% if is_granted('ROLE_USER') %}
                     <li><b>{{ app.user.idOrganisme }}</b> {{ app.user.prenom }} {{ app.user.nom }} </li>
@@ -51,6 +51,7 @@
     		{% endfor %}
 
             {% block body %}
+
             {% endblock %}
 
         </div>
