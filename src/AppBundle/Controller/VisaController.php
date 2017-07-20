@@ -7,9 +7,13 @@ use DateInterval;
 use AppBundle\Entity\Lots;
 use AppBundle\Entity\Visas;
 use AppBundle\Entity\Contact;
+use AppBundle\Entity\FicheVisa;
 use AppBundle\Form\VisaFormType;
+use AppBundle\Form\FicheFormType;
 use AppBundle\Form\ContactFormType;
 use AppBundle\Form\UploadFileFormType;
+use AppBundle\Form\AjouterDocumentsFicheVisaFormType;
+use AppBundle\Form\AjouterContactListeDiffusionFormType;
 use AppBundle\Form\AjouterUtilisateurSurAffaireFormType;
 use AppBundle\Entity\Documents;
 use AppBundle\Entity\Affaires;
@@ -414,6 +418,107 @@ class VisaController extends Controller {
 	}
 
 	/**
+	 * Page permettant de voir les fiches du lot
+	 *
+	 * @Route("/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/Fiches	", name="fiches")
+	 */
+	public function showFiches($numeroAffaire, $numeroLot, Request $request)
+	{
+		$types = ['Plan','NDC','Materiel','Autre'];
+		$utilisateur = $this->getUser();
+
+		$entityManager = $this->getDoctrine()->getManager();
+
+		$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
+			->findOneBy(['numeroAffaire'=>$numeroAffaire, 'idOrganisme'=> $utilisateur->getIdOrganisme()])
+		;
+		$lot = $entityManager->getRepository('AppBundle\Entity\Lots')
+			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
+		;
+		$listeDiffusion = $lot->getListeDiffusion();
+		$listeFiches = $lot->getFiches();
+
+		// Formulaire nouvelle fiche
+		$nouvelleFiche = new FicheVisa();
+		$nouvelleFiche->setLot($lot);
+		$nouvelleFiche->setNumeroFiche(rand(1, 4));
+		$ficheForm = $this->createForm(FicheFormType::class, $nouvelleFiche);
+		$ficheForm->handleRequest($request);
+		if ( $ficheForm->isSubmitted() && $ficheForm->isValid() ){
+
+			$entityManager->persist($nouvelleFiche);
+			$entityManager->flush();
+			$this->addFlash(
+				'success',
+				 sprintf(
+					'Nouvelle fiche : '.$nouvelleFiche
+				)
+			);
+			return $this->redirect($request->getUri());
+		}
+
+		// Ajout d'utilisateur dans la liste de diffusion
+        $addContactsForm = $this->createForm(AjouterContactListeDiffusionFormType::class);
+		$addContactsForm->handleRequest($request);
+
+		if ($addContactsForm->isSubmitted() && $addContactsForm->isValid()){
+
+			$entityManager = $this->getDoctrine()->getManager();
+			$data = $addContactsForm->getData();
+
+			foreach($data['contacts']  as $contact)
+			{
+				$lot->addListeDiffusion($contact);
+				$contact->addListeLots($lot);
+				$entityManager->persist($contact);
+
+				$this->addFlash('success', $contact.' ajoute a la liste de diffusion ! ' );
+			}
+			$entityManager->persist($lot);
+			$entityManager->flush();
+
+			//redirection vers la meme url
+			return $this->redirect($request->getUri());
+		}
+
+		// Ajout de documents dans la fiche
+        $addDocumentsForm = $this->createForm(AjouterDocumentsFicheVisaFormType::class, array('lot'=> $lot) );
+        $addDocumentsForm->handleRequest($request);
+        if ($addDocumentsForm->isSubmitted() && $addDocumentsForm->isValid()){
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $data = $addDocumentsForm->getData();
+			$fiche = $data['fiche'];
+
+            foreach($data['documents']  as $document)
+            {
+                $fiche->addDocuments($document);
+                $document->setFiche($fiche);
+                $entityManager->persist($document);
+
+                $this->addFlash('success', $document.' ajoute a la fiche ! ' );
+            }
+            $entityManager->persist($fiche);
+            $entityManager->flush();
+
+            //redirection vers la meme url
+            return $this->redirect($request->getUri());
+        }
+
+		$data =
+		[
+			'lot' 						=> $lot,
+			'affaire'					=> $affaire,
+			'listeFiches'				=> $listeFiches,
+			'listeDiffusion'   			=> $listeDiffusion,
+
+			'ficheForm' 				=> $ficheForm->createView(),
+			'addDocumentsForm'  		=> $addDocumentsForm->createView(),
+			'addContactsForm'   		=> $addContactsForm->createView(),
+		];
+		return $this->render('applicationVisa/gestion_fiches.html.twig', $data);
+	}
+	/**
 	 * Page permettant de voir les contacts disponibles
 	 *
 	 * @Route("/CarnetAdresses", name="carnet_adresses")
@@ -438,7 +543,7 @@ class VisaController extends Controller {
 					'Nouveau contact : '.$nouveauContact
 				)
 			);
-			
+
 			return $this->redirect($request->getUri());
 		}
 

@@ -3,8 +3,10 @@
 namespace AppBundle\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Affaires;
+use AppBundle\Entity\FicheVisa;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -116,9 +118,40 @@ class Documents
     private $lot;
 
     /**
+     * @var \AppBundle\Entity\FicheVisa
+     *
+     * @ORM\ManyToOne(
+     * 	targetEntity="AppBundle\Entity\FicheVisa",
+     * 	inversedBy="documents"
+     * )
+     *
+     * @ORM\JoinColumn(
+     * 	name="id_fiche",
+     *  referencedColumnName="id_fiche",
+     *  nullable=true
+     * )
+     */
+    private $fiche;
+
+    /**
     * Fichier correspondant au document
     */
     private $file;
+
+    /**
+     * Listes des visas lies au document
+     *
+     * @ORM\OneToMany(
+     * 	targetEntity="Visas",
+     * 	mappedBy="idDocument"
+     * )
+     */
+    private $visas;
+
+    public function __construct()
+    {
+        $this->visas = new ArrayCollection();
+    }
 
     /**
      * Get idDocument
@@ -358,6 +391,65 @@ class Documents
         return $this;
     }
 
+    /**
+     * Get the value of Lot
+     *
+     * @return \AppBundle\Entity\Lots
+     */
+    public function getLot()
+    {
+        return $this->lot;
+    }
+
+    /**
+     * Set the value of Lot
+     *
+     * @param \AppBundle\Entity\Lots lot
+     *
+     * @return self
+     */
+    public function setLot(\AppBundle\Entity\Lots $lot)
+    {
+        $this->lot = $lot;
+
+        return $this;
+    }
+
+
+    /**
+     * Get the value of Fiche
+     *
+     * @return \AppBundle\Entity\FicheVisa
+     */
+    public function getFiche()
+    {
+        return $this->fiche;
+    }
+
+    /**
+     * Set the value of Fiche
+     *
+     * @param \AppBundle\Entity\FicheVisa fiche
+     *
+     * @return self
+     */
+    public function setFiche(\AppBundle\Entity\FicheVisa $fiche)
+    {
+        $this->fiche = $fiche;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Fiche
+     *
+     * @return Doctrine\Common\Collections\ArrayCollection;
+     */
+    public function getVisas()
+    {
+        return $this->visas;
+    }
+
     // ------------- GESTION DES FICHIERS ---------------
     // sourcce : https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2/creer-des-formulaires-avec-symfony2#r-2087628
 
@@ -410,8 +502,9 @@ class Documents
     public function getUploadDir()
     {
         $affaire = $this->getIdAffaire();
+        $lot = $this->getLot();
         // On retourne le chemin relatif vers l'image pour un navigateur (relatif au répertoire /web donc)
-        return 'affaires/'.$affaire->getIdOrganisme()->getFolderName().'/'.$affaire->getFolderName().'/'.'documents/'.$this->getFolderName();
+        return 'affaires/'.$affaire->getIdOrganisme()->getFolderName().'/'.$affaire->getFolderName().'/Lot_'.$lot->getNumeroLot().'/'.'documents/'.$this->getFolderName();
     }
 
     protected function getUploadRootDir()
@@ -425,32 +518,4 @@ class Documents
     public function __toString(){
         return $this->getFilename();
     }
-
-
-
-
-    /**
-     * Get the value of Lot
-     *
-     * @return \AppBundle\Entity\Lots
-     */
-    public function getLot()
-    {
-        return $this->lot;
-    }
-
-    /**
-     * Set the value of Lot
-     *
-     * @param \AppBundle\Entity\Lots lot
-     *
-     * @return self
-     */
-    public function setLot(\AppBundle\Entity\Lots $lot)
-    {
-        $this->lot = $lot;
-
-        return $this;
-    }
-
 }

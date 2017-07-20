@@ -19,7 +19,7 @@
 
         <div class = "lot text-center">
             <h1>
-                FICHE VISA N°12 - {{ lot }} ventilation plomberie
+                FICHE VISA N°{{ fiche.numeroFiche }} - {{ lot }} ventilation plomberie
             </h1>
         </div>
 
@@ -100,28 +100,27 @@
 
         <div class="container">
         <h3>Visas et remarques</h3>
-            {% for type in types %}
-                {% for item in listeItems[type] %}
-                <div class="item">
-                    <b>{{ item.nomItem }}</b>
-                    <table class="table">
-                        <tbody>
-                            {% set visa = listeVisas[item.idItem] %}
-                            <tr>
-                                <td class="td-visa">Visa {{ visa.version }}</td>
-                                <td>{{ visa.indicePlan }}</td>
-                                <td>{{ visa.etatVisa }}</td>
-                                <td>
-                                    {% for remarque in listeRemarques[visa.idVisa] %}
-                                        <i>{{ remarque.idTypeRemarque }}</i> : {{ remarque.remarque }}<br>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        <tbody>
-                    </table>
-                </div>
-                {% endfor %}
+        {% for document in listeDocuments %}
+            {% for visa in listeVisas[document.idDocument]%}
+            <div class="item">
+                <b>{{ visa.idItem }}</b>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td class="td-visa">Visa {{ visa.version }}</td>
+                            <td>{{ visa.indicePlan }}</td>
+                            <td>{{ visa.etatVisa }}</td>
+                            <td>
+                                {% for remarque in listeRemarques[visa.idVisa] %}
+                                    <i>{{ remarque.idTypeRemarque }}</i> : {{ remarque.remarque }}<br>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    <tbody>
+                </table>
+            </div>
             {% endfor %}
+        {% endfor %}
         </div>
     </div>
 

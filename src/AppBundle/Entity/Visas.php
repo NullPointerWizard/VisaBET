@@ -76,6 +76,7 @@ class Visas
      *
      * @ORM\ManyToOne(
 	 *  targetEntity="AppBundle\Entity\Documents",
+	 *  inversedBy="visas"
 	 * )
      * @ORM\JoinColumn(
 	 *	name="id_document",

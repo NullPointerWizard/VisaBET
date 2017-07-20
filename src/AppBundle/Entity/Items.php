@@ -65,7 +65,7 @@ class Items
     private $idLot;
 
     /**
-     * Listes des visas li�s � l'item
+     * Listes des visas lies a l'item
      *
      * @ORM\OneToMany(
      * 	targetEntity="Visas",

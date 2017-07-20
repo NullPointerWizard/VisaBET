@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{%  block metacharset %}
+    <meta charset="UTF-8" />
+{% endblock %}
+
+{% block pageTitle %}Fiches Visa{% endblock %}
+
+{% block body %}
+    <h3>Fiches</h3>
+    <div class="container">
+         <div class="row">
+             <div class="col-xs-12">
+                 <h3>Nouvelle Fiche</h3>
+
+                 {{ form_start(ficheForm) }}
+                 {{ form_widget(ficheForm) }}
+                 <button type="submit" class="btn btn-primary">
+                      <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Créer fiche
+                 </button>
+                 {{ form_end(ficheForm) }}
+             </div>
+         </div>
+     </div>
+
+    <table class="table table-striped">
+        <thead>
+            <th>N°</th>
+            <th>Nom du fichier</th>
+            <th>Date fiche</th>
+            <th>Documents</th>
+            <th>Date de réception</th>
+            <th>Date de limite visa</th>
+        </thead>
+        <tbody>
+        {% for fiche in listeFiches %}
+            <tr>
+                <td>
+                    Fiche {{ fiche.numeroFiche }}
+                    <a href="{{ path('pdf_file', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot, 'numeroFiche':fiche.numeroFiche}) }}">
+                        <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+                    </a>
+                </td>
+                <td>{{ fiche.filename }}</td>
+                <td>{{ fiche.date|date('d/m/Y') }}</td>
+                <td>
+                    {% for documents in fiche.documents %}
+                        {{ documents }}<br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for documents in fiche.documents %}
+                        {{ documents.dateReception|date('d/m/Y') }}<br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for documents in fiche.documents %}
+                        {{ documents.dateLimiteVisa|date('d/m/Y') }}<br>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Ajouter des documents à une fiche</h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                {{ form_start(addDocumentsForm) }}
+                {{ form_row(addDocumentsForm.fiche) }}
+                {{ form_row(addDocumentsForm.documents) }}
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Ajouter
+                </button>
+                {{ form_end(addDocumentsForm) }}
+            </div>
+        </div>
+    </div>
+
+    <h3>Liste de diffusion</h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <a href="{{ path('carnet_adresses') }}">
+                    <i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i>
+                    Ajouter des contacts
+                </a>
+                {{ form_start(addContactsForm) }}
+                {{ form_row(addContactsForm.contacts) }}
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Ajouter
+                </button>
+                {{ form_end(addContactsForm) }}
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <th>Rôle</th>
+            <th>Organisme</th>
+            <th>Intervenant</th>
+            <th>Mail</th>
+        </thead>
+        <tbody>
+        {% for contact in listeDiffusion %}
+            <tr>
+                <td>{{ contact.role }}</td>
+                <td>{{ contact.organisme }}</td>
+                <td>{{ contact }}</td>
+                <td>{{ contact.mail}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

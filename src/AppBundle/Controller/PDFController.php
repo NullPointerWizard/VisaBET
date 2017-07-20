@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use DateTime;
+use AppBundle\Entity\FicheVisa;
+use AppBundle\Form\AjouterDocumentsFicheVisaFormType;
 use AppBundle\Form\AjouterContactListeDiffusionFormType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -17,11 +19,11 @@ class PDFController extends Controller
     /**
     * Page permettant la creation des fiches Visas
     * @Route(
-    *  "/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/FicheVisa",
+    *  "/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/NouvelleFiche",
     *  name="pdf_generator"
     * )
     */
-    public function showPdfGenerator($numeroAffaire, $numeroLot,Request $request)
+    public function showPdfGenerator($numeroAffaire, $numeroLot, Request $request)
     {
         $utilisateur = $this->getUser();
 		$entityManager = $this->getDoctrine()->getManager();
@@ -32,6 +34,10 @@ class PDFController extends Controller
         $lot = $entityManager->getRepository('AppBundle\Entity\Lots')
 			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
 		;
+        $numeroFiche = 2;
+        $fiche = new FicheVisa();
+        $fiche->setLot($lot);
+        $fiche->setNumeroFiche($numeroFiche);
         $listeDiffusion = $lot->getListeDiffusion();
 
         // Ajout d'utilisateur dans la liste de diffusion
@@ -58,12 +64,37 @@ class PDFController extends Controller
 			return $this->redirect($request->getUri());
 		}
 
+        // Ajout de documents dans la fiche
+        $addDocumentsForm = $this->createForm(AjouterDocumentsFicheVisaFormType::class, array('lot'=> $lot) );
+        $addDocumentsForm->handleRequest($request);
+        if ($addDocumentsForm->isSubmitted() && $addDocumentsForm->isValid()){
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $data = $addDocumentsForm->getData();
+
+            foreach($data['documents']  as $document)
+            {
+                $fiche->addDocuments($document);
+                $document->setFiche($fiche);
+                $entityManager->persist($document);
+
+                $this->addFlash('success', $document.' ajoute a la fiche ! ' );
+            }
+            $entityManager->persist($fiche);
+            $entityManager->flush();
+
+            //redirection vers la meme url
+            return $this->redirect($request->getUri());
+        }
+
         $data =[
             'affaire'           => $affaire,
             'lot'               => $lot,
             'listeDiffusion'    => $listeDiffusion,
+            'numeroFiche'       => $numeroFiche,
 
-            'addContactsForm'    => $addContactsForm->createView()
+            'addContactsForm'    => $addContactsForm->createView(),
+            'addDocumentsForm'   => $addDocumentsForm->createView()
         ];
         return $this->render(
             'applicationVisa/pdf_generator.html.twig',
@@ -75,11 +106,11 @@ class PDFController extends Controller
 
     /**
     * @Route(
-    *  "/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/FicheVisa/pdf",
+    *  "/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/Fiches/Fiche{numeroFiche}/pdf",
     *  name="pdf_file"
     * )
     */
-    public function generatePdfAction($numeroAffaire,$numeroLot)
+    public function generatePdfAction($numeroAffaire, $numeroLot, $numeroFiche)
     {
         $types = ['Plan','NDC','Materiel','Autre'];
         $listeDocuments = [];
@@ -99,38 +130,23 @@ class PDFController extends Controller
         $lot = $entityManager->getRepository('AppBundle\Entity\Lots')
 			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
 		;
+        $fiche =  $entityManager->getRepository('AppBundle\Entity\FicheVisa')
+			->findOneBy(['numeroFiche'=>$numeroFiche, 'lot' => $lot])
+		;
         $listeDiffusion = $lot->getListeDiffusion();
-        $listeDocuments = $lot->getDocuments();
-
-        foreach($types as $type){
-			$listeItems[$type] = $entityManager->getRepository('AppBundle\Entity\Items')
-				->findAllItemsWhereType($lot,$type);
-
-			foreach($listeItems[$type] as $item)
-			{
-				$listeVisas[$item->getIdItem()] = $entityManager->getRepository('AppBundle\Entity\Visas')
-                    ->findOneBy( array(
-                        'idItem' 	=> $item->getIdItem(),
-                        'version'	=> $item->getVisasLastVersion()
-                    ))
-                ;
-				foreach ($listeVisas as $visa)
-				{
-					$listeRemarques[$visa->getIdVisa()] = $visa->getRemarques();
-				}
-			}
-		}
-
-        //  dump($listeItems);
-        //  dump($listeVisas);
-        //  dump($listeRemarques);
-        //  die;
+        $listeDocuments = $fiche->getDocuments();
+        foreach($listeDocuments as $document){
+            $listeVisas[$document->getIdDocument()] = $document->getVisas();
+            foreach($listeVisas[$document->getIdDocument()] as $visa)
+            {
+                $listeRemarques[$visa->getIdVisa()] = $visa->getRemarques();
+            }
+        }
 
         // Jour de generation du pdf
         $now = new DateTime('now');
         $dateStamp = $now->format('d-m-Y');
         $timestamp = $now->getTimestamp();
-        $filename = 'VISAS_'.$dateStamp.'_Affaire'.$affaire->getNumeroAffaire().'_TS'.$timestamp.'.pdf';
 
         // Donnees pour la generation du pdf
         $pdfData = [
@@ -140,6 +156,7 @@ class PDFController extends Controller
             'affaire'           => $affaire,
             'lot'               => $lot,
             'types'             => $types,
+            'fiche'             => $fiche,
 
             'listeDiffusion'    => $listeDiffusion,
             'listeDocuments'    => $listeDocuments,
@@ -156,7 +173,8 @@ class PDFController extends Controller
                 'dateStamp'         => $dateStamp,
                 'timestamp'         => $timestamp,
                 'affaire'           => $affaire,
-                'lot'               => $lot
+                'lot'               => $lot,
+                'fiche'             => $fiche,
             ]
 
         );
@@ -172,18 +190,23 @@ class PDFController extends Controller
             'applicationVisa/pdf_view.html.twig',
             $pdfData
         );
+        $filename = 'VISAS_LOT'.$numeroLot.'_Fiche'.$numeroFiche.'_au_'.$dateStamp.'_Affaire'.$affaire->getNumeroAffaire().'_TS'.$timestamp.'.pdf';
+        $path = './'.'affaires/'.$affaire->getIdOrganisme()->getFolderName().'/'.$affaire->getFolderName().'/Lot_'.$lot->getNumeroLot().'/'.'visas/'.$filename ;
         $snappy = $this->get('knp_snappy.pdf');
         $snappy->setOption('header-html', $headerHtml);
         $snappy->setOption('footer-html', $footerHtml);
         $snappy->generateFromHtml(
             $html,
-            './'.'affaires/'.$affaire->getIdOrganisme()->getFolderName().'/'.$affaire->getFolderName().'/'.'visas/'.$filename
+            $path
         );
-        //$this->addFlash('success', 'PDF '.$filename.' genere ! ' );
 
-        $data = [
+        // MAJ des infos de la fiche dans la BDD
+        $fiche->setDate($now);
+        $fiche->setFilename($filename);
+        $fiche->setPath($path);
+        $entityManager->persist($fiche);
+        $entityManager->flush();
 
-        ];
 
         return new Response(
             $snappy->getOutputFromHtml($html),

@@ -12,14 +12,12 @@ use Doctrine\ORM\EntityRepository;
 class ContactRepository extends EntityRepository {
 
 
-	function findAll()
+	public function findAll()
 	{
 		// l'alias 'contact' fait reference a la table dans la BD
 		return $this->createQueryBuilder('contact')
 			->andWhere('documents.idAffaire = :idAffaireDemande')
 			->setParameter('idAffaireDemande', $affaireDemande->getIdAffaire() )
-			->getQuery()
-			->execute()
 		;
 	}
 }

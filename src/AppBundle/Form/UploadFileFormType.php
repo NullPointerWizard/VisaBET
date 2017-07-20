@@ -21,8 +21,8 @@ class UploadFileFormType extends AbstractType {
 	* Attention ce formulaire a besoin de l'affaire
 	*/
 	public function buildForm(FormBuilderInterface $builder, array $options){
-		//dump($options);die;
-		$affaire = $options['data']->getIdAffaire() ;
+		$document = $options['data'];
+		$affaire = $document->getIdAffaire() ;
 		$builder
 			->add('file', FileType::class, array(
                 'label' => 'Document'
@@ -41,7 +41,7 @@ class UploadFileFormType extends AbstractType {
             ))
 			->add('lot', null ,array(
 				'label'		=> 'Lot',
-				'required'	=> false,
+				'required'	=> true,
 				'query_builder' => function(LotsRepository $repo) use ($affaire){
     				return $repo->getLotsFromAffaireQueryBuilder($affaire);
 				}

@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Affaires;
 use AppBundle\Entity\NomsLots;
+use AppBundle\Entity\FicheVisa;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -84,7 +85,7 @@ class Lots
 
 
     /**
-     * Listes des documentslies au lot
+     * Listes des documents du lot
      *
      * @ORM\OneToMany(
      * 	targetEntity="Documents",
@@ -92,6 +93,16 @@ class Lots
      * )
      */
     private $documents;
+
+    /**
+     * Listes des fiches du lot
+     *
+     * @ORM\OneToMany(
+     * 	targetEntity="FicheVisa",
+     * 	mappedBy="lot"
+     * )
+     */
+    private $fiches;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
@@ -114,6 +125,7 @@ class Lots
         $this->items = new ArrayCollection();
         $this->documents = new ArrayCollection();
         $this->listeDiffusion = new ArrayCollection();
+        $this->fiches = new ArrayCollection();
     }
 
     /**
@@ -206,6 +218,11 @@ class Lots
     public function getDocuments()
     {
         return $this->documents;
+    }
+
+    public function getFiches()
+    {
+        return $this->fiches;
     }
 
     public function getListeDiffusion(){
