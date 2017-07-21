@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{%  block metacharset %}
+    <meta charset="UTF-8" />
+{% endblock %}
+
+{%  block pageTitle %}Gestion{% endblock %}
+
+{% block body %}
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{{ path('gestion') }}">Gestion</a></li>
+        <li><a href="{{ path('gestion_carnet') }}">Carnet d'adresses</a> </li>
+        <li><a href="{{ path('gestion_role') }}">Rôles</a> </li>
+        <li><a href="{{ path('gestion_noms_lots') }}">Noms des lots</a> </li>
+    </ul>
+
+    <div class="list-group">
+        <a href="{{ path('gestion_carnet') }}"class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Carnet d'adresses</h5>
+            </div>
+            <p class="mb-1">Liste de tous les contacts qui peuvent être ajouté aux liste de diffusion des fiches visas.</p>
+            <small class="text-muted">
+                <ul>
+                    <li>Ajout de contacts</li>
+                </ul>
+            </small>
+        </a>
+        <a href="{{ path('gestion_role') }}"class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Rôles</h5>
+            </div>
+            <p class="mb-1">Liste de tous les roles qui peuvent être attribués à un contact.</p>
+            <small class="text-muted">
+                <ul>
+                    <li>Ajout de rôles</li>
+                </ul>
+            </small>
+        </a>
+        <a href="{{ path('gestion_noms_lots') }}"class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Noms des lots</h5>
+            </div>
+            <p class="mb-1">Liste de tous les noms qui peuvent être utilisés pour les lots</p>
+            <small class="text-muted">
+                <ul>
+                    <li>Ajout de noms de lots</li>
+                </ul>
+            </small>
+        </a>
+    </div>
+{% endblock %}

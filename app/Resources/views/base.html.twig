@@ -31,6 +31,7 @@
             <ul class="navi">
                 {% if is_granted('ROLE_USER') %}
                     <li><b>{{ app.user.idOrganisme }}</b> {{ app.user.prenom }} {{ app.user.nom }} </li>
+                    <li><a href="{{ path('gestion') }}">Gestion</a> </li>
                     <li><a href="{{ path('visa_logout') }}">Déconnexion</a></li>
                 {% else %}
                     <li><a href="{{ path('visa_login') }}">Connexion</a></li>

@@ -8,8 +8,10 @@ use AppBundle\Entity\Lots;
 use AppBundle\Entity\Visas;
 use AppBundle\Entity\Contact;
 use AppBundle\Entity\FicheVisa;
+use AppBundle\Form\RoleFormType;
 use AppBundle\Form\VisaFormType;
 use AppBundle\Form\FicheFormType;
+use AppBundle\Form\NomLotFormType;
 use AppBundle\Form\ContactFormType;
 use AppBundle\Form\UploadFileFormType;
 use AppBundle\Form\AjouterDocumentsFicheVisaFormType;
@@ -18,6 +20,7 @@ use AppBundle\Form\AjouterUtilisateurSurAffaireFormType;
 use AppBundle\Entity\Documents;
 use AppBundle\Entity\Affaires;
 use AppBundle\Entity\Items;
+use AppBundle\Entity\NomsLots;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Form\AffaireFormType;
@@ -441,7 +444,7 @@ class VisaController extends Controller {
 		// Formulaire nouvelle fiche
 		$nouvelleFiche = new FicheVisa();
 		$nouvelleFiche->setLot($lot);
-		$nouvelleFiche->setNumeroFiche(rand(1, 4));
+		$nouvelleFiche->setNumeroFiche(0);
 		$ficheForm = $this->createForm(FicheFormType::class, $nouvelleFiche);
 		$ficheForm->handleRequest($request);
 		if ( $ficheForm->isSubmitted() && $ficheForm->isValid() ){
@@ -518,10 +521,21 @@ class VisaController extends Controller {
 		];
 		return $this->render('applicationVisa/gestion_fiches.html.twig', $data);
 	}
+
+	/**
+	 * Page gestion des tables utilitaires
+	 *
+	 * @Route("/Gestion", name="gestion")
+	 */
+	public function showGestion(Request $request)
+	{
+		return $this->render ( 'applicationVisa/gestion.html.twig');
+	}
+
 	/**
 	 * Page permettant de voir les contacts disponibles
 	 *
-	 * @Route("/CarnetAdresses", name="carnet_adresses")
+	 * @Route("/Gestion/CarnetAdresses", name="gestion_carnet")
 	 */
 	public function showCarnetAdresses(Request $request)
 	{
@@ -554,7 +568,86 @@ class VisaController extends Controller {
 				'form'						=> $form->createView()
 
 		];
-		return $this->render('applicationVisa/carnet_adresses.html.twig', $data);
+		return $this->render('applicationVisa/gestion_carnet_adresses.html.twig', $data);
+	}
+
+	/**
+	 * Page gestion des tables secondaires
+	 *
+	 * @Route("/Gestion/RoleContacts", name="gestion_role")
+	 */
+	public function showGestionRole(Request $request)
+	{
+		$entityManager = $this->getDoctrine()->getManager();
+		$listeRole = $entityManager->getRepository('AppBundle\Entity\RoleContact')
+			->findAll();
+
+		$roleForm = $this->createForm(RoleFormType::class);
+		$roleForm->handleRequest($request);
+
+		if ( $roleForm->isSubmitted() && $roleForm->isValid() ){
+			$nouveauRole = $roleForm->getData();
+
+			$entityManager->persist($nouveauRole);
+			$entityManager->flush();
+
+			$this->addFlash(
+				'success',
+				 sprintf(
+					'Nouveau role : '.$nouveauRole
+				)
+			);
+
+			return $this->redirect($request->getUri());
+		}
+
+
+		$data =
+		[
+				'listeRole'	=> $listeRole,
+
+				'roleForm'	=> $roleForm->createView()
+		];
+		return $this->render ( 'applicationVisa/gestion_role.html.twig', $data);
+	}
+
+	/**
+	 * Page permettant de voir les contacts disponibles
+	 *
+	 * @Route("/Gestion/NomsLots", name="gestion_noms_lots")
+	 */
+	public function showNomsLots(Request $request)
+	{
+		$entityManager = $this->getDoctrine()->getManager();
+		$listeNomsLot = $entityManager->getRepository('AppBundle\Entity\NomsLots')
+			->findAll();
+
+		$nouveauNomLot = new NomsLots();
+		$form = $this->createForm(NomLotFormType::class, $nouveauNomLot);
+		$form->handleRequest($request);
+
+		if ( $form->isSubmitted() && $form->isValid() ){
+			$entityManager->persist($nouveauNomLot);
+			$entityManager->flush();
+
+			$this->addFlash(
+				'success',
+				 sprintf(
+					'Nouveau nom de lot: '.$nouveauNomLot
+				)
+			);
+
+			return $this->redirect($request->getUri());
+		}
+
+		$data =
+		[
+				'listeNomsLot'				=> $listeNomsLot,
+
+				'form'						=> $form->createView()
+
+		];
+		return $this->render('applicationVisa/gestion_noms_lots.html.twig', $data);
 	}
 
 	/**

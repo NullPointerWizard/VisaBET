@@ -23,84 +23,84 @@ class PDFController extends Controller
     *  name="pdf_generator"
     * )
     */
-    public function showPdfGenerator($numeroAffaire, $numeroLot, Request $request)
-    {
-        $utilisateur = $this->getUser();
-		$entityManager = $this->getDoctrine()->getManager();
-		$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
-			->findOneBy(['numeroAffaire'=>$numeroAffaire, 'idOrganisme'=> $utilisateur->getIdOrganisme()])
-		;
-        $organisme = $utilisateur->getIdOrganisme();
-        $lot = $entityManager->getRepository('AppBundle\Entity\Lots')
-			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
-		;
-        $numeroFiche = 2;
-        $fiche = new FicheVisa();
-        $fiche->setLot($lot);
-        $fiche->setNumeroFiche($numeroFiche);
-        $listeDiffusion = $lot->getListeDiffusion();
-
-        // Ajout d'utilisateur dans la liste de diffusion
-        $addContactsForm = $this->createForm(AjouterContactListeDiffusionFormType::class);
-		$addContactsForm->handleRequest($request);
-
-		if ($addContactsForm->isSubmitted() && $addContactsForm->isValid()){
-
-			$entityManager = $this->getDoctrine()->getManager();
-			$data = $addContactsForm->getData();
-
-			foreach($data['contacts']  as $contact)
-			{
-				$lot->addListeDiffusion($contact);
-				$contact->addListeLots($lot);
-				$entityManager->persist($contact);
-
-				$this->addFlash('success', $contact.' ajoute a la liste de diffusion ! ' );
-			}
-			$entityManager->persist($lot);
-			$entityManager->flush();
-
-			//redirection vers la meme url
-			return $this->redirect($request->getUri());
-		}
-
-        // Ajout de documents dans la fiche
-        $addDocumentsForm = $this->createForm(AjouterDocumentsFicheVisaFormType::class, array('lot'=> $lot) );
-        $addDocumentsForm->handleRequest($request);
-        if ($addDocumentsForm->isSubmitted() && $addDocumentsForm->isValid()){
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $data = $addDocumentsForm->getData();
-
-            foreach($data['documents']  as $document)
-            {
-                $fiche->addDocuments($document);
-                $document->setFiche($fiche);
-                $entityManager->persist($document);
-
-                $this->addFlash('success', $document.' ajoute a la fiche ! ' );
-            }
-            $entityManager->persist($fiche);
-            $entityManager->flush();
-
-            //redirection vers la meme url
-            return $this->redirect($request->getUri());
-        }
-
-        $data =[
-            'affaire'           => $affaire,
-            'lot'               => $lot,
-            'listeDiffusion'    => $listeDiffusion,
-            'numeroFiche'       => $numeroFiche,
-
-            'addContactsForm'    => $addContactsForm->createView(),
-            'addDocumentsForm'   => $addDocumentsForm->createView()
-        ];
-        return $this->render(
-            'applicationVisa/pdf_generator.html.twig',
-            $data
-         );
-    }
+    // public function showPdfGenerator($numeroAffaire, $numeroLot, Request $request)
+    // {
+    //     $utilisateur = $this->getUser();
+	// 	$entityManager = $this->getDoctrine()->getManager();
+	// 	$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
+	// 		->findOneBy(['numeroAffaire'=>$numeroAffaire, 'idOrganisme'=> $utilisateur->getIdOrganisme()])
+	// 	;
+    //     $organisme = $utilisateur->getIdOrganisme();
+    //     $lot = $entityManager->getRepository('AppBundle\Entity\Lots')
+	// 		->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
+	// 	;
+    //     $numeroFiche = 2;
+    //     $fiche = new FicheVisa();
+    //     $fiche->setLot($lot);
+    //     $fiche->setNumeroFiche($numeroFiche);
+    //     $listeDiffusion = $lot->getListeDiffusion();
+    //
+    //     // Ajout d'utilisateur dans la liste de diffusion
+    //     $addContactsForm = $this->createForm(AjouterContactListeDiffusionFormType::class);
+	// 	$addContactsForm->handleRequest($request);
+    //
+	// 	if ($addContactsForm->isSubmitted() && $addContactsForm->isValid()){
+    //
+	// 		$entityManager = $this->getDoctrine()->getManager();
+	// 		$data = $addContactsForm->getData();
+    //
+	// 		foreach($data['contacts']  as $contact)
+	// 		{
+	// 			$lot->addListeDiffusion($contact);
+	// 			$contact->addListeLots($lot);
+	// 			$entityManager->persist($contact);
+    //
+	// 			$this->addFlash('success', $contact.' ajoute a la liste de diffusion ! ' );
+	// 		}
+	// 		$entityManager->persist($lot);
+	// 		$entityManager->flush();
+    //
+	// 		//redirection vers la meme url
+	// 		return $this->redirect($request->getUri());
+	// 	}
+    //
+    //     // Ajout de documents dans la fiche
+    //     $addDocumentsForm = $this->createForm(AjouterDocumentsFicheVisaFormType::class, array('lot'=> $lot) );
+    //     $addDocumentsForm->handleRequest($request);
+    //     if ($addDocumentsForm->isSubmitted() && $addDocumentsForm->isValid()){
+    //
+    //         $entityManager = $this->getDoctrine()->getManager();
+    //         $data = $addDocumentsForm->getData();
+    //
+    //         foreach($data['documents']  as $document)
+    //         {
+    //             $fiche->addDocuments($document);
+    //             $document->setFiche($fiche);
+    //             $entityManager->persist($document);
+    //
+    //             $this->addFlash('success', $document.' ajoute a la fiche ! ' );
+    //         }
+    //         $entityManager->persist($fiche);
+    //         $entityManager->flush();
+    //
+    //         //redirection vers la meme url
+    //         return $this->redirect($request->getUri());
+    //     }
+    //
+    //     $data =[
+    //         'affaire'           => $affaire,
+    //         'lot'               => $lot,
+    //         'listeDiffusion'    => $listeDiffusion,
+    //         'numeroFiche'       => $numeroFiche,
+    //
+    //         'addContactsForm'    => $addContactsForm->createView(),
+    //         'addDocumentsForm'   => $addDocumentsForm->createView()
+    //     ];
+    //     return $this->render(
+    //         'applicationVisa/pdf_generator.html.twig',
+    //         $data
+    //      );
+    // }
 
 
 
