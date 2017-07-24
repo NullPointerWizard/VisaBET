@@ -7,17 +7,22 @@
 {%  block pageTitle %}Gestion{% endblock %}
 
 {% block body %}
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="{{ path('gestion') }}">Gestion</a></li>
-        <li><a href="{{ path('gestion_carnet') }}">Carnet d'adresses</a> </li>
-        <li><a href="{{ path('gestion_role') }}">Rôles</a> </li>
-        <li><a href="{{ path('gestion_noms_lots') }}">Noms des lots</a> </li>
-    </ul>
 
     <div class="list-group">
+        <a href="{{ path('gestion_organismes') }}"class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1"><b>Organismes</b></h5>
+            </div>
+            <p class="mb-1">Liste des organismes pris en compte dans l'application</p>
+            <small class="text-muted">
+                <ul>
+                    <li>Ajout d'organismes</li>
+                </ul>
+            </small>
+        </a>
         <a href="{{ path('gestion_carnet') }}"class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">Carnet d'adresses</h5>
+                <h5 class="mb-1"><b>Carnet d'adresses</b></h5>
             </div>
             <p class="mb-1">Liste de tous les contacts qui peuvent être ajouté aux liste de diffusion des fiches visas.</p>
             <small class="text-muted">
@@ -28,7 +33,7 @@
         </a>
         <a href="{{ path('gestion_role') }}"class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">Rôles</h5>
+                <h5 class="mb-1"><b>Rôles</b></h5>
             </div>
             <p class="mb-1">Liste de tous les roles qui peuvent être attribués à un contact.</p>
             <small class="text-muted">
@@ -39,12 +44,23 @@
         </a>
         <a href="{{ path('gestion_noms_lots') }}"class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">Noms des lots</h5>
+                <h5 class="mb-1"><b>Noms des lots</b></h5>
             </div>
             <p class="mb-1">Liste de tous les noms qui peuvent être utilisés pour les lots</p>
             <small class="text-muted">
                 <ul>
                     <li>Ajout de noms de lots</li>
+                </ul>
+            </small>
+        </a>
+        <a href="{{ path('gestion_types_remarques') }}"class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1"><b>Types de remarques</b></h5>
+            </div>
+            <p class="mb-1">Personnalisation des types de remarque</p>
+            <small class="text-muted">
+                <ul>
+                    <li>Ajout de types de remarques</li>
                 </ul>
             </small>
         </a>

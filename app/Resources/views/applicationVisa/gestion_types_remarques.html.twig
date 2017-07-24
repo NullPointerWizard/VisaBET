@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
 {% endblock %}
 
-{% block pageTitle %}Noms des lots{% endblock %}
+{% block pageTitle %}Types de remarques{% endblock %}
 
 {% block body %}
-<h2>Liste des noms de lots</h2>
+<h2>Liste des types de remarques</h2>
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
@@ -23,13 +23,13 @@
 <table class="table table-striped">
     <thead>
         <th>Id</th>
-        <th>Nom de lot</th>
+        <th>Type de remarque</th>
     </thead>
     <tbody>
-    {% for nomLot in listeNomsLot %}
+    {% for type in listeTypesRemarques %}
         <tr>
-            <td>{{ nomLot.idNomLot }}</td>
-            <td>{{ nomLot }}</td>
+            <td>{{ type.idTypeRemarque }}</td>
+            <td>{{ type }}</td>
         </tr>
     {% endfor %}
     </tbody>

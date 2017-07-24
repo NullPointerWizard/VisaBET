@@ -192,7 +192,9 @@ class Items
     */
     public function getVisasLastVersion()
     {
-        $versions = array();
+        //On s'assure de renvoyer au pire 0
+        $versions = array(0);
+
         foreach($this->getVisas()->getValues() as $visa)
         {
             $versions[] = $visa->getVersion();

@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
 {% endblock %}
 
-{% block pageTitle %}Noms des lots{% endblock %}
+{% block pageTitle %}Organismes{% endblock %}
 
 {% block body %}
-<h2>Liste des noms de lots</h2>
+<h2>Liste des organismes</h2>
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
@@ -23,13 +23,13 @@
 <table class="table table-striped">
     <thead>
         <th>Id</th>
-        <th>Nom de lot</th>
+        <th>Nom de l'organisme</th>
     </thead>
     <tbody>
-    {% for nomLot in listeNomsLot %}
+    {% for organisme in listeOrganismes %}
         <tr>
-            <td>{{ nomLot.idNomLot }}</td>
-            <td>{{ nomLot }}</td>
+            <td>{{ organisme.idOrganisme }}</td>
+            <td>{{ organisme }}</td>
         </tr>
     {% endfor %}
     </tbody>

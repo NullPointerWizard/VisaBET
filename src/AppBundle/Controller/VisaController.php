@@ -8,12 +8,16 @@ use AppBundle\Entity\Lots;
 use AppBundle\Entity\Visas;
 use AppBundle\Entity\Contact;
 use AppBundle\Entity\FicheVisa;
+use AppBundle\Entity\Organismes;
+use AppBundle\Entity\TypesRemarque;
 use AppBundle\Form\RoleFormType;
 use AppBundle\Form\VisaFormType;
 use AppBundle\Form\FicheFormType;
 use AppBundle\Form\NomLotFormType;
 use AppBundle\Form\ContactFormType;
+use AppBundle\Form\OrganismesFormType;
 use AppBundle\Form\UploadFileFormType;
+use AppBundle\Form\TypesRemarqueFormType;
 use AppBundle\Form\AjouterDocumentsFicheVisaFormType;
 use AppBundle\Form\AjouterContactListeDiffusionFormType;
 use AppBundle\Form\AjouterUtilisateurSurAffaireFormType;
@@ -423,7 +427,7 @@ class VisaController extends Controller {
 	/**
 	 * Page permettant de voir les fiches du lot
 	 *
-	 * @Route("/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/Fiches	", name="fiches")
+	 * @Route("/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/Fiches", name="fiches")
 	 */
 	public function showFiches($numeroAffaire, $numeroLot, Request $request)
 	{
@@ -612,7 +616,7 @@ class VisaController extends Controller {
 	}
 
 	/**
-	 * Page permettant de voir les contacts disponibles
+	 * Page permettant de voir les noms de lot disponibles
 	 *
 	 * @Route("/Gestion/NomsLots", name="gestion_noms_lots")
 	 */
@@ -648,6 +652,84 @@ class VisaController extends Controller {
 
 		];
 		return $this->render('applicationVisa/gestion_noms_lots.html.twig', $data);
+	}
+
+	/**
+	 * Page permettant de voir les organismes disponibles
+	 *
+	 * @Route("/Gestion/Organismes", name="gestion_organismes")
+	 */
+	public function showGestionOrganismes(Request $request)
+	{
+		$entityManager = $this->getDoctrine()->getManager();
+		$listeOrganismes = $entityManager->getRepository('AppBundle\Entity\Organismes')
+			->findAll();
+
+		$nouvelOrganisme = new Organismes();
+		$form = $this->createForm(OrganismesFormType::class, $nouvelOrganisme);
+		$form->handleRequest($request);
+
+		if ( $form->isSubmitted() && $form->isValid() ){
+			$entityManager->persist($nouvelOrganisme);
+			$entityManager->flush();
+
+			$this->addFlash(
+				'success',
+				 sprintf(
+					'Nouvel organisme: '.$nouvelOrganisme
+				)
+			);
+
+			return $this->redirect($request->getUri());
+		}
+
+		$data =
+		[
+				'listeOrganismes'			=> $listeOrganismes,
+
+				'form'						=> $form->createView()
+
+		];
+		return $this->render('applicationVisa/gestion_organismes.html.twig', $data);
+	}
+
+	/**
+	 * Page permettant de voir les types de remarques disponibles
+	 *
+	 * @Route("/Gestion/TypesRemarques", name="gestion_types_remarques")
+	 */
+	public function showGestionTypesRemarques(Request $request)
+	{
+		$entityManager = $this->getDoctrine()->getManager();
+		$listeTypesRemarques = $entityManager->getRepository('AppBundle\Entity\TypesRemarque')
+			->findAll();
+
+		$nouveauType = new TypesRemarque();
+		$form = $this->createForm(TypesRemarqueFormType::class, $nouveauType);
+		$form->handleRequest($request);
+
+		if ( $form->isSubmitted() && $form->isValid() ){
+			$entityManager->persist($nouveauType);
+			$entityManager->flush();
+
+			$this->addFlash(
+				'success',
+				 sprintf(
+					'Nouvel type: '.$nouveauType
+				)
+			);
+
+			return $this->redirect($request->getUri());
+		}
+
+		$data =
+		[
+				'listeTypesRemarques'		=> $listeTypesRemarques,
+
+				'form'						=> $form->createView()
+
+		];
+		return $this->render('applicationVisa/gestion_types_remarques.html.twig', $data);
 	}
 
 	/**

@@ -19,11 +19,6 @@
     </head>
     <body>
     {% block allBody %}
-        <div class="search-bar">
-            <form method="GET" action="" class="js-sea-search sea-search">
-                <input type="search" name="q" placeholder="Rechercher une affaire" autocomplete="off" class="search-input">
-            </form>
-        </div>
 
         <header class="header">
             <a href="{{ path('affaires') }}"><img class="logo-icon" src="{{ asset('images/LOGO-BET-3000.jpg') }}"></a>
@@ -31,13 +26,30 @@
             <ul class="navi">
                 {% if is_granted('ROLE_USER') %}
                     <li><b>{{ app.user.idOrganisme }}</b> {{ app.user.prenom }} {{ app.user.nom }} </li>
-                    <li><a href="{{ path('gestion') }}">Gestion</a> </li>
                     <li><a href="{{ path('visa_logout') }}">Déconnexion</a></li>
                 {% else %}
                     <li><a href="{{ path('visa_login') }}">Connexion</a></li>
                 {% endif %}
             </ul>
         </header>
+
+        <ul class="nav nav-tabs">
+            <li><a href="{{ path('affaires') }}">Mes affaires</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="{{ path('gestion') }}">
+                    Gestion<span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ path('gestion') }}"><b>Gestion</b></a></li>
+                    <li><a href="{{ path('gestion_organismes') }}">Organismes</a></li>
+                    <li><a href="{{ path('gestion_carnet') }}">Carnet d'adresses</a> </li>
+                    <li><a href="{{ path('gestion_role') }}">Rôles</a> </li>
+                    <li><a href="{{ path('gestion_noms_lots') }}">Noms des lots</a> </li>
+                    <li><a href="{{ path('gestion_types_remarques') }}">Types de remarques</a> </li>
+                </ul>
+            </li>
+
+        </ul>
 
         <div class="main-content">
     		{% for msg in app.session.flashBag.get('success') %}
@@ -64,6 +76,7 @@
         {% block javascripts %}
             <script src="{{ asset('js/main.js') }}"></script>
             <script src="{{ asset('js/jquery/jquery.min.js') }}" ></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         {% endblock %}
 
 

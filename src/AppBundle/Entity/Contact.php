@@ -53,9 +53,9 @@ class Contact
     private $prenom;
 
     /**
-     * @var \AppBundle\Entity\Role
+     * @var \AppBundle\Entity\RoleContact
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\RoleContact")
      * @ORM\JoinColumn(name="id_role", referencedColumnName="id_role")
      *
      */
@@ -185,7 +185,7 @@ class Contact
     /**
      * Get the value of Role
      *
-     * @return \AppBundle\Entity\Role
+     * @return \AppBundle\Entity\RoleContact
      */
     public function getRole()
     {
@@ -195,11 +195,11 @@ class Contact
     /**
      * Set the value of Role
      *
-     * @param \AppBundle\Entity\Role role
+     * @param \AppBundle\Entity\RoleContact role
      *
      * @return self
      */
-    public function setRole(\AppBundle\Entity\Role $role)
+    public function setRole(\AppBundle\Entity\RoleContact $role)
     {
         $this->role = $role;
 
