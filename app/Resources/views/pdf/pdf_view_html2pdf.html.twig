@@ -1,0 +1,190 @@
+<style type="text/css">
+
+</style>
+<page backtop="25mm" backbottom="17mm" backleft="10mm" backright="10mm" style="font-size: 12pt">
+
+    <page_header>
+        <table style="width: 90%;">
+            <tr style="width: 100%;">
+                <td style="width: 20%;">
+                    <img src="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\images\LOGO-BET-pdf.jpg" style="width: 230px;">
+                </td>
+                <td style="width: 30%;">
+                    <table >
+                        <tbody>
+                            <tr>
+                                <td>Affaire : </td>
+                                <td>{{ affaire.numeroAffaire }}  </td>
+                                <td>Lot : </td>
+                                <td>{{ lot.numeroLot }}  </td>
+                            </tr>
+                            <tr>
+                                <td>Fiche : </td>
+                                <td>{{ fiche.numeroFiche }}</td>
+                                <td>Page : </td>
+                                <td>
+                                    <span class="page"></span>/<span class="topage"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td style="width: 30%;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Emis le : </td>
+                                <td>{{ dateStamp|date('d/m/Y')}}</td>
+                            </tr>
+                            <tr>
+                                <td>À : </td>
+                                <td>Nancy</td>
+                            </tr>
+                            <tr>
+                                <td>Par : </td>
+                                <td>{{ app.user }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td style="width: 20%;">
+                    <qrcode value="Value to Coder" ec="H" style="width: 23mm; background-color: white; color: #2c62e0;"></qrcode>
+                </td>
+            </tr>
+        </table>
+    </page_header>
+
+    <page_footer>
+        <div class="footer">
+            <ul class="footer-infos-organisme" style="text-align: center; list-style-type: none;">
+                    <li>{{ organisme }} Bureau d'études fluides</li>
+                    <li>15 Avenue de la Garenne - BP 694 - 54063 NANCY CEDEX</li>
+                    <li>
+                        <i class="fa fa-phone" aria-hidden="true"></i> 03 83 28 85 85
+                        <i class="fa fa-fax" aria-hidden="true"></i> 03 83 27 67 10
+                    </li>
+                    <li>betlouvet@louvet.fr</li>
+            </ul>
+        </div>
+    </page_footer>
+
+    <div class="content" style="margin:0 auto; font-size: 12px; color:#333" >
+        <div class="top-first-page">
+
+            <h1 style="text-align: center;">
+                FICHE VISA N°{{ fiche.numeroFiche }} - {{ lot }} ventilation plomberie
+            </h1>
+
+            <h2 style="text-align: center;">
+                {{ affaire }}
+            </h2>
+
+            <div>
+                <h3>Intervenants</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rôle</th>
+                            <th>Organisme</th>
+                            <th>Intervenant</th>
+                            <th>Mail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for contact in listeDiffusion %}
+                        <tr>
+                            <td>{{ contact.role }}</td>
+                            <td>{{ contact.organisme }}</td>
+                            <td>{{ contact }}</td>
+                            <td>{{ contact.mail}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div>
+
+            <div>
+                <h3>Documents examinés au {{ dateStamp|date('d/m/Y')}}</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Document</th>
+                            <th>Emis le</th>
+                            <th>Reçu le</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for document in listeDocuments %}
+                        <tr>
+                            <td>
+                                {{ document }}<br>
+                                <small>{{ document.originalFilename }}</small>
+                            </td>
+                            <td>{{ document.dateReception|date('d/m/Y') }}</td>
+                            <td>{{ document.dateReception|date('d/m/Y') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <h3>Légende</h3>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>Numéro de visa</th>
+                            <th>Indice du plan</th>
+                            <th>Etat du visa</th>
+                            <th><i>Type de remarque :</i> Remarque</th>
+                        </tr>
+                    </tbody>
+                </table>
+                <b>Indice du plan</b>
+                <p>
+                    Indice du plan auquel fait référence le visa.
+                </p>
+                <b>Etat du visa</b>
+                    <ul style="list-style-type: none;">
+                        <li>OK : visa accordé</li>
+                        <li>OK REM : visa accordé, les travaux peuvent commencer avec la prise en compte des remarques. Renvoi des documents si nécessaire</li>
+                        <li>REM : visa refusé, prendre en compte les remarques et renvoyer les documents</li>
+                        <li>NC : visa refusé, non conformité au cahier des charges</li>
+                    </ul>
+            </div>
+
+            <div>
+            <h3>Visas et remarques</h3>
+            {% for i in 1..10 %}
+            {% for document in listeDocuments %}
+                {% for visa in listeVisas[document.idDocument]%}
+                <div>
+                    <b>{{ visa.idItem }}</b>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Visa {{ visa.version }}</td>
+                                <td>{{ visa.indicePlan }}</td>
+                                <td>{{ visa.etatVisa }}</td>
+                                <td>
+                                    {% for remarque in listeRemarques[visa.idVisa] %}
+                                        <i>{{ remarque.idTypeRemarque }}</i> : {{ remarque.remarque }}<br>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+            {% endfor %}
+            {% endfor %}
+            </div>
+
+        </div>
+
+    </div>
+</page>

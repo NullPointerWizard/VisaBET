@@ -80,7 +80,7 @@ class Documents
     /**
      * @var string
      *
-     * @ORM\Column(name="path", type="string", length=2083, nullable=false)
+     * @ORM\Column(name="path", type="string", length=2083, nullable=true)
      */
     private $path;
 

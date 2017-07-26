@@ -2,6 +2,10 @@
 
 namespace AppBundle\Controller;
 
+require dirname(dirname(dirname(dirname(__FILE__)))).'/vendor/autoload.php';
+
+use Spipu\Html2Pdf\Html2Pdf;
+
 use DateTime;
 use AppBundle\Entity\FicheVisa;
 use AppBundle\Form\AjouterDocumentsFicheVisaFormType;
@@ -10,100 +14,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response ;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class PDFController extends Controller
 {
-
-
-    /**
-    * Page permettant la creation des fiches Visas
-    * @Route(
-    *  "/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/NouvelleFiche",
-    *  name="pdf_generator"
-    * )
-    */
-    // public function showPdfGenerator($numeroAffaire, $numeroLot, Request $request)
-    // {
-    //     $utilisateur = $this->getUser();
-	// 	$entityManager = $this->getDoctrine()->getManager();
-	// 	$affaire = $entityManager->getRepository('AppBundle\Entity\Affaires')
-	// 		->findOneBy(['numeroAffaire'=>$numeroAffaire, 'idOrganisme'=> $utilisateur->getIdOrganisme()])
-	// 	;
-    //     $organisme = $utilisateur->getIdOrganisme();
-    //     $lot = $entityManager->getRepository('AppBundle\Entity\Lots')
-	// 		->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
-	// 	;
-    //     $numeroFiche = 2;
-    //     $fiche = new FicheVisa();
-    //     $fiche->setLot($lot);
-    //     $fiche->setNumeroFiche($numeroFiche);
-    //     $listeDiffusion = $lot->getListeDiffusion();
-    //
-    //     // Ajout d'utilisateur dans la liste de diffusion
-    //     $addContactsForm = $this->createForm(AjouterContactListeDiffusionFormType::class);
-	// 	$addContactsForm->handleRequest($request);
-    //
-	// 	if ($addContactsForm->isSubmitted() && $addContactsForm->isValid()){
-    //
-	// 		$entityManager = $this->getDoctrine()->getManager();
-	// 		$data = $addContactsForm->getData();
-    //
-	// 		foreach($data['contacts']  as $contact)
-	// 		{
-	// 			$lot->addListeDiffusion($contact);
-	// 			$contact->addListeLots($lot);
-	// 			$entityManager->persist($contact);
-    //
-	// 			$this->addFlash('success', $contact.' ajoute a la liste de diffusion ! ' );
-	// 		}
-	// 		$entityManager->persist($lot);
-	// 		$entityManager->flush();
-    //
-	// 		//redirection vers la meme url
-	// 		return $this->redirect($request->getUri());
-	// 	}
-    //
-    //     // Ajout de documents dans la fiche
-    //     $addDocumentsForm = $this->createForm(AjouterDocumentsFicheVisaFormType::class, array('lot'=> $lot) );
-    //     $addDocumentsForm->handleRequest($request);
-    //     if ($addDocumentsForm->isSubmitted() && $addDocumentsForm->isValid()){
-    //
-    //         $entityManager = $this->getDoctrine()->getManager();
-    //         $data = $addDocumentsForm->getData();
-    //
-    //         foreach($data['documents']  as $document)
-    //         {
-    //             $fiche->addDocuments($document);
-    //             $document->setFiche($fiche);
-    //             $entityManager->persist($document);
-    //
-    //             $this->addFlash('success', $document.' ajoute a la fiche ! ' );
-    //         }
-    //         $entityManager->persist($fiche);
-    //         $entityManager->flush();
-    //
-    //         //redirection vers la meme url
-    //         return $this->redirect($request->getUri());
-    //     }
-    //
-    //     $data =[
-    //         'affaire'           => $affaire,
-    //         'lot'               => $lot,
-    //         'listeDiffusion'    => $listeDiffusion,
-    //         'numeroFiche'       => $numeroFiche,
-    //
-    //         'addContactsForm'    => $addContactsForm->createView(),
-    //         'addDocumentsForm'   => $addDocumentsForm->createView()
-    //     ];
-    //     return $this->render(
-    //         'applicationVisa/pdf_generator.html.twig',
-    //         $data
-    //      );
-    // }
-
-
-
     /**
     * @Route(
     *  "/Affaires/Affaire{numeroAffaire}/Lot{numeroLot}/Fiches/Fiche{numeroFiche}/pdf",
@@ -187,34 +102,64 @@ class PDFController extends Controller
             ]
         );
         $html = $this->renderView(
-            'applicationVisa/pdf_view.html.twig',
+            //'applicationVisa/pdf_view.html.twig',
+            'pdf/pdf_view_html2pdf.html.twig',
             $pdfData
         );
         $filename = 'VISAS_LOT'.$numeroLot.'_Fiche'.$numeroFiche.'_au_'.$dateStamp.'_Affaire'.$affaire->getNumeroAffaire().'_TS'.$timestamp.'.pdf';
         $path = './'.'affaires/'.$affaire->getIdOrganisme()->getFolderName().'/'.$affaire->getFolderName().'/Lot_'.$lot->getNumeroLot().'/'.'visas/'.$filename ;
-        $snappy = $this->get('knp_snappy.pdf');
-        $snappy->setOption('header-html', $headerHtml);
-        $snappy->setOption('footer-html', $footerHtml);
-        $snappy->generateFromHtml(
-            $html,
-            $path
-        );
+        // $snappy = $this->get('knp_snappy.pdf');
+        // $snappy->setOption('header-html', $headerHtml);
+        // $snappy->setOption('footer-html', $footerHtml);
+        // $snappy->generateFromHtml(
+        //     $html,
+        //     $path
+        // );
 
-        // MAJ des infos de la fiche dans la BDD
-        $fiche->setDate($now);
-        $fiche->setFilename($filename);
-        $fiche->setPath($path);
-        $entityManager->persist($fiche);
-        $entityManager->flush();
-
-
+        $html2pdf = $this->get('app.html2pdf');
+        $html2pdf->create();
+        //return $html2pdf->generatePdf($html,'test');
         return new Response(
-            $snappy->getOutputFromHtml($html),
+            $html2pdf->generatePdf($html,$filename),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
                 'Content-Disposition'   => 'attachment; filename="'.$filename.'"'
             )
         );
+
+        //UTILISATATION DE SNAPPY avec WKHTMLTOPDF
+            // MAJ des infos de la fiche dans la BDD
+        // $fiche->setDate($now);
+        // $fiche->setFilename($filename);
+        // $fiche->setPath($path);
+        // $entityManager->persist($fiche);
+        // $entityManager->flush();
+        //
+        //
+        // return new Response(
+        //     $snappy->getOutputFromHtml($html),
+        //     200,
+        //     array(
+        //         'Content-Type'          => 'application/pdf',
+        //         'Content-Disposition'   => 'attachment; filename="'.$filename.'"'
+        //     )
+        // );
+    }
+
+    /**
+    * fonction de test
+    * @Route(
+    *  "/Test/pdf",
+    *  name="test_pdf"
+    * )
+    */
+    public function testPdfAction()
+    {
+        $html2pdf = $this->get('app.html2pdf');
+        $html = '<h1>HelloWorld</h1>This is my first test';
+        $html2pdf->create();
+        return $html2pdf->generatePdf($html,'test');
+        //return $this->render ( 'applicationVisa/travaux.html.twig' );
     }
 }

@@ -34,6 +34,12 @@ services:
     #     arguments:
     #         $someArgument: 'some_value'
 
+    #App Services
+
+    app.html2pdf:
+        public: true
+        class: AppBundle\Service\HTML2PDF
+
     AppBundle\Security\LoginFormAuthenticator:
         #autowire possible car les types des objets sont precises dans le constructeur
         autowire: true

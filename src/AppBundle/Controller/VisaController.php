@@ -81,6 +81,21 @@ class VisaController extends Controller {
 	// }
 
 	/**
+	 * Tableau
+	 *
+	 * @Route("/TravailAFaire", name="travail_a_faire")
+	 */
+	public function showTravailAFaire()
+	{
+		$listeDocuments = [];
+
+		$data = [
+			'listeDocuments'		=> $listeDocuments
+		];
+		return $this->render('applicationVisa/travail_a_faire.html.twig', $data);
+	}
+
+	/**
 	 * Page permettant la visualisation des affaires de l'utilisateur
 	 *
 	 * @Route("/Affaires", name="affaires")
@@ -127,7 +142,6 @@ class VisaController extends Controller {
 		$form = $this->createForm(AffaireFormType::class, $nouvelleAffaire);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()){
-			//$nouvelleAffaire = $form->getData();
 
 			$utilisateur->addAffaire($nouvelleAffaire);
 
@@ -740,6 +754,8 @@ class VisaController extends Controller {
 	public function showTravaux() {
 		return $this->render ( 'applicationVisa/travaux.html.twig' );
 	}
+
+
 
 
 

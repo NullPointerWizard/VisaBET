@@ -31,10 +31,12 @@
             <h3>Intervenants</h3>
             <table class="table">
                 <thead>
-                    <th>Rôle</th>
-                    <th>Organisme</th>
-                    <th>Intervenant</th>
-                    <th>Mail</th>
+                    <tr>
+                        <th>Rôle</th>
+                        <th>Organisme</th>
+                        <th>Intervenant</th>
+                        <th>Mail</th>
+                    </tr>
                 </thead>
                 <tbody>
                 {% for contact in listeDiffusion %}
@@ -55,9 +57,11 @@
             <h3>Documents examinés au {{ dateStamp|date('d/m/Y')}}</h3>
             <table class="table">
                 <thead>
-                    <th>Document</th>
-                    <th>Emis le</th>
-                    <th>Reçu le</th>
+                    <tr>
+                        <th>Document</th>
+                        <th>Emis le</th>
+                        <th>Reçu le</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% for document in listeDocuments %}
@@ -70,7 +74,7 @@
                         <td>{{ document.dateReception|date('d/m/Y') }}</td>
                     </tr>
                     {% endfor %}
-            </tbody>
+                </tbody>
             </table>
         </div>
 
@@ -96,6 +100,7 @@
                     <li>OK REM : visa accordé, les travaux peuvent commencer avec la prise en compte des remarques. Renvoi des documents si nécessaire</li>
                     <li>REM : visa refusé, prendre en compte les remarques et renvoyer les documents</li>
                     <li>NC : visa refusé, non conformité au cahier des charges</li>
+                </ul>
         </div>
 
         <div class="container">
@@ -116,7 +121,7 @@
                                 {% endfor %}
                             </td>
                         </tr>
-                    <tbody>
+                    </tbody>
                 </table>
             </div>
             {% endfor %}
