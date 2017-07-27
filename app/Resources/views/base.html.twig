@@ -5,7 +5,7 @@
         {% block metacharset %}
             <meta charset="UTF-8" />
         {% endblock %}
-        <title>{% block title %}Visa 3000{% endblock %}</title>
+        <title>{% block title %}Hopla Visas !{% endblock %}</title>
 
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
@@ -13,6 +13,7 @@
             <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
             <link rel="stylesheet" href="{{ asset('css/applicationVisa.css') }}">
             <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/font-awesome.min.css') }}">
+            <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
         {% endblock %}
 
         <link rel="icon" type="image/x-icon" href="{{ asset('check.ico') }}" />
@@ -21,7 +22,7 @@
     {% block allBody %}
 
         <header class="header">
-            <a href="{{ path('affaires') }}"><img class="logo-icon" src="{{ asset('images/LOGO-BET-3000.jpg') }}"></a>
+            <a href="{{ path('affaires') }}"><img class="logo-icon" src="{{ asset('images/LOGO-BET-visa.jpg') }}"></a>
             <h1 class="visa-title" >{% block pageTitle %}Visa 3000{% endblock %}</h1>
             <ul class="navi">
                 {% if is_granted('ROLE_USER') %}
@@ -35,7 +36,16 @@
 
         <ul class="nav nav-tabs">
             <li><a href="{{ path('affaires') }}">Mes affaires</a></li>
-            <li><a href="{{ path('travail_a_faire') }}">Tableau de bord</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="{{ path('tableau_global') }}">
+                    Tableau de bord<span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ path('tableau_global') }}"><b>Vue globale</b></a></li>
+                    <li><a href="{{ path('tableau_emission_avis') }}">Emettre des avis</a></li>
+
+                </ul>
+            </li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="{{ path('gestion') }}">
                     Gestion<span class="caret"></span>
@@ -49,6 +59,8 @@
                     <li><a href="{{ path('gestion_types_remarques') }}">Types de remarques</a> </li>
                 </ul>
             </li>
+            {% block navBarPlus %}
+            {% endblock %}
 
         </ul>
 

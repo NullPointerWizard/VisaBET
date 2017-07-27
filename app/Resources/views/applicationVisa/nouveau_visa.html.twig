@@ -20,8 +20,6 @@
                 {{ form_row(form.idDocument) }}
                 {{ form_row(form.etatVisa) }}
                 {{ form_row(form.indicePlan) }}
-                {{ form_row(form.visePar) }}
-
                 <h3>Remarques</h3>
                     <ul class="remarques list-group" data-prototype="{{ form_widget(form.remarques.vars.prototype)|e('html_attr') }}">
                         {# iterate over each existing tag and render its only field: name #}

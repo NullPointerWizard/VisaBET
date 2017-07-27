@@ -17,41 +17,59 @@ git clone https://github.com/NullPointerWizard/VisaBET.git
     '''
     curl -sS https://getcomposer.org/installer | php
     '''
-    2. Installation des dépendances
+    2. Installation des dépendances (bien utiliser php56)
     '''
-    php composer.phar install
+    php56 composer.phar install
     '''
 
 # Mise en production
 1. Verifier le bon fonctionnement en local
     1. On change d'environnement dans l'url
-    1. On peut activer le debugger dans l'environnement de production, dans web/app.php (false quand on a fini)
+    2. On peut activer le debugger dans l'environnement de production, dans web/app.php (false quand on a fini)
     ```php
     $kernel = new AppKernel('prod', true); // Définissez ce 2e argument à true
     ```
-1. Nettoyage du cache de production
+2. Nettoyage du cache de production (utiliser la 2e commande)
 '''
 php bin/console cache:clear --env=prod
+php56 bin/console cache:clear --env=prod --no-warmup
 '''
-1. Item 2
-1. Item 3
-   1. Item 3a
-   1. Item 3b
 
-
+3. Mise à jour de la base de donnée
+    1. Generation de la migration
+    '''
+    php bin/console doctrine:migrations:diff
+    '''
+    2. Modification éventuelles du fichier de migration généré
+    3. Application des changements
+    '''
+    php bin/console doctrine:migrations:migrate
+    '''
 # Astuces
+## Utiliser une autre version de php
+* Le NAS a plusieurs versions de php installées, en console il faut en général utiliser
+'''
+php56 [commande]
+'''
+
 ## Préparer l'application en local
 * Changer d'environnement directement dans l'URL avec http://localhost:8000/app.php/ (prod) ou http://localhost:8000/app_dev.php/
 ```
 
 ```
+## Forcer git à utiliser le dernier commit de master sur github (From [stackoverflow/questions](https://stackoverflow.com/questions/1125968/how-do-i-force-git-pull-to-overwrite-local-files))
+```
+git fetch --all
+git reset --hard origin/master
+//git reset --hard origin/<branch_name> pour une autre branche
+```
 
-### And on production ? From [html2pdf doc](https://github.com/spipu/html2pdf/edit/master/doc/install.md)
+## And on production ? (From [html2pdf doc](https://github.com/spipu/html2pdf/edit/master/doc/install.md))
 
-You have **not** to install composer on your production server. 
+You have **not** to install composer on your production server.
 
 You have to install composer **only** on your dev environement. Composer is a dev tool.
- 
+
 To deliver you app on a server, you have to (on you dev environement) :
 
   * Git clone the tag/branch that you want to deliver

@@ -1,11 +1,20 @@
 <style type="text/css">
+table{
+    width: 170px;
+}
+td, th{
+    padding: 5px;
+}
+#documents th, #intervenants th{
+    border-bottom: 1px solid #ddd;
+}
 
 </style>
-<page backtop="25mm" backbottom="17mm" backleft="10mm" backright="10mm" style="font-size: 12pt">
+<page backtop="25mm" backbottom="17mm" backleft="10mm" backright="10mm" style="font-size: 10pt">
 
     <page_header>
         <table style="width: 90%;">
-            <tr style="width: 100%;">
+            <tr style="width: 100%; border-bottom: 4px solid #2c62e0;">
                 <td style="width: 20%;">
                     <img src="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\images\LOGO-BET-pdf.jpg" style="width: 230px;">
                 </td>
@@ -23,7 +32,7 @@
                                 <td>{{ fiche.numeroFiche }}</td>
                                 <td>Page : </td>
                                 <td>
-                                    <span class="page"></span>/<span class="topage"></span>
+                                    [[page_cu]]/[[page_nb]]
                                 </td>
                             </tr>
                         </tbody>
@@ -48,7 +57,7 @@
                     </table>
                 </td>
                 <td style="width: 20%;">
-                    <qrcode value="Value to Coder" ec="H" style="width: 23mm; background-color: white; color: #2c62e0;"></qrcode>
+                    <qrcode value="Aff:{{ affaire.numeroAffaire }} Lot:{{ lot.numeroLot }} Le:{{ dateStamp|date('d/m/Y')}} Par:{{ app.user }},{{ organisme }}" ec="H" style="width: 23mm; background-color: white; color: #2c62e0;"></qrcode>
                 </td>
             </tr>
         </table>
@@ -68,123 +77,99 @@
         </div>
     </page_footer>
 
-    <div class="content" style="margin:0 auto; font-size: 12px; color:#333" >
-        <div class="top-first-page">
+    <div class="content" style="margin:0 auto;" >
 
-            <h1 style="text-align: center;">
-                FICHE VISA N°{{ fiche.numeroFiche }} - {{ lot }} ventilation plomberie
-            </h1>
+        <h1 style="text-align: center;">
+            FICHE VISA N°{{ fiche.numeroFiche }} - {{ lot }} ventilation plomberie
+        </h1>
 
-            <h2 style="text-align: center;">
-                {{ affaire }}
-            </h2>
+        <h2 style="text-align: center;">
+            {{ affaire }}
+        </h2>
 
-            <div>
-                <h3>Intervenants</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rôle</th>
-                            <th>Organisme</th>
-                            <th>Intervenant</th>
-                            <th>Mail</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for contact in listeDiffusion %}
-                        <tr>
-                            <td>{{ contact.role }}</td>
-                            <td>{{ contact.organisme }}</td>
-                            <td>{{ contact }}</td>
-                            <td>{{ contact.mail}}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
 
-        </div>
+        <h3>Intervenants</h3>
+        <table id="intervenants">
+            <thead>
+                <tr>
+                    <th>Rôle</th>
+                    <th>Organisme</th>
+                    <th>Intervenant</th>
+                    <th>Mail</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for contact in listeDiffusion %}
+                <tr>
+                    <td>{{ contact.role }}</td>
+                    <td>{{ contact.organisme }}</td>
+                    <td>{{ contact }}</td>
+                    <td>{{ contact.mail}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-        <div>
-
-            <div>
-                <h3>Documents examinés au {{ dateStamp|date('d/m/Y')}}</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Document</th>
-                            <th>Emis le</th>
-                            <th>Reçu le</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for document in listeDocuments %}
-                        <tr>
-                            <td>
-                                {{ document }}<br>
-                                <small>{{ document.originalFilename }}</small>
-                            </td>
-                            <td>{{ document.dateReception|date('d/m/Y') }}</td>
-                            <td>{{ document.dateReception|date('d/m/Y') }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <div>
-                <h3>Légende</h3>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>Numéro de visa</th>
-                            <th>Indice du plan</th>
-                            <th>Etat du visa</th>
-                            <th><i>Type de remarque :</i> Remarque</th>
-                        </tr>
-                    </tbody>
-                </table>
-                <b>Indice du plan</b>
-                <p>
-                    Indice du plan auquel fait référence le visa.
-                </p>
-                <b>Etat du visa</b>
-                    <ul style="list-style-type: none;">
-                        <li>OK : visa accordé</li>
-                        <li>OK REM : visa accordé, les travaux peuvent commencer avec la prise en compte des remarques. Renvoi des documents si nécessaire</li>
-                        <li>REM : visa refusé, prendre en compte les remarques et renvoyer les documents</li>
-                        <li>NC : visa refusé, non conformité au cahier des charges</li>
-                    </ul>
-            </div>
-
-            <div>
-            <h3>Visas et remarques</h3>
-            {% for i in 1..10 %}
-            {% for document in listeDocuments %}
-                {% for visa in listeVisas[document.idDocument]%}
-                <div>
-                    <b>{{ visa.idItem }}</b>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Visa {{ visa.version }}</td>
-                                <td>{{ visa.indicePlan }}</td>
-                                <td>{{ visa.etatVisa }}</td>
-                                <td>
-                                    {% for remarque in listeRemarques[visa.idVisa] %}
-                                        <i>{{ remarque.idTypeRemarque }}</i> : {{ remarque.remarque }}<br>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <h3>Documents examinés au {{ dateStamp|date('d/m/Y')}}</h3>
+        <table id="documents">
+            <thead>
+                <tr>
+                    <th>Document</th>
+                    <th>Emis le</th>
+                    <th>Reçu le</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for document in listeDocuments %}
+                <tr>
+                    <td>
+                        {{ document }}<br>
+                        <small>{{ document.originalFilename }}</small>
+                    </td>
+                    <td>{{ document.dateReception|date('d/m/Y') }}</td>
+                    <td>{{ document.dateReception|date('d/m/Y') }}</td>
+                </tr>
                 {% endfor %}
-            {% endfor %}
-            {% endfor %}
-            </div>
+            </tbody>
+        </table>
 
+
+        <h3>Etat du visa</h3>
+        <div style="width: 160mm; border-left: 3px solid #2c62e0; background-color: #eaedef;">
+            <ul style="list-style-type: none;">
+                <li><b>F : avis Favorable.</b><br><small> Bon pour éxécution.</small></li>
+                <li><b>C : avis favorable sous Condition.</b><br><small> Les remarques doivent être prises en compte pour les travaux. Renvoi des documents si nécessaire.</small></li>
+                <li><b>S : avis Suspendu.</b><br><small> Modifier et renvoyer les documents pour prendre en compte les remarques.</small></li>
+                <li><b>D : avis Défavorable.</b><br><small> Le visa est refusé.</small></li>
+                <li><b>HM: Hors Mission.</b><br><small> Le bureau n'est pas concerné par cet objet.</small></li>
+            </ul>
         </div>
+
+        <h3>Visas et remarques</h3>
+        {% for document in listeDocuments %}
+            {% for visa in listeVisas[document.idDocument]%}
+                <b>{{ visa.idItem }}</b>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Avis {{ visa.version }}</td>
+                            <td><b>{{ visa.etatVisa }}</b></td>
+                            <td>
+                                {% for remarque in listeRemarques[visa.idVisa] %}
+                                    {{ remarque.idTypeRemarque }}: <br>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for remarque in listeRemarques[visa.idVisa] %}
+                                    <i>{{ remarque.remarque }}</i> <br>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% endfor %}
 
     </div>
+
 </page>

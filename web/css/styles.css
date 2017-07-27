@@ -55,6 +55,7 @@ Top Nav General Styling
 body {
     margin: 0;
     color: #3a3a3a;
+    font-family: Nunito;
 }
 
 .search-bar {

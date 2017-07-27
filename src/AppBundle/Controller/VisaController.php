@@ -15,8 +15,10 @@ use AppBundle\Form\VisaFormType;
 use AppBundle\Form\FicheFormType;
 use AppBundle\Form\NomLotFormType;
 use AppBundle\Form\ContactFormType;
+use AppBundle\Form\ChoixDocFormType;
 use AppBundle\Form\OrganismesFormType;
 use AppBundle\Form\UploadFileFormType;
+use AppBundle\Form\EmissionAvisFormType;
 use AppBundle\Form\TypesRemarqueFormType;
 use AppBundle\Form\AjouterDocumentsFicheVisaFormType;
 use AppBundle\Form\AjouterContactListeDiffusionFormType;
@@ -58,41 +60,67 @@ class VisaController extends Controller {
 	public function showAccueil(){
 		return $this->redirectToRoute('affaires');
 	}
-	/**
-	 * Page permettant la visualisation des affaires de l'utilisateur
-	 *
-	 * @Route("/{nomOrganisme}/{nomUtilisateur}/Affaires", name="affaires")
-	 */
-	// public function showVueAffaires($nomOrganisme, $nomUtilisateur)
-	// {
-	//
-	// 	$entityManager = $this->getDoctrine()->getManager();
-	// 	$organisme = $entityManager->getRepository('AppBundle\Entity\Organismes')
-	// 		->findOneBy(['nomOrganisme' => $nomOrganisme]);
-	//
-	// 	//Recuperation des affaires (concernant l'utilisateur - A IMPLEMENTER)
-	// 	$listeAffairesUtilisateur =  $organisme->getAffaires();
-	//
-	// 	return $this->render('applicationVisa/accueil_utilisateur.html.twig',[
-	// 			'nomOrganisme' 				=> $nomOrganisme,
-	// 			'nomUtilisateur'			=> $nomUtilisateur,
-	// 			'listeAffairesUtilisateur' 	=> $listeAffairesUtilisateur
-	// 	]);
-	// }
 
 	/**
 	 * Tableau
 	 *
-	 * @Route("/TravailAFaire", name="travail_a_faire")
+	 * @Route("/TableauDeBord/VueGlobale", name="tableau_global")
 	 */
-	public function showTravailAFaire()
+	public function showTableauGlobal()
 	{
 		$listeDocuments = [];
 
 		$data = [
 			'listeDocuments'		=> $listeDocuments
 		];
-		return $this->render('applicationVisa/travail_a_faire.html.twig', $data);
+		return $this->render('applicationVisa/tableau_global.html.twig', $data);
+	}
+
+	/**
+	 * Tableau permettant d'emettre rapidement des visas et des avis
+	 *
+	 * @Route("/TableauDeBord/EmissionAvis", name="tableau_emission_avis")
+	 */
+	public function showTableauEmissionAvis(Request $request)
+	{
+		$form = $this->createForm(ChoixDocFormType::class);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()){
+		}
+
+		$data = [
+			'form' 					=> $form->createView(),
+		];
+		//return $this->render('applicationVisa/tableau_emission_avis.html.twig', $data);
+		return $this->render('applicationVisa/travaux.html.twig', $data);
+	}
+
+	/**
+	 * Tableau permettant d'emettre rapidement des visas et des avis
+	 *
+	 * @Route("/TableauDeBord/EmissionAvis/Document{idDocument}", name="tableau_emission_avis_pour_doc")
+	 */
+	public function showTableauEmissionAvisPourDoc($idDocument, Request $request)
+	{
+		$entityManager = $this->getDoctrine()->getManager();
+		$document = $entityManager->getRepository('AppBundle\Entity\Documents')
+			->findOneBy(['idDocument'=>$idDocument])
+		;
+		$lot = $document->getLot();
+		$affaire = $document->getIdAffaire();
+		$form = $this->createForm(EmissionAvisFormType::class);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()){
+		}
+
+		$data = [
+			'document'				=> $document,
+			'lot'					=> $lot,
+			'affaire'				=> $affaire,
+
+			'form' 					=> $form->createView(),
+		];
+		return $this->render('applicationVisa/tableau_emission_avis.html.twig', $data);
 	}
 
 	/**
@@ -316,6 +344,7 @@ class VisaController extends Controller {
 		$lot = $entityManager->getRepository('AppBundle\Entity\Lots')
 			->findOneBy(['numeroLot'=>$numeroLot, 'affaire' => $affaire])
 		;
+		$allotissement= $affaire->getLots();
 
 		//On recupere pour chaque type les items du lot et les visas correspondants
 		foreach($types as $type){
@@ -363,6 +392,7 @@ class VisaController extends Controller {
 				'listeItems'				=> $listeItems,
 				'listeVisas'				=> $listeVisas,
 				'listeRemarques'			=> $listeRemarques,
+				'allotissement'				=> $allotissement,
 
 				'itemForm'					=> $form->createView()
 
@@ -386,11 +416,13 @@ class VisaController extends Controller {
 		//2
 		$this->denyAccessUnlessGranted('ROLE_USER');
 
+		$utilisateur = $this->getUser();
 
 		$entityManager = $this->getDoctrine()->getManager();
 		$item = $entityManager->getRepository('AppBundle\Entity\Items')
 			->findOneBy(['idItem'=>$idItem]);
 		$nouveauVisa = new Visas;
+		$nouveauVisa->setVisePar($utilisateur);
 
 		//Definition des formulaires
 		$form = $this->createForm(VisaFormType::class, $nouveauVisa);
@@ -458,6 +490,7 @@ class VisaController extends Controller {
 		;
 		$listeDiffusion = $lot->getListeDiffusion();
 		$listeFiches = $lot->getFiches();
+		$allotissement= $affaire->getLots();
 
 		// Formulaire nouvelle fiche
 		$nouvelleFiche = new FicheVisa();
@@ -532,6 +565,7 @@ class VisaController extends Controller {
 			'affaire'					=> $affaire,
 			'listeFiches'				=> $listeFiches,
 			'listeDiffusion'   			=> $listeDiffusion,
+			'allotissement'				=> $allotissement,
 
 			'ficheForm' 				=> $ficheForm->createView(),
 			'addDocumentsForm'  		=> $addDocumentsForm->createView(),

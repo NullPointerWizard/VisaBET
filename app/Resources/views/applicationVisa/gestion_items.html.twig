@@ -5,22 +5,22 @@
 {% endblock %}
 
 {% block pageTitle %}Gestion : lot{% endblock %}
+{% block navBarPlus %}
+    <li><a href="{{ path('affaire_details',{'numeroAffaire':affaire.numeroAffaire}) }}">{{ affaire.numeroAffaire }} {{ affaire.nomAffaire }}</a></li>
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="{{ path('gestion_items',{'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">
+            {{ lot }}<span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            {% for lotAffaire in allotissement %}
+                <li><a href="{{ path('gestion_items',{'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lotAffaire.numeroLot}) }}">Lot N°{{ lotAffaire.numeroLot  }}  {{ lotAffaire.nomLot }}</a></li>
+            {% endfor %}
+        </ul>
+    </li>
+    <li><a href="{{ path('fiches', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">Fiches Visa</a></li>
+{% endblock %}
 
 {% block body %}
-    <h1 class="page-header text-center">
-        Affaire {{ affaire.numeroAffaire }} : {{ affaire.nomAffaire }}
-        <a href = "{{ path('affaire_details',{'numeroAffaire':affaire.numeroAffaire}) }}">
-            <i class="fa fa-reply" aria-hidden="true"></i>
-        </a>
-    </h1>
-    <h2 class="page-header text-center">
-        Lot N°{{ lot.numeroLot  }}  {{ lot.nomLot }}<br>
-        <a href = "{{ path('fiches', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">
-           Voir les fiches
-       </a>
-    </h2>
-
-
    <div class="container">
         <div class="row">
             <div class="col-xs-12">
@@ -74,7 +74,7 @@
 
                             {% for visa in listeVisas[item.idItem] %}
                                 <li class="list-group-item {{visa.cssClass}}">
-                                    <b>VISA {{visa.version}} ({{visa.dateEmission|date('d/m/Y')}}) {{ visa.etatVisa }} </b>
+                                    <b>Avis {{visa.version}} ({{visa.dateEmission|date('d/m/Y')}}) {{ visa.etatVisa }} </b>
                                     <ul class="list-group">
                                     {% for remarque in listeRemarques[visa.idVisa] %}
                                         <li class="list-group-item">

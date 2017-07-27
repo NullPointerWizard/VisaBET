@@ -8,10 +8,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 /**
+ * Classe permettant de sélectionner un document parmi ceux des affaires de l'utilisateur
  * @author NullPointerWizard
  *
  */
-class VisaFormType extends AbstractType{
+class ChoixDocFormType extends AbstractType{
 
 	public function buildForm(FormBuilderInterface $builder, array $options){
 		$builder
@@ -20,11 +21,11 @@ class VisaFormType extends AbstractType{
 		))
 		->add('etatVisa', ChoiceType::class, array(
 			'choices'	=> array(
-				'F (Favorable)'		 			=> 'F',
-				'C (favorable, sous Condition)'	=> 'C',
-				'S (Suspendu)'					=> 'S',
-				'D (Défavorable)' 				=> 'D',
-				'HM (Hors Mission)' 			=> 'HM'
+				'F (Favorable)'		 			=> 'OK',
+				'C (favorable, sous Condition)'	=> 'OK REM',
+				'S (Suspendu)'					=> 'REM',
+				'D (Défavorable)' 				=> 'NC',
+				'HM (Hors Mission)' 			=> 'NC'
 				// 'OK'		 																		=>	'OK',
 				// 'OK REM (début des travaux si prise en compte des REMarques, documents à renvoyer)'	=>	'OK REM',
 				// 'OK TEC (visa TEChnique, nécessite visa architecte)'								=>	'OK TEC',

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{%  block metacharset %}
+    <meta charset="UTF-8" />
+{% endblock %}
+
+{% block pageTitle %}Emission d'avis{% endblock %}
+
+{% block navBarPlus %}
+    <li><a href="{{ path('affaire_details',{'numeroAffaire':affaire.numeroAffaire}) }}">{{ affaire.numeroAffaire }} {{ affaire.nomAffaire }}</a></li>
+    {% if lot isset %}
+    <li><a href="{{ path('gestion_items',{'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">{{ lot }}</a></li>
+    {% endif %}
+    <li><a href="{{ path('fiches', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">Fiches Visa</a></li>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+         <div class="row">
+             <div class="col-xs-12">
+                 {{ form_start(form) }}
+                 {{ form_widget(form) }}
+                 <button type="submit" class="btn btn-primary">
+                      <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Emettre
+                 </button>
+                 {{ form_end(form) }}
+             </div>
+         </div>
+     </div>
+{% endblock %}

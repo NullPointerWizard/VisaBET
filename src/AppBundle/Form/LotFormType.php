@@ -29,7 +29,7 @@ class LotFormType extends AbstractType {
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults([
-				'data_class' => Lots::class
+			'data_class' => Lots::class
 		]);
 	}
 }

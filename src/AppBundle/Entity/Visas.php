@@ -65,7 +65,7 @@ class Visas
     /**
      * @var string
      *
-     * @ORM\Column(name="indice_plan", type="string", length=4, nullable=false)
+     * @ORM\Column(name="indice_plan", type="string", length=4, nullable=true)
      */
     private $indicePlan;
 
@@ -347,6 +347,19 @@ class Visas
 			case "REM":
 				return "rem";
 				break;
+			case "F":
+				return "ok";
+				break;
+			case "S":
+				return "rem";
+				break;
+			case "C":
+				return "ok-rem";
+				break;
+			case "D":
+				return "non-conforme";
+				break;
+
 		}
 		return "";
 	}

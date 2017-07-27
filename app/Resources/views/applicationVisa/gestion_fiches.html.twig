@@ -6,6 +6,21 @@
 
 {% block pageTitle %}Fiches Visa{% endblock %}
 
+{% block navBarPlus %}
+    <li><a href="{{ path('affaire_details',{'numeroAffaire':affaire.numeroAffaire}) }}">{{ affaire.numeroAffaire }} {{ affaire.nomAffaire }}</a></li>
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="{{ path('gestion_items',{'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">
+            Lot N°{{ lot.numeroLot  }}  {{ lot.nomLot }}<span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            {% for lotAffaire in allotissement %}
+                <li><a href="{{ path('gestion_items',{'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lotAffaire.numeroLot}) }}">Lot N°{{ lotAffaire.numeroLot  }}  {{ lotAffaire.nomLot }}</a></li>
+            {% endfor %}
+        </ul>
+    </li>
+    <li><a href="{{ path('fiches', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">Fiches Visa</a></li>
+{% endblock %}
+
 {% block body %}
     <h3>Fiches</h3>
     <div class="container">
@@ -82,10 +97,6 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
-                <a href="{{ path('gestion_carnet') }}">
-                    <i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i>
-                    Ajouter des contacts
-                </a>
                 {{ form_start(addContactsForm) }}
                 {{ form_row(addContactsForm.contacts) }}
                 <button type="submit" class="btn btn-primary">

@@ -45,7 +45,7 @@ class Documents
      *
      * @ORM\Column(name="originalFilename", type="string", length=150, nullable=true)
      */
-    private $originalFilename;
+    private $originalFilename="Document Papier";
 
     /**
      * Correspond a la date indiquee par l'entreprise qui emet le document (champ emis dans le pdf)
@@ -76,6 +76,14 @@ class Documents
      * @ORM\Column(name="etat", type="boolean", nullable=false)
      */
     private $etat = '0';
+
+    /**
+     * L'indice rattaché au document
+     * @var string
+     *
+     * @ORM\Column(name="indice_plan", type="string", length=4, nullable=true)
+     */
+    private $indicePlan;
 
     /**
      * @var string
@@ -518,4 +526,29 @@ class Documents
     public function __toString(){
         return $this->getFilename();
     }
+
+    /**
+     * Get the value of L'indice rattaché au document
+     *
+     * @return string
+     */
+    public function getIndicePlan()
+    {
+        return $this->indicePlan;
+    }
+
+    /**
+     * Set the value of L'indice rattaché au document
+     *
+     * @param string indicePlan
+     *
+     * @return self
+     */
+    public function setIndicePlan($indicePlan)
+    {
+        $this->indicePlan = $indicePlan;
+
+        return $this;
+    }
+
 }

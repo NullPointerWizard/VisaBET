@@ -25,7 +25,8 @@ class UploadFileFormType extends AbstractType {
 		$affaire = $document->getIdAffaire() ;
 		$builder
 			->add('file', FileType::class, array(
-                'label' => 'Document'
+                'label' => 'Document',
+				'required'	 => false
             ))
 			->add('type', ChoiceType::class, array(
     			'choices'	=> array(
@@ -36,7 +37,7 @@ class UploadFileFormType extends AbstractType {
     			)
 			))
 			->add('filename', null, array(
-                'label'		 => 'Nom fichier',
+                'label'		 => 'Nom (* si papier)',
 				'required'	 => false
             ))
 			->add('lot', null ,array(
@@ -56,7 +57,7 @@ class UploadFileFormType extends AbstractType {
 			))
 			->add('dateReception', DateType::class, array(
                 'label'		=> 'Date de reception',
-				'required'	=> false,
+				'required'	=> true,
 				'widget'	=> 'single_text',
 				'attr' 		=> ['class' => 'js-datepicker'],
 				'html5' 	=> false,
@@ -64,12 +65,16 @@ class UploadFileFormType extends AbstractType {
 			))
 			->add('dateLimiteVisa', DateType::class, array(
                 'label'		 => 'Date limite',
-				'required'	 => false,
+				'required'	 => true,
 				'widget'	 => 'single_text',
 				'attr' 		=> ['class' => 'js-datepicker'],
 				'html5' 	=> false,
 				'format' 	=> 'dd/MM/yyyy'
 			))
+			->add('indicePlan', null, array(
+                'label'		 => 'Indice (si plan)',
+				'required'	 => false
+            ))
 		;
 	}
 
