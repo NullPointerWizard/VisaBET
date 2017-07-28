@@ -22,6 +22,17 @@ class DocumentsRepository extends EntityRepository {
 		;
 	}
 
+	public function findDocUrgents($affaireDemande)
+	{
+		// l'alias 'documents' fait reference a la table dans la BD
+		return $this->createQueryBuilder('documents')
+			->andWhere('documents.idAffaire = :idAffaireDemande')
+			->setParameter('idAffaireDemande', $affaireDemande->getIdAffaire() )
+			->getQuery()
+			->execute()
+		;
+	}
+
 	public function getDocumentsFromLotsQueryBuilder($lot)
 	{
 		// l'alias 'documents' fait reference a la table dans la BD

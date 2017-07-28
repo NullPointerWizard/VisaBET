@@ -17,10 +17,12 @@ class LotFormType extends AbstractType {
 	public function buildForm(FormBuilderInterface $builder, array $options){
 		$builder
 		->add('numeroLot', null, array(
-			'label' => 'Numero'
+			'label' 	=> 'Numero',
+			'required' 	=> true
 		))
 		->add('idNomLot', null, array(
-			'label' => 'Nom'
+			'label' 	=> 'Nom du lot',
+			'required' 	=> true
 		))
 		;
 

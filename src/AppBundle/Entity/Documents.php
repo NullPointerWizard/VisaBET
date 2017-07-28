@@ -31,7 +31,7 @@ class Documents
      *
      * @ORM\Column(name="type", type="string", length=10, nullable=true)
      */
-    private $type = 'Autre';
+    private $type ='Autre';
 
     /**
      * @var string
@@ -364,6 +364,12 @@ class Documents
 
         return $this;
     }
+    public function setAffaire(\AppBundle\Entity\Affaires $idAffaire = null)
+    {
+        $this->idAffaire = $idAffaire;
+
+        return $this;
+    }
 
     /**
      * Get idAffaire
@@ -371,6 +377,10 @@ class Documents
      * @return \AppBundle\Entity\Affaires
      */
     public function getIdAffaire()
+    {
+        return $this->idAffaire;
+    }
+    public function getAffaire()
     {
         return $this->idAffaire;
     }

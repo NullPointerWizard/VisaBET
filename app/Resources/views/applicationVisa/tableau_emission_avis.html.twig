@@ -8,7 +8,7 @@
 
 {% block navBarPlus %}
     <li><a href="{{ path('affaire_details',{'numeroAffaire':affaire.numeroAffaire}) }}">{{ affaire.numeroAffaire }} {{ affaire.nomAffaire }}</a></li>
-    {% if lot isset %}
+    {% if lot is defined %}
     <li><a href="{{ path('gestion_items',{'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">{{ lot }}</a></li>
     {% endif %}
     <li><a href="{{ path('fiches', {'numeroAffaire':affaire.numeroAffaire, 'numeroLot':lot.numeroLot}) }}">Fiches Visa</a></li>
@@ -18,8 +18,18 @@
     <div class="container">
          <div class="row">
              <div class="col-xs-12">
+                 <h3>Avis pour {{ document }}</h3>
                  {{ form_start(form) }}
                  {{ form_widget(form) }}
+                     <ul class="remarques list-group" data-prototype="{{ form_widget(form.visa.remarques.vars.prototype)|e('html_attr') }}">
+                         {# iterate over each existing tag and render its only field: name #}
+                         {% for remarque in form.visa.remarques %}
+                             <li class="list-group-item">
+                                 {{ form_row(remarque.idTypeRemarque) }}
+                                 {{ form_row(remarque.remarque)}}
+                             </li>
+                         {% endfor %}
+                     </ul>
                  <button type="submit" class="btn btn-primary">
                       <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Emettre
                  </button>
@@ -27,4 +37,9 @@
              </div>
          </div>
      </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/app/addRemarque.js') }}" ></script>
 {% endblock %}

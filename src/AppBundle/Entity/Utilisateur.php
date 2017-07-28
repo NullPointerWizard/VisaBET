@@ -14,7 +14,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *  name="utilisateur",
  *  indexes={@ORM\Index(name="id_organisme_fk_utilisateur", columns={"id_organisme"})}
  * )
- * @ORM\Entity
+ * @ORM\Entity(
+ *  repositoryClass="AppBundle\Repository\UtilisateurRepository"
+ * )
  *
  * @UniqueEntity(fields={"mail"}, message="Cette adresse est déjà utilisée")
  */
@@ -340,10 +342,30 @@ class Utilisateur implements UserInterface
     }
 
     /**
-    * Les droits associes a la personne
+    * Les droits associes a la personne, voir config/security.yml pour la hierarchie
     */
     public function getRoles()
     {
+        switch($this->getStatut()){
+            case "SAdmin":
+                return ['ROLE_SUPER_ADMIN'];
+                break;
+            case "Admin":
+                return ['ROLE_ADMIN'];
+                break;
+            case "RespoAff":
+                return ['ROLE_RESPONSABLE_AFFAIRE'] ;
+                break;
+            case "Visa":
+                return ['ROLE_GESTION_VISAS'];
+                break;
+            case "Docs":
+                return ['ROLE_GESTION_DOCUMENTS'];
+                break;
+            case "User":
+                return ['ROLE_USER'];
+                break;
+        }
         return ['ROLE_USER'];
     }
 

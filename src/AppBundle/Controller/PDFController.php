@@ -146,20 +146,4 @@ class PDFController extends Controller
         //     )
         // );
     }
-
-    /**
-    * fonction de test
-    * @Route(
-    *  "/Test/pdf",
-    *  name="test_pdf"
-    * )
-    */
-    public function testPdfAction()
-    {
-        $html2pdf = $this->get('app.html2pdf');
-        $html = '<h1>HelloWorld</h1>This is my first test';
-        $html2pdf->create();
-        return $html2pdf->generatePdf($html,'test');
-        //return $this->render ( 'applicationVisa/travaux.html.twig' );
-    }
 }

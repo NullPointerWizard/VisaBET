@@ -81,7 +81,7 @@ class Visas
      * @ORM\JoinColumn(
 	 *	name="id_document",
 	 *  referencedColumnName="id_document",
-	 *  nullable=true
+	 *  nullable=false
 	 * )
      */
     private $idDocument;

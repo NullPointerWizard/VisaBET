@@ -19,14 +19,16 @@
         </tr>
     </thead>
     <tbody>
-        {% for document in listeDocuments %}
-        <tr>
-            <td>{{ document.type }} </td>
-            <td>{{ document.filename }}</td>
-            <td>{{ document.dateReception|date('d/m/Y') }}</td>
-            <td>{{ document.dateLimiteVisa|date('d/m/Y') }}</td>
-            <td>{{ document.originalFilename }}</td>
-        </tr>
+        {% for affaire in listeAffaires %}
+            {% for document in listeDocuments[affaire.idAffaire] %}
+            <tr>
+                <td>{{ document.type }} </td>
+                <td>{{ document.filename }}</td>
+                <td>{{ document.dateReception|date('d/m/Y') }}</td>
+                <td>{{ document.dateLimiteVisa|date('d/m/Y') }}</td>
+                <td>{{ document.originalFilename }}</td>
+            </tr>
+            {% endfor %}
         {% endfor %}
     </tbody>
 

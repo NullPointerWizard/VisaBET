@@ -68,9 +68,20 @@ class VisaController extends Controller {
 	 */
 	public function showTableauGlobal()
 	{
-		$listeDocuments = [];
+		$utilisateur = $this->getUser();
+		$listeAffaires = $utilisateur->getListeAffaires();
+		$listeDocument = [];
+
+		$entityManager = $this->getDoctrine()->getManager();
+
+		foreach($listeAffaires as $affaire){
+			$listeDocuments[$affaire->getIdAffaire()] = $entityManager->getRepository('AppBundle\Entity\Documents')
+				->findDocUrgents($affaire)
+			;
+		}
 
 		$data = [
+			'listeAffaires' 		=> $listeAffaires,
 			'listeDocuments'		=> $listeDocuments
 		];
 		return $this->render('applicationVisa/tableau_global.html.twig', $data);
@@ -107,8 +118,8 @@ class VisaController extends Controller {
 			->findOneBy(['idDocument'=>$idDocument])
 		;
 		$lot = $document->getLot();
-		$affaire = $document->getIdAffaire();
-		$form = $this->createForm(EmissionAvisFormType::class);
+		$affaire = $document->getAffaire();
+		$form = $this->createForm(EmissionAvisFormType::class, array('lot'=> $lot));
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()){
 		}
@@ -170,10 +181,17 @@ class VisaController extends Controller {
 		$form = $this->createForm(AffaireFormType::class, $nouvelleAffaire);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()){
+			$entityManager = $this->getDoctrine()->getManager();
 
+			$listeSuperAdmin = $entityManager->getRepository('AppBundle\Entity\Utilisateur')
+	            ->findAllSuperAdmins()
+	        ;
+	        foreach ($listeSuperAdmin as $sAdmin) {
+	            $nouvelleAffaire->addListeUtilisateur($sAdmin);
+				$sAdmin->addAffaire($nouvelleAffaire);
+	        }
 			$utilisateur->addAffaire($nouvelleAffaire);
 
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($utilisateur);
 			$entityManager->persist($nouvelleAffaire);
 			$entityManager->flush();
@@ -414,36 +432,40 @@ class VisaController extends Controller {
 	        //     throw $this->createAccessDeniedException('GET OUT!');
 	        // }
 		//2
-		$this->denyAccessUnlessGranted('ROLE_USER');
+		$this->denyAccessUnlessGranted('ROLE_GESTION_VISAS');
 
 		$utilisateur = $this->getUser();
 
 		$entityManager = $this->getDoctrine()->getManager();
 		$item = $entityManager->getRepository('AppBundle\Entity\Items')
 			->findOneBy(['idItem'=>$idItem]);
+		$lot = $item->getIdLot();
 		$nouveauVisa = new Visas;
 		$nouveauVisa->setVisePar($utilisateur);
+		$nouveauVisa->setIdItem($item);
 
 		//Definition des formulaires
-		$form = $this->createForm(VisaFormType::class, $nouveauVisa);
+		$form = $this->createForm(VisaFormType::class, array('lot'=> $lot));
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()){
-			$nouveauVisa = $form->getData();
-			$nouveauVisa->setIdItem($item);
+			$data = $form->getData();
+			$nouveauVisa->setEtatVisa($data['etatVisa']);
+			$nouveauVisa->setIdDocument($data['document']);
 			$nouveauVisa->setVersion();
 			$nouveauVisa->setDateEmission('now');
 			$entityManager = $this->getDoctrine()->getManager();
 
-			$entityManager->persist($nouveauVisa);
 			$noRemarque = 1;
-			foreach($nouveauVisa->getRemarques() as $remarque)
+			foreach($data['remarques'] as $remarque)
 			{
+				$nouveauVisa->addRemarque($remarque);
 				$remarque->setIdVisa($nouveauVisa);
 				$remarque->setNoRemarque($noRemarque);
 				$entityManager->persist($remarque);
 				$noRemarque++;
 			}
+			$entityManager->persist($nouveauVisa);
 			$entityManager->flush();
 
 			$this->addFlash(

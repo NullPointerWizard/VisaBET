@@ -17,20 +17,18 @@
 
                 {{ form_start(form) }}
 
-                {{ form_row(form.idDocument) }}
+                {{ form_row(form.document) }}
                 {{ form_row(form.etatVisa) }}
-                {{ form_row(form.indicePlan) }}
-                <h3>Remarques</h3>
                     <ul class="remarques list-group" data-prototype="{{ form_widget(form.remarques.vars.prototype)|e('html_attr') }}">
                         {# iterate over each existing tag and render its only field: name #}
+                        {{ form_row(form.remarques) }}
                         {% for remarque in form.remarques %}
                             <li class="list-group-item">
                                 {{ form_row(remarque.idTypeRemarque) }}
                                 {{ form_row(remarque.remarque)}}
                             </li>
                         {% endfor %}
-                    </ul>
-
+                    </ul>                    
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i> Créer Visa
                 </button>

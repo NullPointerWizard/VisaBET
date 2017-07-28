@@ -8,6 +8,7 @@ security:
         # permet de se connecter avec un autre type de compte pour voir ce qu'il voit
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
         ROLE_ADMIN: [ROLE_GESTION_VISAS]
+        ROLE_RESPONSABLE_AFFAIRE: [ROLE_GESTION_VISAS]
         ROLE_GESTION_VISAS: [ROLE_GESTION_DOCUMENTS]
         ROLE_GESTION_DOCUMENTS: [ROLE_USER]
 
@@ -34,7 +35,9 @@ security:
                     - AppBundle\Security\LoginFormAuthenticator
             logout:
                 path: /logout
-            switch_user: ~
+            switch_user: true #switch_user: ~ ,ancienne ligne
+
+
             # activate different ways to authenticate
 
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

@@ -290,4 +290,20 @@ class Contact
         return $this->getPrenom().' '.strtoupper($this->getNom());
     }
 
+    /*
+    * html2pdf ne supportant pas le css wordwrap:break-word cette fonction coupe le nom a une bonne taille
+    */
+    public function getPdfName()
+    {
+        //le nom et le prenom sont coupes par wordwrap si ils ont trop de caracteres
+        return wordwrap($this->getPrenom(), 20, ' ', true).' '.wordwrap(strtoupper($this->getNom()), 15, ' ', true);
+    }
+
+    /*
+    * html2pdf ne supportant pas le css wordwrap:break-word cette fonction coupe le mail a une bonne taille
+    */
+    public function getPdfMail()
+    {
+        return wordwrap($this->getMail(), 60, ' ', true);
+    }
 }

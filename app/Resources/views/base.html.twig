@@ -26,6 +26,9 @@
             <h1 class="visa-title" >{% block pageTitle %}Visa 3000{% endblock %}</h1>
             <ul class="navi">
                 {% if is_granted('ROLE_USER') %}
+                    {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                        <li><a href="{{ path('accueil', {'_switch_user': '_exit'}) }}">Retour Super Admin</a></li>
+                    {% endif %}
                     <li><b>{{ app.user.idOrganisme }}</b> {{ app.user.prenom }} {{ app.user.nom }} </li>
                     <li><a href="{{ path('visa_logout') }}">Déconnexion</a></li>
                 {% else %}
@@ -34,6 +37,7 @@
             </ul>
         </header>
 
+        {% block navBar %}
         <ul class="nav nav-tabs">
             <li><a href="{{ path('affaires') }}">Mes affaires</a></li>
             <li class="dropdown">
@@ -57,8 +61,12 @@
                     <li><a href="{{ path('gestion_role') }}">Rôles</a> </li>
                     <li><a href="{{ path('gestion_noms_lots') }}">Noms des lots</a> </li>
                     <li><a href="{{ path('gestion_types_remarques') }}">Types de remarques</a> </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('travaux') }}"><b>Admin</b></a></li>
+                    {% endif %}
                 </ul>
             </li>
+            {% endblock %}
             {% block navBarPlus %}
             {% endblock %}
 

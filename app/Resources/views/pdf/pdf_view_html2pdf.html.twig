@@ -1,24 +1,36 @@
 <style type="text/css">
-table{
-    width: 170px;
-}
+
 td, th{
-    padding: 5px;
+    padding: 3px;
 }
 #documents th, #intervenants th{
     border-bottom: 1px solid #ddd;
 }
 
+#visas tr, #documents tr, #intervenants tr{
+    width: 170mm;
+    page-break-inside: avoid;
+}
+#visas td{
+    padding: 0px;
+}
+
 </style>
-<page backtop="25mm" backbottom="17mm" backleft="10mm" backright="10mm" style="font-size: 10pt">
+<page backtop="25mm" backbottom="23mm" backleft="10mm" backright="10mm" style="font-size: 10pt">
 
     <page_header>
-        <table style="width: 90%;">
-            <tr style="width: 100%; border-bottom: 4px solid #2c62e0;">
+        <table>
+            <tr style="border-bottom: 4px solid #2c62e0;">
                 <td style="width: 20%;">
-                    <img src="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\images\LOGO-BET-pdf.jpg" style="width: 230px;">
+                    {% if organisme.idOrganisme == 1 %}
+                        <img src="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\images\pdf\LOGO-LOUVET-pdf.jpg" style="width: 230px; height: 100px;">
+                    {% elseif organisme.idOrganisme == 2 %}
+                        <img src="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\images\pdf\LOGO-ADAM-pdf.jpg" style="width: 230px; height: 100px;">
+                    {% else %}
+                        <img src="C:\Users\pab\Desktop\STAGE_VISA\WORKSPACE\GIT\PROJET_VISA\web\images\pdf\LOGO-BET-pdf.jpg" style="width: 230px; height: 100px;">
+                    {% endif %}
                 </td>
-                <td style="width: 30%;">
+                <td style="width: 25%;">
                     <table >
                         <tbody>
                             <tr>
@@ -38,7 +50,7 @@ td, th{
                         </tbody>
                     </table>
                 </td>
-                <td style="width: 30%;">
+                <td style="width: 25%;">
                     <table>
                         <tbody>
                             <tr>
@@ -56,7 +68,7 @@ td, th{
                         </tbody>
                     </table>
                 </td>
-                <td style="width: 20%;">
+                <td style="width:30%;">
                     <qrcode value="Aff:{{ affaire.numeroAffaire }} Lot:{{ lot.numeroLot }} Le:{{ dateStamp|date('d/m/Y')}} Par:{{ app.user }},{{ organisme }}" ec="H" style="width: 23mm; background-color: white; color: #2c62e0;"></qrcode>
                 </td>
             </tr>
@@ -65,14 +77,29 @@ td, th{
 
     <page_footer>
         <div class="footer">
+
             <ul class="footer-infos-organisme" style="text-align: center; list-style-type: none;">
-                    <li>{{ organisme }} Bureau d'études fluides</li>
+                {% if organisme.idOrganisme == 1 %}
+                    <li>Bureau d'Etudes fluides LOUVET</li>
                     <li>15 Avenue de la Garenne - BP 694 - 54063 NANCY CEDEX</li>
                     <li>
                         <i class="fa fa-phone" aria-hidden="true"></i> 03 83 28 85 85
                         <i class="fa fa-fax" aria-hidden="true"></i> 03 83 27 67 10
                     </li>
                     <li>betlouvet@louvet.fr</li>
+                {% elseif organisme.idOrganisme == 2 %}
+                    <li> Bureau d'Etudes ADAM STRUCTURES</li>
+                    <li>13/15 Avenue de la Garenne - BP 694 - 54063 NANCY CEDEX</li>
+                    <li>
+                        <i class="fa fa-phone" aria-hidden="true"></i> 03 83 27 33 22
+                        <i class="fa fa-fax" aria-hidden="true"></i> 03 83 27 46 90
+                    </li>
+                    <li>structures@bet-adam.fr</li>
+                {% else %}
+                    <li>Footer</li>
+                    <li>Informations entreprise</li>
+                {% endif %}
+
             </ul>
         </div>
     </page_footer>
@@ -92,19 +119,19 @@ td, th{
         <table id="intervenants">
             <thead>
                 <tr>
-                    <th>Rôle</th>
-                    <th>Organisme</th>
-                    <th>Intervenant</th>
-                    <th>Mail</th>
+                    <th style="width: 20%; padding: 2px;">Rôle</th>
+                    <th style="width: 20%; padding: 2px;">Organisme</th>
+                    <th style="width: 20%; padding: 2px; overflow: hidden;">Intervenant</th>
+                    <th style="width: 40%; padding: 2px;">Mail</th>
                 </tr>
             </thead>
             <tbody>
             {% for contact in listeDiffusion %}
                 <tr>
-                    <td>{{ contact.role }}</td>
-                    <td>{{ contact.organisme }}</td>
-                    <td>{{ contact }}</td>
-                    <td>{{ contact.mail}}</td>
+                    <td style="width: 20%;">{{ contact.role }}</td>
+                    <td style="width: 20%;">{{ contact.organisme }}</td>
+                    <td style="width: 25%;">{{ contact.pdfName }}</td>
+                    <td style="width: 35%;">{{ contact.pdfMail}}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -114,9 +141,9 @@ td, th{
         <table id="documents">
             <thead>
                 <tr>
-                    <th>Document</th>
-                    <th>Emis le</th>
-                    <th>Reçu le</th>
+                    <th style="width: 80%; padding: 2px;">Document</th>
+                    <th style="width: 10%; padding: 2px;">Emis le</th>
+                    <th style="width: 10%; padding: 2px;">Reçu le</th>
                 </tr>
             </thead>
             <tbody>
@@ -146,29 +173,32 @@ td, th{
         </div>
 
         <h3>Visas et remarques</h3>
-        {% for document in listeDocuments %}
-            {% for visa in listeVisas[document.idDocument]%}
-                <b>{{ visa.idItem }}</b>
-                <table>
-                    <tbody>
+        <table id="visas">
+            <tbody>
+                {% for document in listeDocuments %}
+                    {% for visa in listeVisas[document.idDocument]%}
+
                         <tr>
-                            <td>Avis {{ visa.version }}</td>
-                            <td><b>{{ visa.etatVisa }}</b></td>
-                            <td>
-                                {% for remarque in listeRemarques[visa.idVisa] %}
-                                    {{ remarque.idTypeRemarque }}: <br>
-                                {% endfor %}
+                            <td style="width: 33%; padding-top: 6mm; border-bottom: 1px solid #ddd;"><b>{{ visa.idItem }}</b> <small>#{{ visa.version }}</small></td>
+                            <td style="width: 67%; padding-top: 6mm; border-bottom: 1px solid #ddd;"><b>{{ visa.etatVisa }}</b></td>
+                        </tr>
+                        {% for remarque in listeRemarques[visa.idVisa] %}
+                        <tr>
+                            <td style="width: 33%; text-align:right;">
+                                {{ remarque.idTypeRemarque }}
                             </td>
-                            <td>
-                                {% for remarque in listeRemarques[visa.idVisa] %}
-                                    <i>{{ remarque.remarque }}</i> <br>
-                                {% endfor %}
+                            <td style="width: 67%;">
+                                <i>
+                                    {{ remarque.remarque }}
+                                </i>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-            {% endfor %}
-        {% endfor %}
+                        {% endfor %}
+
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
 
     </div>
 
