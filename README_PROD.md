@@ -23,12 +23,15 @@ git clone https://github.com/NullPointerWizard/VisaBET.git
     ```
 
 # Mise en production
+1. Connexion en SSH au serveur sur lequel on déploie (avec PuTTY)
+1. Se placer à la racine du dossier contenant le projet (sur Linux utiliser la commande "cd" )
 1. Verifier le bon fonctionnement en local
     1. On change d'environnement dans l'url
     2. On peut activer le debugger dans l'environnement de production, dans web/app.php (false quand on a fini)
     ```php
     $kernel = new AppKernel('prod', true); // Définissez ce 2e argument à true
     ```
+1. 
 2. Nettoyage du cache de production (utiliser la 2e commande)
 ```
 php bin/console cache:clear --env=prod
